@@ -7,6 +7,8 @@ import java.util.Set;
 
 public interface QuizDAO {
   List<QuizModel> getAllQuizzes();
-  QuizModel getQuizById(int id);
-  List<QuizModel> getQuizzesByName(String namePart);
+  QuizModel getQuizById(int quizId);
+  int createQuiz(String title);
+  QuizModel editQuiz(int quizId, String newName);
+  int deleteQuiz(int quizId);
 }
