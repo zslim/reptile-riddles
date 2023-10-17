@@ -1,14 +1,14 @@
 package com.codecool.quizzzz.dao.quiz;
 
-import com.codecool.quizzzz.service.QuizService;
+import com.codecool.quizzzz.controller.dto.quiz.NewQuizDTO;
 
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
 public interface QuizDAO {
   List<QuizModel> getAllQuizzes();
-  QuizModel getQuizById(int quizId);
-  int createQuiz(String title);
+  Optional<QuizModel> getQuizById(int quizId);
+  int createQuiz(NewQuizDTO newQuizDTO);
   QuizModel editQuiz(int quizId, String newName);
   int deleteQuiz(int quizId);
 }
