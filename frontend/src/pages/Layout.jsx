@@ -1,8 +1,13 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
+
 const Layout = () => {
+    const pathName = useLocation().pathname;
+
     return (
         <>
-            <div className="bg-kahoot-purple fixed p-3 font-bold text-white">Layout</div>
+           { pathName !== '/task' ? <div className="bg-kahoot-purple fixed p-3 font-bold text-white">Layout</div>
+            : null
+           } 
             <Outlet />
         </>
     )
