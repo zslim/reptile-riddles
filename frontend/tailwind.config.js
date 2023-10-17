@@ -14,7 +14,13 @@ module.exports = {
           purple: '#4C1E93',
           lightpurple: '#8951C0',
           darkblue: '#2C0F70'
-        }
+        },
+        'hover': {
+          red : '#DA1233',
+          blue: '#095FC6',
+          green: '#1E8004',
+          yellow: '#CE9300',
+        } 
       },
     },
   },
