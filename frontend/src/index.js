@@ -4,13 +4,13 @@ import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 import "./index.css";
 
-import { Layout } from './pages/Layout';
+import {Layout} from './pages/Layout';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout />,
+    element: <Layout/>,
     children: [
       // {
       //   path: 'quiz',
@@ -22,7 +22,7 @@ const router = createBrowserRouter([
 
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <RouterProvider router={router}/>
   </React.StrictMode>
 );
 
