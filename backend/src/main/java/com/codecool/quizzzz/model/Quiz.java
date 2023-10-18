@@ -1,4 +1,4 @@
 package com.codecool.quizzzz.model;
 
-public class Quiz {
+public record Quiz(int id, String title) {
 }
