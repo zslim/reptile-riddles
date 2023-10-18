@@ -28,9 +28,9 @@ public class QuizController {
     return quizService.getById(quizId);
   }
 
-  @PostMapping("/{title}")
-  int createQuiz(@PathVariable String title){
-    return quizService.create(new NewQuizDTO(title));
+  @PostMapping("/create")
+  int createQuiz(@RequestBody NewQuizDTO newQuizDTO){
+    return quizService.create(newQuizDTO);
   }
 
   @DeleteMapping("/{quizId}")
