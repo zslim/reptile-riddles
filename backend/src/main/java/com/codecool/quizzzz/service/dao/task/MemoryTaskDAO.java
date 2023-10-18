@@ -2,11 +2,13 @@ package com.codecool.quizzzz.service.dao.task;
 
 import com.codecool.quizzzz.dto.task.NewTaskDTO;
 import com.codecool.quizzzz.model.Task;
+import org.springframework.stereotype.Repository;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Repository
 public class MemoryTaskDAO implements TaskDAO {
   private static int nextTaskId = 1;
   private final Set<Task> tasks;
