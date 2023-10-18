@@ -42,7 +42,7 @@ public class TaskController {
     return taskService.deleteTask(taskId);
   }
 
-  @GetMapping("/{answerId}")
+  @GetMapping("answer/{answerId}")
   public boolean checkIfAnswerIsCorrect(@PathVariable int answerId) {
     return taskService.checkIfAnswerIsCorrect(answerId);
   }
