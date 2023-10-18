@@ -32,10 +32,13 @@ public class MemoryQuizDAO implements QuizDAO {
   }
 
   @Override
-  public int deleteById(int quizId) {
+  public Optional<Integer> deleteById(int quizId) {
     Optional<QuizModel> toDelete = findById(quizId, quizzes);
-    toDelete.ifPresent(quizzes::remove);
-    return quizId;
+    if (toDelete.isPresent()){
+      quizzes.remove(toDelete.get());
+      return Optional.of(quizId);
+    }
+    return Optional.empty();
   }
 
   private Optional<QuizModel> findById(int quizId, List<QuizModel> source) {
