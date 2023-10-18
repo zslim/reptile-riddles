@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TaskService {
@@ -31,11 +32,15 @@ public class TaskService {
   }
 
   public TaskDTO getTask(int quizId, int taskIndex) {
-    return convertTaskModelToDTO(taskDAO.getTask(quizId, taskIndex));
+    Optional<Task> task = taskDAO.getTask(quizId, taskIndex);
+    if (task.isPresent()) return convertTaskModelToDTO(task.get());
+    throw new RuntimeException(String.format("There is no task with quizId %d and taskIndex %d", quizId, taskIndex));
   }
 
   public TaskDTO getTask(int taskId) {
-    return convertTaskModelToDTO(taskDAO.getTask(taskId));
+    Optional<Task> task = taskDAO.getTask(taskId);
+    if (task.isPresent()) return convertTaskModelToDTO(task.get());
+    throw new RuntimeException(String.format("There is no task with id %d.", taskId));
   }
 
   public boolean deleteTask(int taskId) {
