@@ -3,6 +3,7 @@ package com.codecool.quizzzz.service;
 import com.codecool.quizzzz.dto.quiz.NewQuizDTO;
 import com.codecool.quizzzz.dto.quiz.QuizDTO;
 import com.codecool.quizzzz.model.Task;
+import com.codecool.quizzzz.exception.NotFoundException;
 import com.codecool.quizzzz.service.dao.quiz.QuizDAO;
 import com.codecool.quizzzz.service.dao.quiz.QuizModel;
 import com.codecool.quizzzz.service.dao.task.TaskDAO;
@@ -39,8 +40,10 @@ public class QuizService {
     return quizDAO.create(newQuizDTO);
   }
 
-  public int deleteById(int quizId) {
-    return quizDAO.deleteById(quizId);
+  public int deleteById(int quizId){
+    Optional<Integer> optionalId = quizDAO.deleteById(quizId);
+    if (optionalId.isPresent()) return optionalId.get();
+    throw new NotFoundException(String.format("The quiz with id %d doesn't exist!", quizId));
   }
 
   private QuizDTO convertQuizModelToDTO(QuizModel quizModel) {
