@@ -1,33 +1,37 @@
-const AnswerListContainer = ({setIsAnswered, setIsCorrect, setStyle}) => {
+import AnswerButton from "./AnswerButton";
+
+const AnswerListContainer = ({setSelectedAnswer, setIsAnswered, setIsCorrect, setColor, task}) => {
+    const BUTTON_COLORS = ['red', 'blue', 'yellow', 'green'];
     
-    function handleAnswerSubmit(e) {
+    async function handleAnswerSubmit(e) {
+        let answer = e.currentTarget.firstChild.innerHTML;
+        let answerId = e.currentTarget.id;
+        setSelectedAnswer(() => answer);
+
+        const response = await validateAnswer(answerId);
+
+        setIsCorrect(() => response);
         setIsAnswered(true);
-        if (e.target.matches('div')){
-            setStyle(e.target.className);
-        } else {
-            setStyle(e.target.parentNode.className);
+    }
+    
+    async function validateAnswer(answerId){
+        try {
+            const httpRawRes = await fetch(`/task/answer/${answerId}`);
+            const res = await httpRawRes.json();
+            return res;
+        } catch (error) {
+            console.error(error);
         }
-        setIsCorrect(true);
     }
 
     return(
         <div className="absolute bottom-14 grid gap-1 p-1 grid-cols-2 w-screen object-center text-lg">
-            <div onClick={(e) => handleAnswerSubmit(e)} className={"h-20 w-full bg-kahoot-red place-self-center " + 
-                (true ? "hover:bg-hover-red hover:cursor-pointer" : "opacity-20")}>
-                <p className="m-6 text-white">Answer 1</p>
-            </div>
-            <div onClick={(e) => handleAnswerSubmit(e)} className={"h-20 w-full bg-kahoot-blue place-self-center " + 
-                (true ? "hover:bg-hover-blue hover:cursor-pointer" : "opacity-20")}>
-                <p className="m-6 text-white">Answer 2</p>
-            </div>
-            <div onClick={(e) => handleAnswerSubmit(e)} className={"h-20 w-full bg-kahoot-yellow place-self-center " + 
-                (true ? "hover:bg-hover-yellow hover:cursor-pointer" : "opacity-20")}>
-                <p className="m-6 text-white">Answer 3</p>
-            </div>
-            <div onClick={(e) => handleAnswerSubmit(e)} className={"h-20 w-full bg-kahoot-green place-self-center " + 
-                (true ? "hover:bg-hover-green hover:cursor-pointer"  : "opacity-20")}>
-                <p className="m-6 text-white">Answer 4</p>
-            </div>
+            {task.answers.map((answer, i) => 
+            <AnswerButton answer={answer}
+                color={BUTTON_COLORS[i % BUTTON_COLORS.length]}
+                setColor={setColor}
+                handleSubmit={handleAnswerSubmit}
+            />)}
         </div>
     )
 }
