@@ -10,5 +10,5 @@ public interface QuizDAO {
   Optional<QuizModel> getById(int quizId);
   int create(NewQuizDTO newQuizDTO);
   QuizModel edit(int quizId, String newName);
-  int deleteById(int quizId);
+  Optional<Integer> deleteById(int quizId);
 }
