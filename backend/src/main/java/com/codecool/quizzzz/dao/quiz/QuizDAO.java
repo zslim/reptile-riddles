@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface QuizDAO {
-  List<QuizModel> getAllQuizzes();
-  Optional<QuizModel> getQuizById(int quizId);
-  int createQuiz(NewQuizDTO newQuizDTO);
-  QuizModel editQuiz(int quizId, String newName);
-  int deleteQuiz(int quizId);
+  List<QuizModel> getAll();
+  Optional<QuizModel> getById(int quizId);
+  int create(NewQuizDTO newQuizDTO);
+  QuizModel edit(int quizId, String newName);
+  int deleteById(int quizId);
 }
