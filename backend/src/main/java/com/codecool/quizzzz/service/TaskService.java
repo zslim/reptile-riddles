@@ -22,7 +22,7 @@ public class TaskService {
     this.answerDAO = answerDAO;
   }
 
-  List<TaskDTO> getAllTasksByQuiz(int quizId) {
+  public List<TaskDTO> getAllTasksByQuiz(int quizId) {
     return taskDAO.getAllTasksByQuiz(quizId).stream().map(this::convertTaskModelToDTO).toList();
   }
 
@@ -36,10 +36,6 @@ public class TaskService {
 
   public TaskDTO getTask(int taskId) {
     return convertTaskModelToDTO(taskDAO.getTask(taskId));
-  }
-
-  public boolean deleteTask(int quizId, int taskIndex) {
-    return taskDAO.deleteTask(quizId, taskIndex);
   }
 
   public boolean deleteTask(int taskId) {
