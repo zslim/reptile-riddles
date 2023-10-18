@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class MemoryQuizDAO implements QuizDAO {
-  private static int currentId = 0;
+  private static int currentId = 2;
   private final List<Quiz> quizzes = new ArrayList<>();
 
   @Override

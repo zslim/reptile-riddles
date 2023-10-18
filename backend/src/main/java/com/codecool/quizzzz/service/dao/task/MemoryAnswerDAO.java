@@ -11,11 +11,16 @@ import java.util.Set;
 
 @Repository
 public class MemoryAnswerDAO implements AnswerDAO {
-  private static int nextAnswerId = 1;
+  private static int nextAnswerId = 5;
   private final Set<Answer> answers;
 
   public MemoryAnswerDAO() {
-    answers = new HashSet<>();
+    answers = new HashSet<>(List.of(
+            new Answer(1, 1, "Nothing", false),
+            new Answer(1, 2, "I don't know", false),
+            new Answer(1, 3, "Something", true),
+            new Answer(1, 4, "Haha", false)
+    ));
   }
 
   @Override
