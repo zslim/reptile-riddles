@@ -20,21 +20,21 @@ public class QuizController {
   
   @GetMapping("/all")
   List<QuizDTO> getAllQuiz(){
-    return quizService.getAllQuizzes();
+    return quizService.getAll();
   }
 
   @GetMapping("/{quizId}")
   QuizDTO getQuizById(@PathVariable int quizId){
-    return quizService.getQuizById(quizId);
+    return quizService.getById(quizId);
   }
 
   @PostMapping("/{title}")
   int createQuiz(@PathVariable String title){
-    return quizService.createQuiz(new NewQuizDTO(title));
+    return quizService.create(new NewQuizDTO(title));
   }
 
   @DeleteMapping("/{quizId}")
   int deleteQuiz(@PathVariable int quizId){
-    return quizService.deleteQuiz(quizId);
+    return quizService.deleteById(quizId);
   }
 }
