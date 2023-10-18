@@ -1,6 +1,6 @@
-package com.codecool.quizzzz.dao.quiz;
+package com.codecool.quizzzz.service.dao.quiz;
 
-import com.codecool.quizzzz.controller.dto.quiz.NewQuizDTO;
+import com.codecool.quizzzz.dto.quiz.NewQuizDTO;
 
 import java.util.ArrayList;
 import java.util.List;

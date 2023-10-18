@@ -1,9 +1,9 @@
 package com.codecool.quizzzz.service;
 
-import com.codecool.quizzzz.controller.dto.quiz.NewQuizDTO;
-import com.codecool.quizzzz.controller.dto.quiz.QuizDTO;
-import com.codecool.quizzzz.dao.quiz.QuizDAO;
-import com.codecool.quizzzz.dao.quiz.QuizModel;
+import com.codecool.quizzzz.dto.quiz.NewQuizDTO;
+import com.codecool.quizzzz.dto.quiz.QuizDTO;
+import com.codecool.quizzzz.service.dao.quiz.QuizDAO;
+import com.codecool.quizzzz.service.dao.quiz.QuizModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

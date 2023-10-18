@@ -1,7 +1,7 @@
 package com.codecool.quizzzz.controller;
 
-import com.codecool.quizzzz.controller.dto.quiz.NewQuizDTO;
-import com.codecool.quizzzz.controller.dto.quiz.QuizDTO;
+import com.codecool.quizzzz.dto.quiz.NewQuizDTO;
+import com.codecool.quizzzz.dto.quiz.QuizDTO;
 import com.codecool.quizzzz.service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
