@@ -4,6 +4,7 @@ import com.codecool.quizzzz.dto.quiz.NewQuizDTO;
 import com.codecool.quizzzz.dto.quiz.QuizDTO;
 import com.codecool.quizzzz.service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,22 +20,22 @@ public class QuizController {
   }
 
   @GetMapping("/all")
-  List<QuizDTO> getAllQuiz() {
-    return quizService.getAll();
+  ResponseEntity<List<QuizDTO>> getAllQuiz() {
+    return ResponseEntity.ok().body(quizService.getAll());
   }
 
   @GetMapping("/{quizId}")
-  QuizDTO getQuizById(@PathVariable int quizId) {
-    return quizService.getById(quizId);
+  ResponseEntity<QuizDTO> getQuizById(@PathVariable int quizId) {
+    return ResponseEntity.ok().body(quizService.getById(quizId));
   }
 
   @PostMapping("/create")
-  int createQuiz(@RequestBody NewQuizDTO newQuizDTO) {
-    return quizService.create(newQuizDTO);
+  ResponseEntity<Integer> createQuiz(@RequestBody NewQuizDTO newQuizDTO) {
+    return ResponseEntity.ok().body(quizService.create(newQuizDTO));
   }
 
   @DeleteMapping("/{quizId}")
-  int deleteQuiz(@PathVariable int quizId) {
-    return quizService.deleteById(quizId);
+  ResponseEntity<Integer> deleteQuiz(@PathVariable int quizId) {
+    return ResponseEntity.ok().body(quizService.deleteById(quizId));
   }
 }

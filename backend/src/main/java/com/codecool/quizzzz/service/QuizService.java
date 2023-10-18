@@ -2,6 +2,7 @@ package com.codecool.quizzzz.service;
 
 import com.codecool.quizzzz.dto.quiz.NewQuizDTO;
 import com.codecool.quizzzz.dto.quiz.QuizDTO;
+import com.codecool.quizzzz.exception.NotFoundException;
 import com.codecool.quizzzz.service.dao.quiz.QuizDAO;
 import com.codecool.quizzzz.service.dao.quiz.QuizModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class QuizService {
 
   public QuizDTO getById(int quizId){
     Optional<QuizModel> result = quizDAO.getById(quizId);
-    if (result.isEmpty()) throw new RuntimeException(String.format("The quiz with id %d doesn't exist!", quizId));
+    if (result.isEmpty()) throw new NotFoundException(String.format("The quiz with id %d doesn't exist!", quizId));
     return transformFromQuizModel(result.get());
   }
 
@@ -34,7 +35,9 @@ public class QuizService {
   }
 
   public int deleteById(int quizId){
-    return quizDAO.deleteById(quizId);
+    Optional<Integer> optionalId = quizDAO.deleteById(quizId);
+    if (optionalId.isPresent()) return optionalId.get();
+    throw new NotFoundException(String.format("The quiz with id %d doesn't exist!", quizId));
   }
 
   private QuizDTO transformFromQuizModel(QuizModel quizModel){
