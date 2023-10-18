@@ -1,4 +1,4 @@
 package com.codecool.quizzzz.dto.quiz;
 
-public class QuizDTO {
+public record QuizDTO(int id, String title) {
 }
