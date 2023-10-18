@@ -23,11 +23,11 @@ public class TaskService {
     this.answerDAO = answerDAO;
   }
 
-  public List<TaskDTO> getAllTasksByQuiz(int quizId) {
+  public List<TaskDTO> getAllByQuiz(int quizId) {
     return taskDAO.getAllTasksByQuiz(quizId).stream().map(this::convertTaskModelToDTO).toList();
   }
 
-  public int createNewTask(int quizId, NewTaskDTO newTaskDTO) {
+  public int create(int quizId, NewTaskDTO newTaskDTO) {
     return taskDAO.createNewTask(quizId, newTaskDTO);
   }
 

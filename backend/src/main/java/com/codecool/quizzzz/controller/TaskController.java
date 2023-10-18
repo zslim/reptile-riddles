@@ -19,12 +19,12 @@ public class TaskController {
 
   @GetMapping("/quiz/{quizId}")
   public List<TaskDTO> getAllTasksByQuiz(@PathVariable int quizId) {
-    return taskService.getAllTasksByQuiz(quizId);
+    return taskService.getAllByQuiz(quizId);
   }
 
   @PostMapping("/quiz/{quizId}")
   public int createNewTask(@PathVariable int quizId, @RequestBody NewTaskDTO newTaskDTO) {
-    return taskService.createNewTask(quizId, newTaskDTO);
+    return taskService.create(quizId, newTaskDTO);
   }
 
   @GetMapping("/quiz/{quizId}/{taskIndex}")
