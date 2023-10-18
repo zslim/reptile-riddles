@@ -1,7 +1,7 @@
 package com.codecool.quizzzz;
 
 import com.codecool.quizzzz.dao.quiz.QuizDAO;
-import com.codecool.quizzzz.dao.quiz.QuizDAOJdbc;
+import com.codecool.quizzzz.dao.quiz.MemoryQuizDAO;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +14,7 @@ public class BackendApplication {
   
   @Bean
   public QuizDAO quizDAO(){
-    return new QuizDAOJdbc();
+    return new MemoryQuizDAO();
   }
 
 }
