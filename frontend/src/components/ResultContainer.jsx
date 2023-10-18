@@ -1,5 +1,7 @@
 import fetchTask from '../controllers/taskProvider';
 import { useNavigate } from 'react-router-dom';
+import checkMark from "../assets/checkmark.png";
+import cross from "../assets/cross.png";
 
 const ResultContainer = ({selectedAnswer, isCorrect, setTask, setIsAnswered, color}) => {
     const navigate = useNavigate();
@@ -12,7 +14,15 @@ const ResultContainer = ({selectedAnswer, isCorrect, setTask, setIsAnswered, col
 
     return (
         <div>
-            <div className={`bg-${color} mx-auto m-6 pointer-events-none border-4 w-6/12 ` + 
+            {isCorrect ? <div className="text-3xl text-black flex justify-center mt-5">
+                            <img src={checkMark} alt="check-mark" className="relative bottom-2 w-14 h-14 p-3"></img>
+                            <div className="w-min h-min">Correct!</div>
+                        </div>
+                        : <div className="text-3xl text-black flex justify-center mt-5">
+                            <img src={cross} alt="cross" className="relative bottom-2 w-14 h-14 p-3"></img>
+                            <div className="w-min h-min">Wrong!</div>
+                        </div>}
+            <div className={`bg-${color} mx-auto m-4 pointer-events-none border-4 w-6/12 ` + 
                 (isCorrect ? "border-green-400" : "border-red-400")}>
                 <div className="p-6 text-white">{selectedAnswer}</div>
             </div>
