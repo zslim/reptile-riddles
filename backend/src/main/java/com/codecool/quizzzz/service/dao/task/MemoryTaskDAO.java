@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Repository
@@ -31,27 +32,26 @@ public class MemoryTaskDAO implements TaskDAO {
   }
 
   @Override
-  public Task getTask(int quizId, int taskIndex) {
+  public Optional<Task> getTask(int quizId, int taskIndex) {
     return tasks.stream()
                 .filter(task -> task.quizId() == quizId && task.taskIndex() == taskIndex)
-                .findFirst()
-                .orElse(null);
+                .findFirst();
   }
 
   @Override
-  public Task getTask(int taskId) {
-    return tasks.stream().filter(task -> task.taskId() == taskId).findFirst().orElse(null);
+  public Optional<Task> getTask(int taskId) {
+    return tasks.stream().filter(task -> task.taskId() == taskId).findFirst();
   }
 
   @Override
   public boolean deleteTask(int quizId, int taskIndex) {
-    Task taskToDelete = getTask(quizId, taskIndex);
-    return tasks.remove(taskToDelete);
+    Optional<Task> taskToDelete = getTask(quizId, taskIndex);
+    return taskToDelete.filter(tasks::remove).isPresent();
   }
 
   @Override
   public boolean deleteTask(int taskId) {
-    Task taskToDelete = getTask(taskId);
-    return tasks.remove(taskToDelete);
+    Optional<Task> taskToDelete = getTask(taskId);
+    return taskToDelete.filter(tasks::remove).isPresent();
   }
 }
