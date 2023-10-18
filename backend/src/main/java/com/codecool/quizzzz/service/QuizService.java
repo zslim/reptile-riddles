@@ -19,21 +19,25 @@ public class QuizService {
     this.quizDAO = quizDAO;
   }
   
-  public List<QuizDTO> getAllQuizzes(){
-    return quizDAO.getAllQuizzes().stream().map(e -> new QuizDTO(e.id(), e.title())).toList();
+  public List<QuizDTO> getAll(){
+    return quizDAO.getAll().stream().map(this::transformFromQuizModel).toList();
   }
   
-  public QuizDTO getQuizById(int quizId){
-    Optional<QuizModel> result = quizDAO.getQuizById(quizId);
+  public QuizDTO getById(int quizId){
+    Optional<QuizModel> result = quizDAO.getById(quizId);
     if (result.isEmpty()) throw new RuntimeException(String.format("The quiz with id %d doesn't exist!", quizId));
-    return new QuizDTO(result.get().id(), result.get().title());
+    return transformFromQuizModel(result.get());
   }
   
-  public int createQuiz(NewQuizDTO newQuizDTO){
-    return quizDAO.createQuiz(newQuizDTO);
+  public int create(NewQuizDTO newQuizDTO){
+    return quizDAO.create(newQuizDTO);
   }
 
-  public int deleteQuiz(int quizId){
-    return quizDAO.deleteQuiz(quizId);
+  public int deleteById(int quizId){
+    return quizDAO.deleteById(quizId);
+  }
+
+  private QuizDTO transformFromQuizModel(QuizModel quizModel){
+    return new QuizDTO(quizModel.id(), quizModel.title());
   }
 }
