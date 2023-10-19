@@ -21,13 +21,12 @@ function QuizListPage() {
         setLoading(false);
       }
     }
-
     getQuizzes();
   }, []);
 
   return (
     <div className="w-full h-full flex flex-row text-white">
-      <QuizListContainer quizList={quizList} loading={loading}/>
+      <QuizListContainer quizList={quizList} loading={loading} setQuizList={setQuizList}/>
       <QuizFilterContainer/>
     </div>
   );
