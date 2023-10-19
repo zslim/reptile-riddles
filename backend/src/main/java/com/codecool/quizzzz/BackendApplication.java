@@ -1,7 +1,7 @@
 package com.codecool.quizzzz;
 
-import com.codecool.quizzzz.dao.quiz.MemoryQuizDAO;
-import com.codecool.quizzzz.dao.quiz.QuizDAO;
+import com.codecool.quizzzz.service.dao.quiz.MemoryQuizDAO;
+import com.codecool.quizzzz.service.dao.quiz.QuizDAO;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;

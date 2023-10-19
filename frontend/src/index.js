@@ -1,23 +1,25 @@
 import React from 'react';
-import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import ReactDOM from 'react-dom/client';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
 import "./index.css";
 
-import Layout from './pages/layout/Layout';
+import Layout from './pages/Layout';
+import TaskPage from './pages/TaskPage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <Layout/>,
     children: [
-      // {
-      //   path: 'quiz',
-      //   element: </>,
-      // },
-    ]
-  }
+      {
+        path: "/task",
+        element: <TaskPage/>,
+      },
+    ],
+  },
 ]);
 
 root.render(

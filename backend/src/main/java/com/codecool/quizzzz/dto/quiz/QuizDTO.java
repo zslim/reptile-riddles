@@ -1,4 +1,6 @@
 package com.codecool.quizzzz.dto.quiz;
 
-public class QuizDTO {
+import java.util.List;
+
+public record QuizDTO(int id, String title, List<Integer> taskIdList) {
 }
