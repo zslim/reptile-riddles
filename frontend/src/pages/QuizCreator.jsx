@@ -44,7 +44,7 @@ const QuizCreator = () => {
   }
   console.log(tasks);
   return (
-    <div className="pt-14">
+    <div className="pt-14 bg-white">
       <div>
         <label htmlFor="name">Quiz title: </label>
         <input defaultValue={quizTitle} type="text" placeholder="Eg. My quiz" id="name"

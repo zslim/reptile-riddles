@@ -26,11 +26,11 @@ const TaskForm = ({task, saveTask, deleteTask}) => {
       </div>
       <div>
         {answers.map(answer => (
-          <>
+          <div key={answer.answerId}>
             <h2>{answer.text}</h2>
             <input type="checkbox" defaultChecked={answer.isCorrect}
                    onChange={(e) => changeCorrect(e.target.checked, answer.answerId, answer.text)}/>
-          </>
+          </div>
         ))}
       </div>
     </div>
