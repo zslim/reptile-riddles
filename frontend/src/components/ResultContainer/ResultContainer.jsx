@@ -1,5 +1,5 @@
-import {fetchTask} from '../../controllers/taskProvider';
-import {useNavigate} from 'react-router-dom';
+import { fetchTask } from '../../controllers/taskProvider';
+import { useNavigate } from 'react-router-dom';
 import checkMark from "../../assets/checkmark.png";
 import cross from "../../assets/cross.png";
 
@@ -31,7 +31,7 @@ const ResultContainer = ({selectedAnswer, isCorrect, setTask, setIsAnswered, col
               className="absolute right-20 p-4 bg-zinc-400 hover:bg-zinc-500 hover:cursor-pointer">Next
       </button>
     </div>
-  )
-}
+  );
+};
 
 export default ResultContainer;

@@ -37,5 +37,5 @@ module.exports = {
     'hover:bg-hover-green',
     'hover:bg-hover-yellow',
   ]
-}
+};
 

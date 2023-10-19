@@ -1,4 +1,4 @@
-import {render, screen} from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import Layout from './pages/Layout';
 
 test('renders learn react link', () => {

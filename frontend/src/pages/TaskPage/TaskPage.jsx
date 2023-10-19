@@ -1,7 +1,7 @@
 import AnswerListContainer from "../../components/AnswerListContainer/AnswerListContainer";
 import ResultContainer from "../../components/ResultContainer/ResultContainer";
-import {fetchTask} from "../../controllers/taskProvider";
-import {useEffect, useState} from 'react';
+import { fetchTask } from "../../controllers/taskProvider";
+import { useEffect, useState } from 'react';
 import Loader from "../../components/Loading/Loader";
 
 const TaskPage = () => {
@@ -58,7 +58,7 @@ const TaskPage = () => {
         </div>
       }
     </>
-  )
+  );
 };
 
 export default TaskPage;

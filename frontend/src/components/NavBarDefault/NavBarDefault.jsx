@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, IconButton, MobileNav, Navbar, Typography,} from "@material-tailwind/react";
+import { Button, IconButton, MobileNav, Navbar, Typography, } from "@material-tailwind/react";
 
 export function NavBarDefault() {
   const [openNav, setOpenNav] = React.useState(false);
