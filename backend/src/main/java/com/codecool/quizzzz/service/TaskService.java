@@ -14,6 +14,7 @@ import com.codecool.quizzzz.service.dao.task.TaskDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +30,11 @@ public class TaskService {
   }
 
   public List<TaskDTO> getAllByQuiz(int quizId) {
-    return taskDAO.getAllTasksByQuiz(quizId).stream().map(this::convertTaskModelToDTO).toList();
+    return taskDAO.getAllTasksByQuiz(quizId)
+                  .stream()
+                  .map(this::convertTaskModelToDTO)
+                  .sorted(Comparator.comparing(TaskDTO::taskIndex))
+                  .toList();
   }
 
   private TaskDTO convertTaskModelToDTO(Task task) {
@@ -49,7 +54,11 @@ public class TaskService {
   }
 
   public List<DetailedTaskDTO> getAllDetailedByQuiz(int quizId) {
-    return taskDAO.getAllTasksByQuiz(quizId).stream().map(this::convertTaskModelToDetailedDTO).toList();
+    return taskDAO.getAllTasksByQuiz(quizId)
+                  .stream()
+                  .map(this::convertTaskModelToDetailedDTO)
+                  .sorted(Comparator.comparing(DetailedTaskDTO::taskIndex))
+                  .toList();
   }
 
   private DetailedTaskDTO convertTaskModelToDetailedDTO(Task task) {

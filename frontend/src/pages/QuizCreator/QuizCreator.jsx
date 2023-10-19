@@ -49,7 +49,7 @@ const QuizCreator = () => {
     const taskId = await saveEmptyTask(quizId);
     console.log("task_id " + taskId);
     const newTask = await fetchTaskById(taskId);
-    setTasks([newTask, ...tasks]);
+    setTasks([...tasks, newTask]);
     setIsLoading(false);
   }
 
