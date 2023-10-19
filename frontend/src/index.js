@@ -6,6 +6,7 @@ import "./index.css";
 
 import Layout from './pages/Layout';
 import TaskPage from './pages/TaskPage';
+import QuizListPage from "./pages/QuizListPage";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
         path: "/task",
         element: <TaskPage/>,
       },
+      {
+        path: "/quiz/all",
+        element: <QuizListPage/>
+      }
     ],
   },
 ]);
