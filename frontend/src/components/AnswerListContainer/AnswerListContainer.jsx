@@ -2,7 +2,7 @@ import AnswerButton from "../AnswerButton/AnswerButton";
 import { validateAnswer } from "../../controllers/taskProvider";
 
 const AnswerListContainer = ({setSelectedAnswer, setIsAnswered, setIsCorrect, setColor, task}) => {
-  const BUTTON_COLORS = ['red', 'blue', 'yellow', 'green'];
+  const BUTTON_COLORS = ['purple', 'pink', 'green', 'blue'];
 
   async function handleAnswerSubmit(e) {
     let answer = e.currentTarget.firstChild.innerHTML;
@@ -22,6 +22,7 @@ const AnswerListContainer = ({setSelectedAnswer, setIsAnswered, setIsCorrect, se
                       color={BUTTON_COLORS[i % BUTTON_COLORS.length]}
                       setColor={setColor}
                       handleSubmit={handleAnswerSubmit}
+                      key={i}
         />)}
     </div>
   );

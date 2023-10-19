@@ -8,6 +8,8 @@ import Layout from './pages/Layout';
 import TaskPage from './pages/TaskPage/TaskPage';
 import Homepage from "./pages/Homepage";
 import QuizListPage from "./pages/QuizListPage";
+import QuizPage from "./pages/QuizPage";
+import ResultPage from "./pages/ResultPage";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -21,6 +23,13 @@ const router = createBrowserRouter([{
         {
           path: "/",
           element: <Homepage/>,
+        },
+        {
+          path: "result",
+          children: [{
+            path: "",
+            element: <ResultPage/>
+          }]
         },
         {
           path: "quiz",
@@ -37,8 +46,8 @@ const router = createBrowserRouter([{
       path: "game",
       children: [
         {
-          path: "quiz",
-          element: <TaskPage/>,
+          path: "quiz/:quizId",
+          element: <QuizPage/>,
         },
       ]
     }

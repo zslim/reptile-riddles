@@ -21,7 +21,6 @@ function QuizListPage() {
         setLoading(false);
       }
     }
-
     getQuizzes();
   }, []);
 

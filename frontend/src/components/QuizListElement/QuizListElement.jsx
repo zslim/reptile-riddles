@@ -5,6 +5,7 @@ function QuizListElement({quiz}) {
   const navigate = useNavigate();
 
   const handlePlayClick = (id) => {
+    console.log('yous should be on: ' + `/game/quiz/${id}`);
     navigate(`/game/quiz/${id}`);
   };
 
