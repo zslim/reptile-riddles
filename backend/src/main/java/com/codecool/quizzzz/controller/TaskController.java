@@ -1,6 +1,5 @@
 package com.codecool.quizzzz.controller;
 
-import com.codecool.quizzzz.dto.answer.DetailedAnswerDTO;
 import com.codecool.quizzzz.dto.task.DetailedTaskDTO;
 import com.codecool.quizzzz.dto.task.NewTaskDTO;
 import com.codecool.quizzzz.dto.task.TaskDTO;
@@ -35,11 +34,6 @@ public class TaskController {
     return ResponseEntity.ok().body(taskService.create(quizId, newTaskDTO));
   }
 
-  @PutMapping("/answer")
-  public ResponseEntity<Integer> updateTaskAnswers(@RequestBody DetailedAnswerDTO detailedAnswerDTO) {
-    return ResponseEntity.ok().body(taskService.updateAnswer(detailedAnswerDTO));
-  }
-
   @GetMapping("/quiz/{quizId}/{taskIndex}")
   public ResponseEntity<TaskDTO> getTask(@PathVariable int quizId, @PathVariable int taskIndex) {
     return ResponseEntity.ok().body(taskService.getTask(quizId, taskIndex));
@@ -54,10 +48,4 @@ public class TaskController {
   public ResponseEntity<Boolean> deleteTask(@PathVariable int taskId) {
     return ResponseEntity.ok().body(taskService.deleteTask(taskId));
   }
-
-  @GetMapping("/answer/{answerId}")
-  public ResponseEntity<Boolean> checkIfAnswerIsCorrect(@PathVariable int answerId) {
-    return ResponseEntity.ok().body(taskService.checkIfAnswerIsCorrect(answerId));
-  }
-
 }

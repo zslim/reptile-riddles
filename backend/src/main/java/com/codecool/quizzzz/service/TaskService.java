@@ -21,7 +21,8 @@ public class TaskService {
   private final TaskDAO taskDAO;
   private final AnswerDAO answerDAO;
 
-  public TaskService(@Autowired TaskDAO taskDAO, @Autowired AnswerDAO answerDAO) {
+  @Autowired
+  public TaskService(TaskDAO taskDAO, AnswerDAO answerDAO) {
     this.taskDAO = taskDAO;
     this.answerDAO = answerDAO;
   }
@@ -72,14 +73,6 @@ public class TaskService {
     return taskId;
   }
 
-  public int updateAnswer(DetailedAnswerDTO detailedAnswerDTO) {
-    Optional<Integer> id = answerDAO.updateAnswer(detailedAnswerDTO);
-    if (id.isPresent()) {
-      return id.get();
-    }
-    throw new NotFoundException(String.format("There is no answer with answerId: %d", detailedAnswerDTO.answerId()));
-  }
-
   public TaskDTO getTask(int quizId, int taskIndex) {
     Optional<Task> task = taskDAO.getTask(quizId, taskIndex);
     if (task.isPresent()) {
@@ -98,9 +91,5 @@ public class TaskService {
 
   public boolean deleteTask(int taskId) {
     return taskDAO.deleteTask(taskId);
-  }
-
-  public boolean checkIfAnswerIsCorrect(int answerId) {
-    return answerDAO.checkIfAnswerIsCorrect(answerId);
   }
 }
