@@ -1,8 +1,7 @@
 async function fetchTask(quizId, taskIndex) {
   try {
     const httpRawRes = await fetch(`/task/quiz/${quizId}/${taskIndex}`);
-    const res = await httpRawRes.json();
-    return res;
+    return await httpRawRes.json();
   }
   catch (error) {
     console.error(error);
@@ -12,8 +11,7 @@ async function fetchTask(quizId, taskIndex) {
 async function validateAnswer(answerId) {
   try {
     const httpRawRes = await fetch(`/task/answer/${answerId}`);
-    const res = await httpRawRes.json();
-    return res;
+    return await httpRawRes.json();
   }
   catch (error) {
     console.error(error);
