@@ -2,9 +2,9 @@ import React from 'react';
 import QuizListElement from "../QuizListElement";
 
 function QuizListContainer({quizList, loading}) {
-  return (
-    loading ? <></> : quizList.map(quiz => <QuizListElement quiz={quiz}/>)
-  );
+  return <div className="grow">
+    {loading ? <></> : quizList.map(quiz => <QuizListElement quiz={quiz}/>)}
+  </div>;
 }
 
 export default QuizListContainer;

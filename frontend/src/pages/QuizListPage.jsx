@@ -26,7 +26,7 @@ function QuizListPage() {
   }, []);
 
   return (
-    <div>
+    <div className="w-full h-full flex flex-row">
       <QuizListContainer quizList={quizList} loading={loading}/>
       <QuizFilterContainer/>
     </div>
