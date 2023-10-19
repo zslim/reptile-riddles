@@ -21,6 +21,7 @@ public class QuizController {
 
   @GetMapping("/all")
   ResponseEntity<List<QuizDTO>> getAllQuiz() {
+    System.out.println(quizService.getAll());
     return ResponseEntity.ok().body(quizService.getAll());
   }
 

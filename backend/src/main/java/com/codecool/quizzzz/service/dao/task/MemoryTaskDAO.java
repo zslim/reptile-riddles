@@ -15,7 +15,8 @@ public class MemoryTaskDAO implements TaskDAO {
   private final Set<Task> tasks;
 
   public MemoryTaskDAO() {
-    tasks = new HashSet<>(Set.of(new Task(1, 1, 0,"What's up?")));
+    tasks = new HashSet<>(Set.of(new Task(1, 1, 0,"What's up?"),
+                                 new Task(2, 1, 1, "New question, same answers!")));
   }
 
   @Override
