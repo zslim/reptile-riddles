@@ -5,21 +5,35 @@ import reportWebVitals from './reportWebVitals';
 import "./index.css";
 
 import Layout from './pages/Layout';
-import TaskPage from './pages/TaskPage';
+import TaskPage from './pages/TaskPage/TaskPage';
+import Homepage from "./pages/Homepage";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Layout/>,
-    children: [
-      {
-        path: "/task",
-        element: <TaskPage/>,
-      },
-    ],
-  },
+const router = createBrowserRouter([{
+  path: "/",
+  children: [
+    {
+      path: "/",
+      element: <Layout/>,
+      children: [
+        {
+          path: "/",
+          element: <Homepage/>,
+        },
+      ],
+    },
+    {
+      path: "game",
+      children: [
+        {
+          path: "task",
+          element: <TaskPage/>,
+        },
+      ]
+    }
+  ]
+}
 ]);
 
 root.render(

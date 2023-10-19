@@ -1,8 +1,8 @@
-import AnswerListContainer from "../components/AnswerListContainer";
-import ResultContainer from "../components/ResultContainer";
-import {fetchTask} from "../controllers/taskProvider";
+import AnswerListContainer from "../../components/AnswerListContainer/AnswerListContainer";
+import ResultContainer from "../../components/ResultContainer/ResultContainer";
+import {fetchTask} from "../../controllers/taskProvider";
 import {useEffect, useState} from 'react';
-import Loader from "../components/Loader";
+import Loader from "../../components/Loading/Loader";
 
 const TaskPage = () => {
   const [isAnswered, setIsAnswered] = useState(false);
