@@ -42,17 +42,21 @@ const QuizCreator = () => {
   if (isLoading) {
     return;
   }
-  console.log(tasks);
+  // console.log(tasks);
+  async function addNewTask(){
+    //post new task
+  }
+
   return (
-    <div className="pt-14 bg-white">
-      <div>
-        <label htmlFor="name" className={"text-white"}>Quiz title: </label>
-        <input defaultValue={quizTitle} type="text" placeholder="Eg. My quiz" id="name"
+    <div className="pt-2 bg-[#1D2226] h-fit pb-40">
+      <div className="pl-20 p-12">
+        <label htmlFor="name" className="text-white text-xl">Quiz title: </label>
+        <input className="p-2 text-xl bg-[#050409] text-white border-2 border-zinc-700 w-4/6" defaultValue={quizTitle} type="text" placeholder="Eg. My quiz" id="name"
                onBlur={(e) => saveQuizName(e)}
                onChange={(e) => setQuizTitle(e.target.value)}
         />
       </div>
-      <div>
+      <div className="pb-4">
         {tasks?.map(task => (
           /** @namespace task.taskId **/
           <div key={task.taskId}>
@@ -60,6 +64,9 @@ const QuizCreator = () => {
           </div>
         ))}
       </div>
+        <button className="absolute text-white font-bold left-32 p-4 bg-green-800 hover:bg-green-700 hover:cursor-pointer"
+                onClick={() => addNewTask}>Add Question
+        </button>
     </div>
   );
 };

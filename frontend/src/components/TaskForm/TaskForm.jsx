@@ -18,11 +18,15 @@ const TaskForm = ({task, saveTask, deleteTask}) => {
     const res = await updateAnswer({answerId, isCorrect, text});
   }
 
+  async function addAnswer(){
+    //create an empty answer
+  }
+
   return (
-    <div>
+    <div className="mx-auto p-4 border-t-2 border-x-2 border-zinc-500 w-5/6">
       <div>
         <label htmlFor={task.taskId + "question"} className={"text-white"}>Question name: </label>
-        <input id={task.taskId + "question"} type="text" defaultValue={question}
+        <input className="bg-[#050409] text-white p-1 w-4/6 border border-zinc-700" id={task.taskId + "question"} type="text" defaultValue={question}
                onChange={(e) => setQuestion(e.target.value)}/>
       </div>
       <div>
@@ -31,6 +35,11 @@ const TaskForm = ({task, saveTask, deleteTask}) => {
             <AnswerForm answer={answer} taskId={task.taskId} index={index} changeCorrect={changeCorrect}/>
           </div>
         ))}
+        {answers.length < 4
+          ? <div>
+            <AnswerForm answer={{text:"", answerId:69}} taskId={task.taskId} index={answers.length} changeCorrect={changeCorrect}/>
+          </div>
+        : null}
       </div>
     </div>
   );
