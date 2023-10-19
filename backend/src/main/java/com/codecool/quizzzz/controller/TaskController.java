@@ -1,5 +1,7 @@
 package com.codecool.quizzzz.controller;
 
+import com.codecool.quizzzz.dto.answer.DetailedAnswerDTO;
+import com.codecool.quizzzz.dto.task.DetailedTaskDTO;
 import com.codecool.quizzzz.dto.task.NewTaskDTO;
 import com.codecool.quizzzz.dto.task.TaskDTO;
 import com.codecool.quizzzz.service.TaskService;
@@ -18,6 +20,11 @@ public class TaskController {
     this.taskService = taskService;
   }
 
+  @GetMapping("/quiz/detailed/{quizId}")
+  public ResponseEntity<List<DetailedTaskDTO>> getAllDetailedTasksByQuiz(@PathVariable int quizId) {
+    return ResponseEntity.ok().body(taskService.getAllDetailedByQuiz(quizId));
+  }
+
   @GetMapping("/quiz/{quizId}")
   public ResponseEntity<List<TaskDTO>> getAllTasksByQuiz(@PathVariable int quizId) {
     return ResponseEntity.ok().body(taskService.getAllByQuiz(quizId));
@@ -26,6 +33,11 @@ public class TaskController {
   @PostMapping("/quiz/{quizId}")
   public ResponseEntity<Integer> createNewTask(@PathVariable int quizId, @RequestBody NewTaskDTO newTaskDTO) {
     return ResponseEntity.ok().body(taskService.create(quizId, newTaskDTO));
+  }
+
+  @PutMapping("/answer")
+  public ResponseEntity<Integer> updateTaskAnswers(@RequestBody DetailedAnswerDTO detailedAnswerDTO) {
+    return ResponseEntity.ok().body(taskService.updateAnswer(detailedAnswerDTO));
   }
 
   @GetMapping("/quiz/{quizId}/{taskIndex}")
@@ -43,8 +55,9 @@ public class TaskController {
     return ResponseEntity.ok().body(taskService.deleteTask(taskId));
   }
 
-  @GetMapping("answer/{answerId}")
+  @GetMapping("/answer/{answerId}")
   public ResponseEntity<Boolean> checkIfAnswerIsCorrect(@PathVariable int answerId) {
     return ResponseEntity.ok().body(taskService.checkIfAnswerIsCorrect(answerId));
   }
+
 }

@@ -1,13 +1,11 @@
 package com.codecool.quizzzz.service.dao.task;
 
+import com.codecool.quizzzz.dto.answer.DetailedAnswerDTO;
 import com.codecool.quizzzz.dto.answer.NewAnswerDTO;
 import com.codecool.quizzzz.model.Answer;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Repository
 public class MemoryAnswerDAO implements AnswerDAO {
@@ -15,17 +13,18 @@ public class MemoryAnswerDAO implements AnswerDAO {
   private final Set<Answer> answers;
 
   public MemoryAnswerDAO() {
-    answers = new HashSet<>(List.of(
-            new Answer(1, 1, "Nothing", false),
-            new Answer(1, 2, "I don't know", false),
-            new Answer(1, 3, "Something", true),
-            new Answer(1, 4, "Haha", false)
-    ));
+    answers = new HashSet<>(List.of(new Answer(1, 1, "Nothing", false),
+                                    new Answer(1, 2, "I don't know", false),
+                                    new Answer(1, 3, "Something", true),
+                                    new Answer(1, 4, "Haha", false)));
   }
 
   @Override
   public List<Answer> getAnswersOfTask(int taskId) {
-    return answers.stream().filter(answer -> answer.taskId() == taskId).toList();
+    return answers.stream()
+                  .filter(answer -> answer.taskId() == taskId)
+                  .sorted(Comparator.comparing(Answer::answerId))
+                  .toList();
   }
 
   @Override
@@ -47,4 +46,21 @@ public class MemoryAnswerDAO implements AnswerDAO {
     Optional<Answer> answer = answers.stream().filter(a -> a.answerId() == answerId).findFirst();
     return answer.map(Answer::isCorrect).orElse(false);
   }
+
+  @Override
+  public Optional<Integer> updateAnswer(DetailedAnswerDTO detailedAnswerDTO) {
+    Optional<Answer> answerToUpdate = answers.stream()
+                                             .filter(answer -> answer.answerId() == detailedAnswerDTO.answerId())
+                                             .findFirst();
+    if (answerToUpdate.isEmpty()) {
+      return Optional.empty();
+    }
+    answers.remove(answerToUpdate.get());
+    answers.add(new Answer(answerToUpdate.get().taskId(),
+                           detailedAnswerDTO.answerId(),
+                           detailedAnswerDTO.text(),
+                           detailedAnswerDTO.isCorrect()));
+    return Optional.of(detailedAnswerDTO.answerId());
+  }
+
 }
