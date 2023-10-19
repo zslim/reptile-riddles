@@ -7,7 +7,7 @@ import Loader from "../components/Loader";
 const TaskPage = () => {
   const [isAnswered, setIsAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(true);
-  const [quizId, setQuizId] = useState(1);
+  // const [quizId, setQuizId] = useState(1);
   const [taskIndex, setTaskIndex] = useState(0);
   const [task, setTask] = useState({});
   const [color, setColor] = useState("zinc-500");

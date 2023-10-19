@@ -15,11 +15,20 @@ const router = createBrowserRouter([
     element: <Layout/>,
     children: [
       {
-        path: "/task",
+        path: "quiz/:quizId",
         element: <TaskPage/>,
       },
     ],
   },
+  {
+    path: "game",
+    children : [
+      {
+        path: "quiz",
+        element: <TaskPage/>
+      }
+    ]
+  }
 ]);
 
 root.render(
