@@ -5,12 +5,7 @@ module.exports = {
   ],
   theme: {
     extend: {
-      neon: {
-        pink: '#B7016E',
-        purple: '#6A0F5B',
-        blue: '#48127A',
-        green: '#095D40'
-      },
+
       colors: {
         'kahoot': {
           red: '#E41C3D',
@@ -21,6 +16,18 @@ module.exports = {
           lightpurple: '#8951C0',
           darkblue: '#2C0F70'
         },
+        neon: {
+          pink: '#B7016E',
+          purple: '#6A0F5B',
+          blue: '#48127A',
+          green: '#095D40'
+        },
+        neon2: {
+          pink: '#CB017A',
+          purple: '#7D126B',
+          blue: '#54158E',
+          green: '#0B6F4C'
+        },
         'hover': {
           red: '#DA1233',
           blue: '#095FC6',
@@ -28,20 +35,20 @@ module.exports = {
           yellow: '#CE9300',
         },
         'icon': {
-          green: '#1BA35C',
-          red: '#F44336'
+          green: '#23BE6E',
+          red: '#9C1C33'
         },
       },
     },
   },
   plugins: [],
   safelist: [{
-    pattern: /(bg|text|border|hover:bg)-neon-(pink|purple|blue|green|)/
+    pattern: /(bg|text|border|hover:bg)-neon*-(pink|purple|blue|green|)/
   },
-    'hover:bg-hover-red',
-    'hover:bg-hover-blue',
-    'hover:bg-hover-green',
-    'hover:bg-hover-yellow',
+    'hover:bg-neon2-pink',
+    'hover:bg-neon2-purple',
+    'hover:bg-neon2-green',
+    'hover:bg-neon2-blue',
   ]
 };
 
