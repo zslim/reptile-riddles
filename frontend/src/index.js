@@ -6,6 +6,7 @@ import "./index.css";
 
 import Layout from './pages/Layout';
 import TaskPage from './pages/TaskPage';
+import QuizListPage from "./pages/QuizListPage";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -15,7 +16,7 @@ const router = createBrowserRouter([
     element: <Layout/>,
     children: [
       {
-        path: "quiz/:quizId",
+        path: "/task",
         element: <TaskPage/>,
       },
     ],
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
         element: <TaskPage/>
       }
     ]
+  }
+  {
+    path: "/quiz/all",
+    element: <QuizListPage/>
   }
 ]);
 

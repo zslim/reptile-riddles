@@ -16,4 +16,9 @@ async function getQuizById(quizId){
   return await httpRes.json();
 }
 
-module.exports = {changeQuizName, getQuizById};
+async function fetchAllQuizzes() {
+  const httpRawRes = await fetch("/quiz/all");
+  return await httpRawRes.json();
+}
+
+module.exports = {changeQuizName, getQuizById, fetchAllQuizzes};
