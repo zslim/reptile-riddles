@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { changeQuizName, getQuizById } from "../controllers/quizProvider";
+import { changeQuizName, getQuizById } from "../../controllers/quizProvider";
 import { useParams } from "react-router-dom";
-import { fetchDetailedTasksByQuizId } from "../controllers/taskProvider";
-import TaskForm from "../components/TaskForm";
+import { fetchDetailedTasksByQuizId } from "../../controllers/taskProvider";
+import TaskForm from "../../components/TaskForm/TaskForm";
 
 const QuizCreator = () => {
   const [quizTitle, setQuizTitle] = useState("");
@@ -30,7 +30,7 @@ const QuizCreator = () => {
         console.log(tasks);
       }
       catch (error) {
-        console.error(error)
+        console.error(error);
       }
       finally {
         setIsLoading(false);
@@ -38,7 +38,7 @@ const QuizCreator = () => {
     }
 
     getQuiz();
-  }, [quizId])
+  }, [quizId]);
   if (isLoading) {
     return;
   }
