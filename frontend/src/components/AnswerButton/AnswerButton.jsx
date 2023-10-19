@@ -1,10 +1,10 @@
 const AnswerButton = ({color, answer, handleSubmit, setColor}) => {
-  const backgroundColor = "bg-kahoot-" + color;
-  const hoverColor = "hover:bg-hover-" + color;
+  const backgroundColor = "bg-neon-" + color;
+  const hoverColor = "hover:bg-neon2-" + color;
 
   function handleSelection(e) {
     handleSubmit(e);
-    setColor("bg-kahoot-" + color);
+    setColor("bg-neon-" + color);
   }
 
   return (

@@ -32,8 +32,8 @@ const TaskPage = ({quizId, firstTask, taskCount, setTaskIndex, taskIndex}) => {
 
   return (
     <>
-         <div className="bg-zinc-100 h-screen text-white font-bold">
-          <div className="text-3xl text-center text-black bg-white h-20 w-screen p-5 border-b-2 border-zinc-300">
+         <div className="bg-[#1D2226] h-screen text-white font-bold">
+          <div className="text-3xl text-center text-white bg-black h-20 w-screen p-5 border-b-2 border-zinc-700">
             {task?.questionText}
           </div>
           <div className="m-auto mt-20 w-3/6 h-2/6 bg-zinc-500 p-3 grid">
