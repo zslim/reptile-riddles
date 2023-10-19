@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { updateAnswer } from "../../controllers/taskProvider";
+import AnswerForm from "../AnswerForm";
 
 const TaskForm = ({task, saveTask, deleteTask}) => {
   /** @namespace task.questionText **/
@@ -26,17 +27,9 @@ const TaskForm = ({task, saveTask, deleteTask}) => {
       </div>
       <div>
         {answers.map((answer, index) => (
-          <>
-            <div>
-              <label htmlFor={task.taskId + "-answer-" + index} className={"text-white"}>{index + ". answer: "}</label>
-              <input defaultValue={answer.text} type={"text"} id={task.taskId + "-answer-" + index}/>
-            </div>
-            <div>
-              <label htmlFor={task.taskId + "-checkbox - " + index} className={"text-white"}>Correct: </label>
-              <input type="checkbox" defaultChecked={answer.isCorrect} id={task.taskId + "-checkbox-" + index}
-                     onChange={(e) => changeCorrect(e.target.checked, answer.answerId, answer.text)}/>
-            </div>
-          </>
+          <div key={task.taskId + "-" + index}>
+            <AnswerForm answer={answer} taskId={task.taskId} index={index} changeCorrect={changeCorrect}/>
+          </div>
         ))}
       </div>
     </div>
