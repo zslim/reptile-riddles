@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchAllQuizzes } from "../controllers/quizProvider";
 import QuizListContainer from "../components/QuizListContainer";
+import QuizFilterContainer from "../components/QuizFilterContainer";
 
 function QuizListPage() {
   const [loading, setLoading] = useState(true);
@@ -27,6 +28,7 @@ function QuizListPage() {
   return (
     <div>
       <QuizListContainer quizList={quizList} loading={loading}/>
+      <QuizFilterContainer/>
     </div>
   );
 }
