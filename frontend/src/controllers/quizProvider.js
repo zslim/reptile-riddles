@@ -1,11 +1,6 @@
 async function fetchAllQuizzes() {
-  try {
-    const httpRawRes = await fetch("/quiz/all");
-    return await httpRawRes.json();
-  }
-  catch (error) {
-    console.error(error);
-  }
+  const httpRawRes = await fetch("/quiz/all");
+  return await httpRawRes.json();
 }
 
 module.exports = {fetchAllQuizzes};
