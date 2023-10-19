@@ -49,5 +49,5 @@ module.exports = {
     'hover:bg-neon2-green',
     'hover:bg-neon2-blue',
   ]
-}
+};
 

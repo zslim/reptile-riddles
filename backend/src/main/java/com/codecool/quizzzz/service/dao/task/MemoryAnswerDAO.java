@@ -13,16 +13,14 @@ public class MemoryAnswerDAO implements AnswerDAO {
   private final Set<Answer> answers;
 
   public MemoryAnswerDAO() {
-    answers = new HashSet<>(List.of(
-            new Answer(1, 1, "Nothing", false),
-            new Answer(1, 2, "I don't know", false),
-            new Answer(1, 3, "Something", true),
-            new Answer(1, 4, "Haha", false),
-            new Answer(2, 1, "Nothing", false),
-            new Answer(2, 2, "I don't know", false),
-            new Answer(2, 3, "Something", true),
-            new Answer(2, 4, "Haha", false)
-    ));
+    answers = new HashSet<>(List.of(new Answer(1, 1, "Nothing", false),
+                                    new Answer(1, 2, "I don't know", false),
+                                    new Answer(1, 3, "Something", true),
+                                    new Answer(1, 4, "Haha", false),
+                                    new Answer(2, 1, "Nothing", false),
+                                    new Answer(2, 2, "I don't know", false),
+                                    new Answer(2, 3, "Something", true),
+                                    new Answer(2, 4, "Haha", false)));
   }
 
   @Override

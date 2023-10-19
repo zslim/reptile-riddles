@@ -9,7 +9,7 @@ import Homepage from "./pages/Homepage";
 import QuizListPage from "./pages/QuizListPage";
 import QuizPage from "./pages/QuizPage";
 import ResultPage from "./pages/ResultPage";
-import QuizCreator from "./pages/QuizCreator";
+import QuizCreator from "./pages/QuizCreator/QuizCreator";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -26,13 +26,15 @@ const router = createBrowserRouter([{
         },
         {
           path: "result",
-          children: [{
-            path: "",
-            element: <ResultPage/>
-          }]
+          children: [
+            {
+              path: "",
+              element: <ResultPage/>
+            }
+          ]
         },
         {
-          path: "/quizform/:quizId",
+          path: "quizform/:quizId",
           element: <QuizCreator/>
         },
         {
@@ -56,8 +58,7 @@ const router = createBrowserRouter([{
       ]
     }
   ]
-}
-]);
+}]);
 
 root.render(
   <React.StrictMode>
