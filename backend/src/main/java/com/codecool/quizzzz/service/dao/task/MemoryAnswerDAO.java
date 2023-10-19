@@ -32,9 +32,10 @@ public class MemoryAnswerDAO implements AnswerDAO {
   }
 
   @Override
-  public void addAnswerToTask(int taskId, NewAnswerDTO newAnswerDTO) {
+  public int addAnswerToTask(int taskId, NewAnswerDTO newAnswerDTO) {
     Answer newAnswer = new Answer(taskId, nextAnswerId++, newAnswerDTO.text(), newAnswerDTO.isCorrect());
     answers.add(newAnswer);
+    return newAnswer.answerId();
   }
 
   @Override

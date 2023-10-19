@@ -4,6 +4,7 @@ import com.codecool.quizzzz.dto.answer.AnswerDTO;
 import com.codecool.quizzzz.dto.answer.DetailedAnswerDTO;
 import com.codecool.quizzzz.dto.task.DetailedTaskDTO;
 import com.codecool.quizzzz.dto.task.NewTaskDTO;
+import com.codecool.quizzzz.dto.task.QuestionDTO;
 import com.codecool.quizzzz.dto.task.TaskDTO;
 import com.codecool.quizzzz.exception.NotFoundException;
 import com.codecool.quizzzz.model.Answer;
@@ -73,6 +74,19 @@ public class TaskService {
     return taskId;
   }
 
+  public int create(int quizId) {
+    NewTaskDTO newTaskDTO = new NewTaskDTO("", List.of());
+    int taskId = taskDAO.createNewTask(quizId, newTaskDTO);
+    answerDAO.addAnswersToTask(taskId, newTaskDTO.answers());
+    return taskId;
+  }
+
+  public int update(int taskId, QuestionDTO questionDTO) {
+    Optional<Task> task = taskDAO.updateTask(taskId, questionDTO.question());
+    return task.map(Task::taskId)
+               .orElseThrow(() -> new NotFoundException(String.format("There is no task with taskId %d", taskId)));
+  }
+
   public TaskDTO getTask(int quizId, int taskIndex) {
     Optional<Task> task = taskDAO.getTask(quizId, taskIndex);
     if (task.isPresent()) {
@@ -91,5 +105,6 @@ public class TaskService {
 
   public boolean deleteTask(int taskId) {
     return taskDAO.deleteTask(taskId);
+    // TODO: delete answers as well
   }
 }

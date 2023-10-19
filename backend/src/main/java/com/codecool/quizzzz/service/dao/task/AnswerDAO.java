@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface AnswerDAO {
   List<Answer> getAnswersOfTask(int taskId);
-  void addAnswerToTask(int taskId, NewAnswerDTO newAnswerDTO);
+  int addAnswerToTask(int taskId, NewAnswerDTO newAnswerDTO);
   void addAnswersToTask(int taskId, List<NewAnswerDTO> newAnswerDTOs);
   boolean checkIfAnswerIsCorrect(int answerId);
   Optional<Integer> updateAnswer(DetailedAnswerDTO detailedAnswerDTO);

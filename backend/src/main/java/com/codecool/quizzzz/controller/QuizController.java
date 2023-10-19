@@ -36,6 +36,12 @@ public class QuizController {
     return ResponseEntity.created(URI.create(String.format("/quiz/%d", id))).body(id);
   }
 
+  @PostMapping("/createempty")
+  ResponseEntity<Integer> createQuiz() {
+    int id = quizService.create();
+    return ResponseEntity.created(URI.create(String.format("/quiz/%d", id))).body(id);
+  }
+
   @DeleteMapping("/{quizId}")
   ResponseEntity<Integer> deleteQuiz(@PathVariable int quizId) {
     return ResponseEntity.ok().body(quizService.deleteById(quizId));
