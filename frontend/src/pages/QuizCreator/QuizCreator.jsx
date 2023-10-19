@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { changeQuizName, getQuizById } from "../../controllers/quizProvider";
 import { useParams } from "react-router-dom";
-import { fetchDetailedTasksByQuizId } from "../../controllers/taskProvider";
+import { fetchDetailedTasksByQuizId, fetchTask } from "../../controllers/taskProvider";
 import TaskForm from "../../components/TaskForm/TaskForm";
 
 const QuizCreator = () => {
@@ -44,7 +44,21 @@ const QuizCreator = () => {
   }
   // console.log(tasks);
   async function addNewTask(){
-    //post new task
+    const res = await fetch(`/task/quiz/${quizId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        title: "",
+        answers: []
+      })
+    });
+    const taskId = await res.json();
+    console.log("taskid " + taskId);
+    const res2 = await fetch(`/task/quiz/${taskId}`);
+    const newTask = await res2.json();
+    setTasks([newTask,...tasks]);
   }
 
   return (
@@ -60,12 +74,12 @@ const QuizCreator = () => {
         {tasks?.map(task => (
           /** @namespace task.taskId **/
           <div key={task.taskId}>
-            <TaskForm task={task}/>
+             <TaskForm task={task}/>
           </div>
         ))}
       </div>
         <button className="absolute text-white font-bold left-32 p-4 bg-green-800 hover:bg-green-700 hover:cursor-pointer"
-                onClick={() => addNewTask}>Add Question
+                onClick={() => addNewTask()}>Add Question
         </button>
     </div>
   );

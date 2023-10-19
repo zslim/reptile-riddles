@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { updateAnswer } from "../../controllers/answerProvider";
 import AnswerForm from "../AnswerForm";
 
-const TaskForm = ({task, saveTask, deleteTask}) => {
+const TaskForm = ({task, saveTask, deleteTask, quizId}) => {
   /** @namespace task.questionText **/
   const [question, setQuestion] = useState(task?.questionText ?? "");
   /** @namespace task.answers **/
@@ -19,7 +19,7 @@ const TaskForm = ({task, saveTask, deleteTask}) => {
   }
 
   async function addAnswer(){
-    //create an empty answer
+    //post answer
   }
 
   return (
