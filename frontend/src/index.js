@@ -27,7 +27,7 @@ const router = createBrowserRouter([{
       path: "game",
       children: [
         {
-          path: "task",
+          path: "quiz",
           element: <TaskPage/>,
         },
       ]
