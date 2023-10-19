@@ -53,7 +53,7 @@ const QuizCreator = () => {
         />
       </div>
       <div>
-        {tasks.map(task => (
+        {tasks?.map(task => (
           /** @namespace task.taskId **/
           <div key={task.taskId}>
             <TaskForm task={task}/>
