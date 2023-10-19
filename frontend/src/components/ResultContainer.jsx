@@ -1,4 +1,4 @@
-import fetchTask from '../controllers/taskProvider';
+import { fetchTask } from '../controllers/taskProvider';
 import { useNavigate } from 'react-router-dom';
 import checkMark from "../assets/checkmark.png";
 import cross from "../assets/cross.png";

@@ -11,7 +11,7 @@ async function fetchTask(quizId, taskIndex) {
 
 async function validateAnswer(answerId) {
   try {
-    const httpRawRes = await fetch(`/task/${answerId}`);
+    const httpRawRes = await fetch(`/task/answer/${answerId}`);
     const res = await httpRawRes.json();
     return res;
   }
@@ -20,4 +20,4 @@ async function validateAnswer(answerId) {
   }
 }
 
-export default fetchTask;
+module.exports = {fetchTask, validateAnswer};

@@ -1,4 +1,5 @@
 import AnswerButton from "./AnswerButton";
+import { validateAnswer } from "../controllers/taskProvider";
 
 const AnswerListContainer = ({setSelectedAnswer, setIsAnswered, setIsCorrect, setColor, task}) => {
   const BUTTON_COLORS = ['red', 'blue', 'yellow', 'green'];
@@ -12,17 +13,6 @@ const AnswerListContainer = ({setSelectedAnswer, setIsAnswered, setIsCorrect, se
 
     setIsCorrect(() => response);
     setIsAnswered(true);
-  }
-
-  async function validateAnswer(answerId) {
-    try {
-      const httpRawRes = await fetch(`/task/answer/${answerId}`);
-      const res = await httpRawRes.json();
-      return res;
-    }
-    catch (error) {
-      console.error(error);
-    }
   }
 
   return (
