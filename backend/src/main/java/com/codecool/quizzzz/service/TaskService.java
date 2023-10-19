@@ -3,6 +3,7 @@ package com.codecool.quizzzz.service;
 import com.codecool.quizzzz.dto.answer.AnswerDTO;
 import com.codecool.quizzzz.dto.task.NewTaskDTO;
 import com.codecool.quizzzz.dto.task.TaskDTO;
+import com.codecool.quizzzz.exception.NotFoundException;
 import com.codecool.quizzzz.model.Answer;
 import com.codecool.quizzzz.model.Task;
 import com.codecool.quizzzz.service.dao.task.AnswerDAO;
@@ -34,13 +35,13 @@ public class TaskService {
   public TaskDTO getTask(int quizId, int taskIndex) {
     Optional<Task> task = taskDAO.getTask(quizId, taskIndex);
     if (task.isPresent()) return convertTaskModelToDTO(task.get());
-    throw new RuntimeException(String.format("There is no task with quizId %d and taskIndex %d", quizId, taskIndex));
+    throw new NotFoundException(String.format("There is no task with quizId %d and taskIndex %d", quizId, taskIndex));
   }
 
   public TaskDTO getTask(int taskId) {
     Optional<Task> task = taskDAO.getTask(taskId);
     if (task.isPresent()) return convertTaskModelToDTO(task.get());
-    throw new RuntimeException(String.format("There is no task with id %d.", taskId));
+    throw new NotFoundException(String.format("There is no task with id %d.", taskId));
   }
 
   public boolean deleteTask(int taskId) {

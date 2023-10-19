@@ -31,7 +31,7 @@ public class QuizService {
   public QuizDTO getById(int quizId) {
     Optional<Quiz> result = quizDAO.getById(quizId);
     if (result.isEmpty()) {
-      throw new RuntimeException(String.format("The quiz with id %d doesn't exist!", quizId));
+      throw new NotFoundException(String.format("The quiz with id %d doesn't exist!", quizId));
     }
     return convertQuizModelToDTO(result.get());
   }

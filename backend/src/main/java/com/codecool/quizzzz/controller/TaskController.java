@@ -4,6 +4,7 @@ import com.codecool.quizzzz.dto.task.NewTaskDTO;
 import com.codecool.quizzzz.dto.task.TaskDTO;
 import com.codecool.quizzzz.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,32 +19,32 @@ public class TaskController {
   }
 
   @GetMapping("/quiz/{quizId}")
-  public List<TaskDTO> getAllTasksByQuiz(@PathVariable int quizId) {
-    return taskService.getAllByQuiz(quizId);
+  public ResponseEntity<List<TaskDTO>> getAllTasksByQuiz(@PathVariable int quizId) {
+    return ResponseEntity.ok().body(taskService.getAllByQuiz(quizId));
   }
 
   @PostMapping("/quiz/{quizId}")
-  public int createNewTask(@PathVariable int quizId, @RequestBody NewTaskDTO newTaskDTO) {
-    return taskService.create(quizId, newTaskDTO);
+  public ResponseEntity<Integer> createNewTask(@PathVariable int quizId, @RequestBody NewTaskDTO newTaskDTO) {
+    return ResponseEntity.ok().body(taskService.create(quizId, newTaskDTO));
   }
 
   @GetMapping("/quiz/{quizId}/{taskIndex}")
-  public TaskDTO getTask(@PathVariable int quizId, @PathVariable int taskIndex) {
-    return taskService.getTask(quizId, taskIndex);
+  public ResponseEntity<TaskDTO> getTask(@PathVariable int quizId, @PathVariable int taskIndex) {
+    return ResponseEntity.ok().body(taskService.getTask(quizId, taskIndex));
   }
 
   @GetMapping("/{taskId}")
-  public TaskDTO getTask(@PathVariable int taskId) {
-    return taskService.getTask(taskId);
+  public ResponseEntity<TaskDTO> getTask(@PathVariable int taskId) {
+    return ResponseEntity.ok().body(taskService.getTask(taskId));
   }
 
   @DeleteMapping("/{taskId}")
-  public boolean deleteTask(@PathVariable int taskId) {
-    return taskService.deleteTask(taskId);
+  public ResponseEntity<Boolean> deleteTask(@PathVariable int taskId) {
+    return ResponseEntity.ok().body(taskService.deleteTask(taskId));
   }
 
   @GetMapping("/{answerId}")
-  public boolean checkIfAnswerIsCorrect(@PathVariable int answerId) {
-    return taskService.checkIfAnswerIsCorrect(answerId);
+  public ResponseEntity<Boolean> checkIfAnswerIsCorrect(@PathVariable int answerId) {
+    return ResponseEntity.ok().body(taskService.checkIfAnswerIsCorrect(answerId));
   }
 }
