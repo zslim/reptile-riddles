@@ -5,6 +5,12 @@ module.exports = {
   ],
   theme: {
     extend: {
+      neon: {
+        pink: '#B7016E',
+        purple: '#6A0F5B',
+        blue: '#48127A',
+        green: '#095D40'
+      },
       colors: {
         'kahoot': {
           red: '#E41C3D',
@@ -30,7 +36,7 @@ module.exports = {
   },
   plugins: [],
   safelist: [{
-    pattern: /(bg|text|border|hover:bg)-kahoot-(red|blue|green|yellow|)/
+    pattern: /(bg|text|border|hover:bg)-neon-(pink|purple|blue|green|)/
   },
     'hover:bg-hover-red',
     'hover:bg-hover-blue',
