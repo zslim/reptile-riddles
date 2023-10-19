@@ -1,5 +1,5 @@
 import AnswerButton from "../AnswerButton/AnswerButton";
-import { validateAnswer } from "../../controllers/taskProvider";
+import { validateAnswer } from "../../controllers/answerProvider";
 
 const AnswerListContainer = ({setSelectedAnswer, setIsAnswered, setIsCorrect, setColor, task}) => {
   const BUTTON_COLORS = ['purple', 'pink', 'green', 'blue'];

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { updateAnswer } from "../../controllers/taskProvider";
+import { updateAnswer } from "../../controllers/answerProvider";
+import AnswerForm from "../AnswerForm";
 
 const TaskForm = ({task, saveTask, deleteTask}) => {
   /** @namespace task.questionText **/
@@ -15,22 +16,19 @@ const TaskForm = ({task, saveTask, deleteTask}) => {
     } : answer);
     setAnswer(() => newAnswers);
     const res = await updateAnswer({answerId, isCorrect, text});
-    console.log(res);
   }
 
   return (
     <div>
       <div>
-        <label htmlFor={task.taskId + "question"}>Question name: </label>
+        <label htmlFor={task.taskId + "question"} className={"text-white"}>Question name: </label>
         <input id={task.taskId + "question"} type="text" defaultValue={question}
                onChange={(e) => setQuestion(e.target.value)}/>
       </div>
       <div>
-        {answers.map(answer => (
-          <div key={answer.answerId}>
-            <h2>{answer.text}</h2>
-            <input type="checkbox" defaultChecked={answer.isCorrect}
-                   onChange={(e) => changeCorrect(e.target.checked, answer.answerId, answer.text)}/>
+        {answers.map((answer, index) => (
+          <div key={task.taskId + "-" + index}>
+            <AnswerForm answer={answer} taskId={task.taskId} index={index} changeCorrect={changeCorrect}/>
           </div>
         ))}
       </div>

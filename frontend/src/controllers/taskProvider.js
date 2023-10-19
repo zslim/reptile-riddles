@@ -13,26 +13,8 @@ async function fetchDetailedTasksByQuizId(quizId) {
   return await res.json();
 }
 
-async function validateAnswer(answerId) {
-  const httpRawRes = await fetch(`/task/answer/${answerId}`);
-  return await httpRawRes.json();
-}
-
-async function updateAnswer(answer) {
-  const res = await fetch("/task/answer", {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(answer)
-  });
-  return await res.json();
-}
-
 module.exports = {
   fetchTask: fetchTaskByIndex,
-  validateAnswer,
   fetchTasksByQuizId,
   fetchDetailedTasksByQuizId,
-  updateAnswer
 };

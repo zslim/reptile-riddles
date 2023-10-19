@@ -46,7 +46,7 @@ const QuizCreator = () => {
   return (
     <div className="pt-14 bg-white">
       <div>
-        <label htmlFor="name">Quiz title: </label>
+        <label htmlFor="name" className={"text-white"}>Quiz title: </label>
         <input defaultValue={quizTitle} type="text" placeholder="Eg. My quiz" id="name"
                onBlur={(e) => saveQuizName(e)}
                onChange={(e) => setQuizTitle(e.target.value)}

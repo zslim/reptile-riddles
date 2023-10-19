@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import QuizListElement from "../QuizListElement";
-import Loading from "../Loading";
 import Loader from "../Loading/Loader";
 
 function QuizListContainer({quizList, loading, setQuizList}) {

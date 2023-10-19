@@ -1,8 +1,9 @@
 import AnswerListContainer from "../../components/AnswerListContainer";
 import ResultContainer from '../../components/ResultContainer';
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { fetchTask } from "../../controllers/taskProvider";
 import { useState } from 'react';
+
 const TaskPage = ({quizId, firstTask, taskCount, setTaskIndex, taskIndex}) => {
   const [isAnswered, setIsAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(true);
@@ -13,47 +14,50 @@ const TaskPage = ({quizId, firstTask, taskCount, setTaskIndex, taskIndex}) => {
   const navigate = useNavigate();
 
   async function handleTaskChange() {
-    if (taskCount > taskIndex + 1){
-      try{
+    if (taskCount > taskIndex + 1) {
+      try {
         setLoading(true);
         const newTask = await fetchTask(quizId, taskIndex + 1);
         setTask(() => newTask);
         setTaskIndex((taskIndex) => taskIndex + 1);
         setIsAnswered(false);
-      } catch (e) {
-        console.error(e)
-      } finally {
+      }
+      catch (e) {
+        console.error(e);
+      }
+      finally {
         setLoading(false);
       }
-    } else {
+    }
+    else {
       navigate("/result");
     }
   }
 
   return (
     <>
-         <div className="bg-[#1D2226] h-screen text-white font-bold">
-          <div className="text-3xl text-center text-white bg-black h-20 w-screen p-5 border-b-2 border-zinc-700">
-            {task?.questionText}
-          </div>
-          <div className="m-auto mt-20 w-3/6 h-2/6 bg-zinc-500 p-3 grid">
-            Don't be fooled! This is an image!
-          </div>
-          {isAnswered
-            ? <ResultContainer
-              handleTaskChange={handleTaskChange}
-              selectedAnswer={selectedAnswer}
-              isCorrect={isCorrect}
-              color={color}
-            />
-            : <AnswerListContainer
-              setSelectedAnswer={setSelectedAnswer}
-              task={task}
-              setIsAnswered={setIsAnswered}
-              setIsCorrect={setIsCorrect}
-              setColor={setColor}/>
-          }
+      <div className="bg-[#1D2226] h-screen text-white font-bold">
+        <div className="text-3xl text-center text-white bg-black h-20 w-screen p-5 border-b-2 border-zinc-700">
+          {task?.questionText}
         </div>
+        <div className="m-auto mt-20 w-3/6 h-2/6 bg-zinc-500 p-3 grid">
+          Don't be fooled! This is an image!
+        </div>
+        {isAnswered
+          ? <ResultContainer
+            handleTaskChange={handleTaskChange}
+            selectedAnswer={selectedAnswer}
+            isCorrect={isCorrect}
+            color={color}
+          />
+          : <AnswerListContainer
+            setSelectedAnswer={setSelectedAnswer}
+            task={task}
+            setIsAnswered={setIsAnswered}
+            setIsCorrect={setIsCorrect}
+            setColor={setColor}/>
+        }
+      </div>
     </>
   );
 };
