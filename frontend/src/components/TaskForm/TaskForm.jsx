@@ -15,6 +15,7 @@ const TaskForm = ({task, saveTask, deleteTask}) => {
     } : answer);
     setAnswer(() => newAnswers);
     const res = await updateAnswer({answerId, isCorrect, text});
+    console.log(res);
   }
 
   return (

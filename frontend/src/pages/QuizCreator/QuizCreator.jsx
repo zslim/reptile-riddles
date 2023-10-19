@@ -27,7 +27,7 @@ const QuizCreator = () => {
         const tasks = await fetchDetailedTasksByQuizId(quizId);
         setQuizTitle(quiz.title);
         setTasks(tasks);
-        console.log(tasks);
+        // console.log(tasks);
       }
       catch (error) {
         console.error(error);
