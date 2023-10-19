@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
 import TaskPage from "./TaskPage";
-import { fetchAllQuizzes, getQuizById } from "../controllers/quizProvider";
+import { getQuizById } from "../controllers/quizProvider";
 import { fetchTask } from "../controllers/taskProvider";
 
 const QuizPage = () => {
   const { quizId } = useParams();
   const [loading, setLoading] = useState(false);
   const [taskCount, setTaskCount] = useState(-1);
-  const [currentTask, setCurrentTask] = useState(-1);
+  const [taskIndex, setTaskIndex] = useState(-1);
   const [quiz, setQuiz] = useState({});
   const [isPlaying, setIsPlaying] = useState(false);
   const [firstTask, setFirstTask] = useState({});
@@ -22,7 +22,7 @@ const QuizPage = () => {
         setFirstTask(() => task);
         setQuiz(() => quiz);
         setTaskCount(() => quiz.taskIdList.length);
-        setCurrentTask(0);
+        setTaskIndex(0);
       }
       catch (error) {
         console.error(error);
@@ -37,14 +37,13 @@ const QuizPage = () => {
   return (
     <div className="p-16">
       {isPlaying
-        ? <TaskPage firstTask={firstTask} quizId={quizId} taskCount={taskCount} currentTask={currentTask} setCurrentTask={setCurrentTask} />
+        ? <TaskPage firstTask={firstTask} quizId={quizId} taskCount={taskCount} taskIndex={taskIndex} setTaskIndex={setTaskIndex} />
         : <>
           <div className="p-8">{quiz.title}</div>
           <button onClick={() => setIsPlaying(true)}>Start</button>
         </>
       }
     </div>
-
   );
 };
 

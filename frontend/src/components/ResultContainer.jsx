@@ -1,30 +1,7 @@
-import { fetchTask } from '../controllers/taskProvider';
-import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
 import checkMark from "../assets/checkmark.png";
 import cross from "../assets/cross.png";
 
-const ResultContainer = ({selectedAnswer, isCorrect, setIsAnswered, color, setCurrentTask, taskIndex, taskCount, setTaskIndex, quizId, setTask}) => {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  async function handleTaskChange() {
-    if (taskCount > taskIndex + 1){
-      try{
-        setLoading(true);
-        const newTask = await fetchTask(quizId, taskIndex + 1);
-        setTask(() => newTask);
-        setTaskIndex((taskIndex) => taskIndex + 1);
-        setIsAnswered(false);
-      } catch (e) {
-        console.error(e)
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      navigate("/result");
-    }
-  }
-
+const ResultContainer = ({handleTaskChange, selectedAnswer, isCorrect, color}) => {
   return (
     <div>
       {isCorrect ? <div className="text-3xl text-black flex justify-center mt-5">
