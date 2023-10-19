@@ -1,7 +1,7 @@
 import AnswerListContainer from "../components/AnswerListContainer";
 import ResultContainer from "../components/ResultContainer";
-import { fetchTask } from "../controllers/taskProvider";
-import { useEffect, useState } from 'react';
+import {fetchTask} from "../controllers/taskProvider";
+import {useEffect, useState} from 'react';
 import Loader from "../components/Loader";
 
 const TaskPage = () => {

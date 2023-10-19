@@ -20,7 +20,7 @@ module.exports = {
           blue: '#095FC6',
           green: '#1E8004',
           yellow: '#CE9300',
-        },        
+        },
         'icon': {
           green: '#1BA35C',
           red: '#F44336'
@@ -28,14 +28,14 @@ module.exports = {
       },
     },
   },
-   plugins: [],
-   safelist: [{
+  plugins: [],
+  safelist: [{
     pattern: /(bg|text|border|hover:bg)-kahoot-(red|blue|green|yellow|)/
   },
-  'hover:bg-hover-red',
-  'hover:bg-hover-blue',
-  'hover:bg-hover-green',
-  'hover:bg-hover-yellow',
+    'hover:bg-hover-red',
+    'hover:bg-hover-blue',
+    'hover:bg-hover-green',
+    'hover:bg-hover-yellow',
   ]
 }
 
