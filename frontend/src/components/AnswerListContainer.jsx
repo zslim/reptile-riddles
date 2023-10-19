@@ -22,6 +22,7 @@ const AnswerListContainer = ({setSelectedAnswer, setIsAnswered, setIsCorrect, se
                       color={BUTTON_COLORS[i % BUTTON_COLORS.length]}
                       setColor={setColor}
                       handleSubmit={handleAnswerSubmit}
+                      key={i}
         />)}
     </div>
   )
