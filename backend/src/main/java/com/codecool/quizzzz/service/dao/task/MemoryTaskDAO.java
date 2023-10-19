@@ -15,7 +15,7 @@ public class MemoryTaskDAO implements TaskDAO {
   private final Set<Task> tasks;
 
   public MemoryTaskDAO() {
-    tasks = new HashSet<>(Set.of(new Task(1, 1, 0,"What's up?")));
+    tasks = new HashSet<>(Set.of(new Task(1, 1, 0, "What's up?")));
   }
 
   @Override
@@ -28,14 +28,12 @@ public class MemoryTaskDAO implements TaskDAO {
     int nextIndex = getAllTasksByQuiz(quizId).size();
     Task newTask = new Task(nextTaskId++, quizId, nextIndex, newTaskDTO.question());
     tasks.add(newTask);
-    return newTask.taskIndex();
+    return nextTaskId - 1;
   }
 
   @Override
   public Optional<Task> getTask(int quizId, int taskIndex) {
-    return tasks.stream()
-                .filter(task -> task.quizId() == quizId && task.taskIndex() == taskIndex)
-                .findFirst();
+    return tasks.stream().filter(task -> task.quizId() == quizId && task.taskIndex() == taskIndex).findFirst();
   }
 
   @Override

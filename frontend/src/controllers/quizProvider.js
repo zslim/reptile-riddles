@@ -11,7 +11,7 @@ async function changeQuizName(quizName, quizId) {
   return await httpRes.json();
 }
 
-async function getQuizById(quizId){
+async function getQuizById(quizId) {
   const httpRes = await fetch(`/quiz/${quizId}`);
   return await httpRes.json();
 }
