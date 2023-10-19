@@ -11,11 +11,11 @@ import java.util.Set;
 
 @Repository
 public class MemoryTaskDAO implements TaskDAO {
-  private static int nextTaskId = 1;
+  private static int nextTaskId = 2;
   private final Set<Task> tasks;
 
   public MemoryTaskDAO() {
-    tasks = new HashSet<>();
+    tasks = new HashSet<>(Set.of(new Task(1, 1, 0,"What's up?")));
   }
 
   @Override

@@ -43,7 +43,7 @@ public class TaskController {
     return ResponseEntity.ok().body(taskService.deleteTask(taskId));
   }
 
-  @GetMapping("/{answerId}")
+  @GetMapping("answer/{answerId}")
   public ResponseEntity<Boolean> checkIfAnswerIsCorrect(@PathVariable int answerId) {
     return ResponseEntity.ok().body(taskService.checkIfAnswerIsCorrect(answerId));
   }
