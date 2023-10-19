@@ -20,16 +20,22 @@ const TaskForm = ({task, saveTask, deleteTask}) => {
   return (
     <div>
       <div>
-        <label htmlFor={task.taskId + "question"}>Question name: </label>
+        <label htmlFor={task.taskId + "question"} className={"text-white"}>Question name: </label>
         <input id={task.taskId + "question"} type="text" defaultValue={question}
                onChange={(e) => setQuestion(e.target.value)}/>
       </div>
       <div>
-        {answers.map(answer => (
+        {answers.map((answer, index) => (
           <>
-            <h2>{answer.text}</h2>
-            <input type="checkbox" defaultChecked={answer.isCorrect}
-                   onChange={(e) => changeCorrect(e.target.checked, answer.answerId, answer.text)}/>
+            <div>
+              <label htmlFor={task.taskId + "-answer-" + index} className={"text-white"}>{index + ". answer: "}</label>
+              <input defaultValue={answer.text} type={"text"} id={task.taskId + "-answer-" + index}/>
+            </div>
+            <div>
+              <label htmlFor={task.taskId + "-checkbox - " + index} className={"text-white"}>Correct: </label>
+              <input type="checkbox" defaultChecked={answer.isCorrect} id={task.taskId + "-checkbox-" + index}
+                     onChange={(e) => changeCorrect(e.target.checked, answer.answerId, answer.text)}/>
+            </div>
           </>
         ))}
       </div>
