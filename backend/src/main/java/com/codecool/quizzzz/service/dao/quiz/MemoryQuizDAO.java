@@ -28,6 +28,17 @@ public class MemoryQuizDAO implements QuizDAO {
   }
 
   @Override
+  public Optional<Integer> rename(NewQuizDTO newQuizDTO, int quizId) {
+    Optional<Quiz> quizToRename = findById(quizId, quizzes);
+    if (quizToRename.isPresent()) {
+      quizzes.remove(quizToRename.get());
+      quizzes.add(new Quiz(quizId, newQuizDTO.title()));
+      return Optional.of(quizId);
+    }
+    return Optional.empty();
+  }
+
+  @Override
   public Quiz edit(int quizId, String newName) {
     return null;
   }
@@ -35,7 +46,7 @@ public class MemoryQuizDAO implements QuizDAO {
   @Override
   public Optional<Integer> deleteById(int quizId) {
     Optional<Quiz> toDelete = findById(quizId, quizzes);
-    if (toDelete.isPresent()){
+    if (toDelete.isPresent()) {
       quizzes.remove(toDelete.get());
       return Optional.of(quizId);
     }

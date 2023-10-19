@@ -3,9 +3,9 @@ package com.codecool.quizzzz.service;
 import com.codecool.quizzzz.dto.quiz.NewQuizDTO;
 import com.codecool.quizzzz.dto.quiz.QuizDTO;
 import com.codecool.quizzzz.exception.NotFoundException;
+import com.codecool.quizzzz.model.Quiz;
 import com.codecool.quizzzz.model.Task;
 import com.codecool.quizzzz.service.dao.quiz.QuizDAO;
-import com.codecool.quizzzz.model.Quiz;
 import com.codecool.quizzzz.service.dao.task.TaskDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +28,11 @@ public class QuizService {
     return quizDAO.getAll().stream().map(this::convertQuizModelToDTO).toList();
   }
 
+  private QuizDTO convertQuizModelToDTO(Quiz quiz) {
+    List<Integer> taskIdList = taskDAO.getAllTasksByQuiz(quiz.id()).stream().map(Task::taskId).toList();
+    return new QuizDTO(quiz.id(), quiz.title(), taskIdList);
+  }
+
   public QuizDTO getById(int quizId) {
     Optional<Quiz> result = quizDAO.getById(quizId);
     if (result.isEmpty()) {
@@ -40,16 +45,16 @@ public class QuizService {
     return quizDAO.create(newQuizDTO);
   }
 
+  public int rename(NewQuizDTO newQuizDTO, int quizId) {
+    Optional<Integer> id = quizDAO.rename(newQuizDTO, quizId);
+    return id.orElseThrow(() -> new NotFoundException(String.format("The quiz with id %d doesn't exist!", quizId)));
+  }
+
   public int deleteById(int quizId) {
     Optional<Integer> optionalId = quizDAO.deleteById(quizId);
     if (optionalId.isPresent()) {
       return optionalId.get();
     }
     throw new NotFoundException(String.format("The quiz with id %d doesn't exist!", quizId));
-  }
-
-  private QuizDTO convertQuizModelToDTO(Quiz quiz) {
-    List<Integer> taskIdList = taskDAO.getAllTasksByQuiz(quiz.id()).stream().map(Task::taskId).toList();
-    return new QuizDTO(quiz.id(), quiz.title(), taskIdList);
   }
 }
