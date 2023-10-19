@@ -8,8 +8,23 @@ async function fetchTasksByQuizId(quizId) {
   return await res.json();
 }
 
+async function fetchTaskById(taskId) {
+  const res = await fetch(`/task/${taskId}`);
+  return await res.json();
+}
+
 async function fetchDetailedTasksByQuizId(quizId) {
   const res = await fetch(`/task/quiz/detailed/${quizId}`);
+  return await res.json();
+}
+
+async function saveEmptyTask(quizId) {
+  const res = await fetch(`/task/quiz/${quizId}/empty`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
   return await res.json();
 }
 
@@ -17,4 +32,6 @@ module.exports = {
   fetchTask: fetchTaskByIndex,
   fetchTasksByQuizId,
   fetchDetailedTasksByQuizId,
+  saveEmptyTask,
+  fetchTaskById
 };

@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Repository
 public class MemoryTaskDAO implements TaskDAO {
-  private static int nextTaskId = 2;
+  private static int nextTaskId = 3;
   private final Set<Task> tasks;
 
   public MemoryTaskDAO() {

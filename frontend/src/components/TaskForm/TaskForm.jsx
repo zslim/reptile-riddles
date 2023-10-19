@@ -18,7 +18,7 @@ const TaskForm = ({task, saveTask, deleteTask, quizId}) => {
     const res = await updateAnswer({answerId, isCorrect, text});
   }
 
-  async function addAnswer(){
+  async function addAnswer() {
     //post answer
   }
 
@@ -26,7 +26,8 @@ const TaskForm = ({task, saveTask, deleteTask, quizId}) => {
     <div className="mx-auto p-4 border-t-2 border-x-2 border-zinc-500 w-5/6">
       <div>
         <label htmlFor={task.taskId + "question"} className={"text-white"}>Question name: </label>
-        <input className="bg-[#050409] text-white p-1 w-4/6 border border-zinc-700" id={task.taskId + "question"} type="text" defaultValue={question}
+        <input className="bg-[#050409] text-white p-1 w-4/6 border border-zinc-700" id={task.taskId + "question"}
+               type="text" defaultValue={question}
                onChange={(e) => setQuestion(e.target.value)}/>
       </div>
       <div>
@@ -37,9 +38,10 @@ const TaskForm = ({task, saveTask, deleteTask, quizId}) => {
         ))}
         {answers.length < 4
           ? <div>
-            <AnswerForm answer={{text:"", answerId:69}} taskId={task.taskId} index={answers.length} changeCorrect={changeCorrect}/>
+            <AnswerForm answer={{text: "", answerId: 69}} taskId={task.taskId} index={answers.length}
+                        changeCorrect={changeCorrect}/>
           </div>
-        : null}
+          : null}
       </div>
     </div>
   );
