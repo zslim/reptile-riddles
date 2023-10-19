@@ -8,8 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 public class MemoryQuizDAO implements QuizDAO {
-  private static int currentId = 2;
-  private final List<Quiz> quizzes = new ArrayList<>();
+  private static int currentId = 3;
+  private final List<Quiz> quizzes = new ArrayList<>(List.of(new Quiz(1, "test title"),
+                                                             new Quiz(2, "another test title")));
 
   @Override
   public List<Quiz> getAll() {
@@ -35,7 +36,7 @@ public class MemoryQuizDAO implements QuizDAO {
   @Override
   public Optional<Integer> deleteById(int quizId) {
     Optional<Quiz> toDelete = findById(quizId, quizzes);
-    if (toDelete.isPresent()){
+    if (toDelete.isPresent()) {
       quizzes.remove(toDelete.get());
       return Optional.of(quizId);
     }

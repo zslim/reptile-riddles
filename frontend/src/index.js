@@ -19,12 +19,12 @@ const router = createBrowserRouter([
         path: "/task",
         element: <TaskPage/>,
       },
-      {
-        path: "/quiz/all",
-        element: <QuizListPage/>
-      }
     ],
   },
+  {
+    path: "/quiz/all",
+    element: <QuizListPage/>
+  }
 ]);
 
 root.render(
