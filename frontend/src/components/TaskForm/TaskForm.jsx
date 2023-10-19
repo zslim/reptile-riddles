@@ -27,7 +27,7 @@ const TaskForm = ({task, saveTask, deleteTask}) => {
       </div>
       <div>
         {answers.map((answer, index) => (
-          <div key={task.taskId + "-" + index}>
+          <div key={answer.answerId}>
             <AnswerForm answer={answer} taskId={task.taskId} index={index} changeCorrect={changeCorrect}/>
           </div>
         ))}
