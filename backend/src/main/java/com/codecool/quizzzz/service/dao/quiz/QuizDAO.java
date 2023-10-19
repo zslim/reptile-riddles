@@ -10,6 +10,7 @@ public interface QuizDAO {
   List<Quiz> getAll();
   Optional<Quiz> getById(int quizId);
   int create(NewQuizDTO newQuizDTO);
+  Optional<Integer> rename(NewQuizDTO newQuizDTO, int quizId);
   Quiz edit(int quizId, String newName);
   Optional<Integer> deleteById(int quizId);
 }

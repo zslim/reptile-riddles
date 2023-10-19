@@ -8,9 +8,31 @@ async function fetchTasksByQuizId(quizId) {
   return await res.json();
 }
 
+async function fetchDetailedTasksByQuizId(quizId) {
+  const res = await fetch(`/task/quiz/detailed/${quizId}`);
+  return await res.json();
+}
+
 async function validateAnswer(answerId) {
   const httpRawRes = await fetch(`/task/answer/${answerId}`);
   return await httpRawRes.json();
 }
 
-module.exports = {fetchTask: fetchTaskByIndex, validateAnswer, fetchTasksByQuizId};
+async function updateAnswer(answer) {
+  const res = await fetch("/task/answer", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(answer)
+  });
+  return await res.json();
+}
+
+module.exports = {
+  fetchTask: fetchTaskByIndex,
+  validateAnswer,
+  fetchTasksByQuizId,
+  fetchDetailedTasksByQuizId,
+  updateAnswer
+};

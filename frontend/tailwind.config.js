@@ -5,7 +5,6 @@ module.exports = {
   ],
   theme: {
     extend: {
-
       colors: {
         'kahoot': {
           red: '#E41C3D',
@@ -50,5 +49,5 @@ module.exports = {
     'hover:bg-neon2-green',
     'hover:bg-neon2-blue',
   ]
-};
+}
 

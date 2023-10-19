@@ -5,11 +5,11 @@ import reportWebVitals from './reportWebVitals';
 import "./index.css";
 
 import Layout from './pages/Layout';
-import TaskPage from './pages/TaskPage/TaskPage';
 import Homepage from "./pages/Homepage";
 import QuizListPage from "./pages/QuizListPage";
 import QuizPage from "./pages/QuizPage";
 import ResultPage from "./pages/ResultPage";
+import QuizCreator from "./pages/QuizCreator";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -30,6 +30,10 @@ const router = createBrowserRouter([{
             path: "",
             element: <ResultPage/>
           }]
+        },
+        {
+          path: "/quizform/:quizId",
+          element: <QuizCreator/>
         },
         {
           path: "quiz",
