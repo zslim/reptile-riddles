@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { fetchAllQuizzes } from "../controllers/quizProvider";
+import QuizListElement from "../components/QuizListElement";
 
 function QuizListPage() {
   const [loading, setLoading] = useState(true);
@@ -25,7 +26,7 @@ function QuizListPage() {
 
   return (
     <div>
-      {loading ? <></> : quizList.map(quiz => <h1>{quiz.id + " " + quiz.title}</h1>)}
+      {loading ? <></> : quizList.map(quiz => <QuizListElement quiz={quiz}/>)}
     </div>
   );
 }
