@@ -1,12 +1,5 @@
-<<<<<<< HEAD:frontend/src/components/ResultContainer.jsx
-import checkMark from "../assets/checkmark.png";
-import cross from "../assets/cross.png";
-=======
-import { fetchTask } from '../../controllers/taskProvider';
-import { useNavigate } from 'react-router-dom';
 import checkMark from "../../assets/checkmark.png";
 import cross from "../../assets/cross.png";
->>>>>>> development:frontend/src/components/ResultContainer/ResultContainer.jsx
 
 const ResultContainer = ({handleTaskChange, selectedAnswer, isCorrect, color}) => {
   return (

@@ -5,6 +5,7 @@ function QuizListElement({quiz}) {
   const navigate = useNavigate();
 
   const handlePlayClick = (id) => {
+    console.log('yous should be on: ' + `/game/quiz/${id}`);
     navigate(`/game/quiz/${id}`);
   };
 
@@ -12,7 +13,7 @@ function QuizListElement({quiz}) {
     <span className="grow flex align-middle text-lg pl-2 items-center">{quiz.title}</span>
     <button className="bg-red-400 p-1 m-1 w-20 rounded-full">Delete</button>
     <button className="bg-yellow-400 p-1 m-1 w-20 rounded-full">Edit</button>
-    <button className="bg-green-400 p-1 m-1 w-20 rounded-full" onClick={() => handlePlayClick(quiz.id)}>Play</button>
+    <button className="bg-green-400 hover:bg-green-500 hover:cursor-pointer p-1 m-1 w-20 rounded-full" onClick={() => handlePlayClick(quiz.id)}>Play</button>
   </div>);
 }
 

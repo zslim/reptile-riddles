@@ -1,9 +1,6 @@
-import AnswerListContainer from "../components/AnswerListContainer";
-import ResultContainer from "../components/ResultContainer";
-import { useState } from 'react';
+import AnswerListContainer from "../../components/AnswerListContainer";
+import ResultContainer from '../../components/ResultContainer';
 import { useNavigate} from "react-router-dom";
-import AnswerListContainer from "../../components/AnswerListContainer/AnswerListContainer";
-import ResultContainer from "../../components/ResultContainer/ResultContainer";
 import { fetchTask } from "../../controllers/taskProvider";
 import { useState } from 'react';
 const TaskPage = ({quizId, firstTask, taskCount, setTaskIndex, taskIndex}) => {
