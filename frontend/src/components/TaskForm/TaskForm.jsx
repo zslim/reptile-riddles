@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { updateAnswer } from "../../controllers/taskProvider";
+import { updateAnswer } from "../../controllers/answerProvider";
 import AnswerForm from "../AnswerForm";
 
 const TaskForm = ({task, saveTask, deleteTask}) => {
