@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface TaskDAO {
   List<Task> getAllTasksByQuiz(int quizId);
   int createNewTask(int quizId, NewTaskDTO newTaskDTO);
+  Optional<Task> updateTask(int taskId, String question);
   Optional<Task> getTask(int quizId, int taskIndex);
   Optional<Task> getTask(int taskId);
   boolean deleteTask(int quizId, int taskIndex);

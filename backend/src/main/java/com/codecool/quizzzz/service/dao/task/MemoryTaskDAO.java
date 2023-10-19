@@ -32,6 +32,18 @@ public class MemoryTaskDAO implements TaskDAO {
   }
 
   @Override
+  public Optional<Task> updateTask(int taskId, String question) {
+    Optional<Task> taskToUpdate = tasks.stream().filter(task -> task.taskId() == taskId).findFirst();
+    if (taskToUpdate.isEmpty()) {
+      return Optional.empty();
+    }
+    tasks.remove(taskToUpdate.get());
+    Task newTask = new Task(taskId, taskToUpdate.get().quizId(), taskToUpdate.get().taskIndex(), question);
+    tasks.add(newTask);
+    return Optional.of(newTask);
+  }
+
+  @Override
   public Optional<Task> getTask(int quizId, int taskIndex) {
     return tasks.stream().filter(task -> task.quizId() == quizId && task.taskIndex() == taskIndex).findFirst();
   }
