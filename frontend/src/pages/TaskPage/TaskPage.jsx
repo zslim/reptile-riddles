@@ -1,9 +1,11 @@
 import AnswerListContainer from "../components/AnswerListContainer";
 import ResultContainer from "../components/ResultContainer";
-import { fetchTask } from "../controllers/taskProvider";
 import { useState } from 'react';
 import { useNavigate} from "react-router-dom";
-
+import AnswerListContainer from "../../components/AnswerListContainer/AnswerListContainer";
+import ResultContainer from "../../components/ResultContainer/ResultContainer";
+import { fetchTask } from "../../controllers/taskProvider";
+import { useState } from 'react';
 const TaskPage = ({quizId, firstTask, taskCount, setTaskIndex, taskIndex}) => {
   const [isAnswered, setIsAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(true);
@@ -31,7 +33,6 @@ const TaskPage = ({quizId, firstTask, taskCount, setTaskIndex, taskIndex}) => {
     }
   }
 
-
   return (
     <>
          <div className="bg-zinc-100 h-screen text-white font-bold">
@@ -57,7 +58,7 @@ const TaskPage = ({quizId, firstTask, taskCount, setTaskIndex, taskIndex}) => {
           }
         </div>
     </>
-  )
+  );
 };
 
 export default TaskPage;

@@ -14,7 +14,7 @@ const AnswerButton = ({color, answer, handleSubmit, setColor}) => {
            (true ? `hover:cursor-pointer ${hoverColor}` : "opacity-20")}>
       <p className="m-6 text-white">{answer.text}</p>
     </div>
-  )
-}
+  );
+};
 
 export default AnswerButton;
