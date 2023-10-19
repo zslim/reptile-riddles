@@ -45,6 +45,10 @@ public class QuizService {
     return quizDAO.create(newQuizDTO);
   }
 
+  public int create() {
+    return quizDAO.create(new NewQuizDTO(""));
+  }
+
   public int rename(NewQuizDTO newQuizDTO, int quizId) {
     Optional<Integer> id = quizDAO.rename(newQuizDTO, quizId);
     return id.orElseThrow(() -> new NotFoundException(String.format("The quiz with id %d doesn't exist!", quizId)));
@@ -52,6 +56,7 @@ public class QuizService {
 
   public int deleteById(int quizId) {
     Optional<Integer> optionalId = quizDAO.deleteById(quizId);
+    // TODO: delete tasks and answers as well
     if (optionalId.isPresent()) {
       return optionalId.get();
     }
