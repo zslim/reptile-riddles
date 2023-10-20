@@ -35,8 +35,13 @@ public class AnswerController {
     return ResponseEntity.ok().body(answerService.update(detailedAnswerDTO));
   }
 
-  @GetMapping("/{answerId}")
+  @GetMapping("/validate/{answerId}")
   public ResponseEntity<Boolean> checkIfAnswerIsCorrect(@PathVariable int answerId) {
     return ResponseEntity.ok().body(answerService.checkIfCorrect(answerId));
+  }
+
+  @GetMapping("/{answerId}")
+  public ResponseEntity<DetailedAnswerDTO> getAnswer(@PathVariable int answerId) {
+    return ResponseEntity.ok().body(answerService.getById(answerId));
   }
 }

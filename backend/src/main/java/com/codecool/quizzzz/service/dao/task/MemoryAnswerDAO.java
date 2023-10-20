@@ -9,7 +9,7 @@ import java.util.*;
 
 @Repository
 public class MemoryAnswerDAO implements AnswerDAO {
-  private static int nextAnswerId = 5;
+  private static int nextAnswerId = 9;
   private final Set<Answer> answers;
 
   public MemoryAnswerDAO() {
@@ -29,6 +29,11 @@ public class MemoryAnswerDAO implements AnswerDAO {
                   .filter(answer -> answer.taskId() == taskId)
                   .sorted(Comparator.comparing(Answer::answerId))
                   .toList();
+  }
+
+  @Override
+  public Optional<Answer> getAnswer(int answerId) {
+    return answers.stream().filter(answer -> answer.answerId() == answerId).findFirst();
   }
 
   @Override
