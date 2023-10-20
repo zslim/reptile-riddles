@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { updateAnswer } from "../../controllers/answerProvider";
+import { fetchAnswer, saveEmptyAnswer, updateAnswer } from "../../controllers/answerProvider";
 import AnswerForm from "../AnswerForm";
 import { updateQuestion } from "../../controllers/taskProvider";
 
@@ -7,7 +7,7 @@ const TaskForm = ({task, setTask}) => {
   /** @namespace task.questionText **/
   const [question, setQuestion] = useState(task?.questionText ?? "");
   /** @namespace task.answers **/
-  const [answers, setAnswer] = useState(task?.answers ?? []);
+  let [answers, setAnswers] = useState(task?.answers ?? []);
 
   async function changeCorrect(isCorrect, answerId, text) {
     const newAnswers = answers.map(answer => answer.answerId === answerId ? {
@@ -15,7 +15,7 @@ const TaskForm = ({task, setTask}) => {
       text: answer.text,
       isCorrect: isCorrect
     } : answer);
-    setAnswer(() => newAnswers);
+    setAnswers(() => newAnswers);
     const res = await updateAnswer({answerId, isCorrect, text});
   }
 
@@ -25,7 +25,13 @@ const TaskForm = ({task, setTask}) => {
   }
 
   async function addAnswer() {
-    //post answer
+    const answerId = await saveEmptyAnswer(task.taskId);
+    const newAnswer = await fetchAnswer(answerId);
+    setAnswers([...answers, newAnswer]);
+  }
+
+  function setAnswer(answer) {
+    answers = answers.map(currAnswer => currAnswer.answerId === answer.answerId ? answer : currAnswer);
   }
 
   useEffect(() => {
@@ -44,13 +50,16 @@ const TaskForm = ({task, setTask}) => {
       <div>
         {answers.map((answer, index) => (
           <div key={answer.answerId}>
-            <AnswerForm answer={answer} taskId={task.taskId} index={index} changeCorrect={changeCorrect}/>
+            <AnswerForm answer={answer} taskId={task.taskId} index={index} changeCorrect={changeCorrect}
+                        setAnswer={setAnswer}/>
           </div>
         ))}
         {answers.length < 4
           ? <div>
-            <AnswerForm answer={{text: "", answerId: 69}} taskId={task.taskId} index={answers.length}
-                        changeCorrect={changeCorrect}/>
+            <button
+              className="text-white font-bold left-1 p-2 bg-green-800 hover:bg-green-700 hover:cursor-pointer relative"
+              onClick={() => addAnswer()}>Add Answer
+            </button>
           </div>
           : null}
       </div>
