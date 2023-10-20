@@ -6,7 +6,7 @@ import TaskForm from "../../components/TaskForm/TaskForm";
 
 const QuizCreator = () => {
   const [quizTitle, setQuizTitle] = useState("");
-  const [tasks, setTasks] = useState([]);
+  let [tasks, setTasks] = useState([]);
   const {quizId} = useParams();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -53,6 +53,10 @@ const QuizCreator = () => {
     setIsLoading(false);
   }
 
+  function setTask(task) {
+    tasks = tasks.map(currTask => currTask.taskId === task.taskId ? task : currTask);
+  }
+
   return (
     <div className="pt-2 bg-[#1D2226] h-fit pb-40">
       <div className="pl-20 p-12">
@@ -67,7 +71,7 @@ const QuizCreator = () => {
         {tasks?.map(task => (
           /** @namespace task.taskId **/
           <div key={task.taskId}>
-            <TaskForm task={task}/>
+            <TaskForm task={task} setTask={setTask}/>
           </div>
         ))}
       </div>
