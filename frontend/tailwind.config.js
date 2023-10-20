@@ -5,7 +5,6 @@ module.exports = {
   ],
   theme: {
     extend: {
-
       colors: {
         'kahoot': {
           red: '#E41C3D',

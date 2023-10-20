@@ -11,12 +11,16 @@ import java.util.Set;
 
 @Repository
 public class MemoryTaskDAO implements TaskDAO {
-  private static int nextTaskId = 2;
+  private static int nextTaskId = 7;
   private final Set<Task> tasks;
 
   public MemoryTaskDAO() {
-    tasks = new HashSet<>(Set.of(new Task(1, 1, 0,"What's up?"),
-                                 new Task(2, 1, 1, "New question, same answers!")));
+    tasks = new HashSet<>(Set.of(new Task(1, 1, 0, "What's up?"),
+                                 new Task(2, 1, 1, "New question, same answers!"),
+                                 new Task(3, 3, 0, "What is the capital of Thailand?"),
+                                 new Task(4, 3, 1, "What is the capital of the American State of California?"),
+                                 new Task(5, 3, 2, "How many stars are on the Australian flag?"),
+                                 new Task(6, 3, 3, "How many countries share land border with Italy?")));
   }
 
   @Override
@@ -29,14 +33,24 @@ public class MemoryTaskDAO implements TaskDAO {
     int nextIndex = getAllTasksByQuiz(quizId).size();
     Task newTask = new Task(nextTaskId++, quizId, nextIndex, newTaskDTO.question());
     tasks.add(newTask);
-    return newTask.taskIndex();
+    return nextTaskId - 1;
+  }
+
+  @Override
+  public Optional<Task> updateTask(int taskId, String question) {
+    Optional<Task> taskToUpdate = tasks.stream().filter(task -> task.taskId() == taskId).findFirst();
+    if (taskToUpdate.isEmpty()) {
+      return Optional.empty();
+    }
+    tasks.remove(taskToUpdate.get());
+    Task newTask = new Task(taskId, taskToUpdate.get().quizId(), taskToUpdate.get().taskIndex(), question);
+    tasks.add(newTask);
+    return Optional.of(newTask);
   }
 
   @Override
   public Optional<Task> getTask(int quizId, int taskIndex) {
-    return tasks.stream()
-                .filter(task -> task.quizId() == quizId && task.taskIndex() == taskIndex)
-                .findFirst();
+    return tasks.stream().filter(task -> task.quizId() == quizId && task.taskIndex() == taskIndex).findFirst();
   }
 
   @Override
