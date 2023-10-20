@@ -30,7 +30,7 @@ public class AnswerController {
     return ResponseEntity.created(URI.create("/answer/" + answerId)).body(answerId);
   }
 
-  @PutMapping("/")
+  @PutMapping("/update")
   public ResponseEntity<Integer> updateAnswer(@RequestBody DetailedAnswerDTO detailedAnswerDTO) {
     return ResponseEntity.ok().body(answerService.update(detailedAnswerDTO));
   }
