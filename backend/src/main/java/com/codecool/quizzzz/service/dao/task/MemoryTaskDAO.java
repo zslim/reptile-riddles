@@ -11,11 +11,16 @@ import java.util.Set;
 
 @Repository
 public class MemoryTaskDAO implements TaskDAO {
-  private static int nextTaskId = 3;
+  private static int nextTaskId = 7;
   private final Set<Task> tasks;
 
   public MemoryTaskDAO() {
-    tasks = new HashSet<>(Set.of(new Task(1, 1, 0, "What's up?"), new Task(2, 1, 1, "New question, same answers!")));
+    tasks = new HashSet<>(Set.of(new Task(1, 1, 0, "What's up?"),
+                                 new Task(2, 1, 1, "New question, same answers!"),
+                                 new Task(3, 3, 0, "What is the capital of Thailand?"),
+                                 new Task(4, 3, 1, "What is the capital of the American State of California?"),
+                                 new Task(5, 3, 2, "How many stars are on the Australian flag?"),
+                                 new Task(6, 3, 3, "How many countries share land border with Italy?")));
   }
 
   @Override

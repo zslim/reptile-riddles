@@ -9,7 +9,7 @@ import java.util.*;
 
 @Repository
 public class MemoryAnswerDAO implements AnswerDAO {
-  private static int nextAnswerId = 9;
+  private static int nextAnswerId = 25;
   private final Set<Answer> answers;
 
   public MemoryAnswerDAO() {
@@ -20,7 +20,23 @@ public class MemoryAnswerDAO implements AnswerDAO {
                                     new Answer(2, 5, "Nothing", false),
                                     new Answer(2, 6, "I don't know", false),
                                     new Answer(2, 7, "Something", true),
-                                    new Answer(2, 8, "Haha", false)));
+                                    new Answer(2, 8, "Haha", false),
+                                    new Answer(3, 9, "Bangkok", true),
+                                    new Answer(3, 10, "Kuala Lumpur", false),
+                                    new Answer(3, 11, "Hanoi", false),
+                                    new Answer(3, 12, "Jakarta", false),
+                                    new Answer(4, 13, "Los Angeles", false),
+                                    new Answer(4, 14, "Sacramento", true),
+                                    new Answer(4, 15, "San Diego", false),
+                                    new Answer(4, 16, "Fresno", false),
+                                    new Answer(5, 17, "4", false),
+                                    new Answer(5, 18, "5", false),
+                                    new Answer(5, 19, "6", true),
+                                    new Answer(5, 20, "7", false),
+                                    new Answer(6, 21, "3", false),
+                                    new Answer(6, 22, "4", false),
+                                    new Answer(6, 23, "5", false),
+                                    new Answer(6, 24, "6", true)));
   }
 
   @Override
