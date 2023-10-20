@@ -21,4 +21,11 @@ async function fetchAllQuizzes() {
   return await httpRawRes.json();
 }
 
-module.exports = {changeQuizName, getQuizById, fetchAllQuizzes};
+async function saveEmptyQuiz() {
+  const httpRes = await fetch(`/quiz/createempty`, {
+    method: "POST"
+  });
+  return await httpRes.json();
+}
+
+module.exports = {changeQuizName, getQuizById, fetchAllQuizzes, saveEmptyQuiz};

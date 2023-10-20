@@ -2,6 +2,7 @@ import React from 'react';
 import QuizListElement from "../QuizListElement";
 import Loader from "../Loading/Loader";
 import { useNavigate } from "react-router-dom";
+import { saveEmptyQuiz } from "../../controllers/quizProvider";
 
 function QuizListContainer({quizList, loading, setQuizList}) {
   const navigate = useNavigate();
@@ -13,16 +14,8 @@ function QuizListContainer({quizList, loading, setQuizList}) {
 
   async function createQuiz() {
     {
-      const httpRes = await fetch(`/quiz/create`, {
-        method: "POST",
-        body: JSON.stringify({
-          "title": ""
-        }),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
-      const newQuizId = await httpRes.json();
+
+      const newQuizId = await saveEmptyQuiz();
       console.log(newQuizId);
       navigate(`/quizform/${newQuizId}`);
     }
