@@ -1,4 +1,4 @@
-async function changeQuizName(quizName, quizId) {
+async function updateQuizName(quizName, quizId) {
   const httpRes = await fetch(`/quiz/${quizId}`, {
     method: "PATCH",
     body: JSON.stringify({
@@ -11,7 +11,7 @@ async function changeQuizName(quizName, quizId) {
   return await httpRes.json();
 }
 
-async function getQuizById(quizId) {
+async function fetchQuizById(quizId) {
   const httpRes = await fetch(`/quiz/${quizId}`);
   return await httpRes.json();
 }
@@ -28,4 +28,12 @@ async function saveEmptyQuiz() {
   return await httpRes.json();
 }
 
-module.exports = {changeQuizName, getQuizById, fetchAllQuizzes, saveEmptyQuiz};
+async function deleteQuizById(quizId) {
+  const httpRes = await fetch(`/quiz/${quizId}`, {
+    method: "DELETE"
+  });
+  return await httpRes.json();
+}
+
+
+module.exports = {updateQuizName, fetchQuizById, fetchAllQuizzes, saveEmptyQuiz, deleteQuizById};

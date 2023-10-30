@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { changeQuizName, getQuizById } from "../../controllers/quizProvider";
+import { updateQuizName, fetchQuizById } from "../../controllers/quizProvider";
 import { useParams } from "react-router-dom";
 import { fetchDetailedTasksByQuizId, fetchTaskById, saveEmptyTask } from "../../controllers/taskProvider";
 import TaskForm from "../../components/TaskForm/TaskForm";
@@ -12,7 +12,7 @@ const QuizCreator = () => {
 
   async function saveQuizName(e) {
     try {
-      await changeQuizName(e.target.value, quizId);
+      await updateQuizName(e.target.value, quizId);
     }
     catch (error) {
       console.error(error);
@@ -23,11 +23,10 @@ const QuizCreator = () => {
     async function getQuiz() {
       setIsLoading(true);
       try {
-        const quiz = await getQuizById(quizId);
+        const quiz = await fetchQuizById(quizId);
         const tasks = await fetchDetailedTasksByQuizId(quizId);
         setQuizTitle(quiz.title);
         setTasks(tasks);
-        // console.log(tasks);
       }
       catch (error) {
         console.error(error);
@@ -43,11 +42,9 @@ const QuizCreator = () => {
     return;
   }
 
-  // console.log(tasks);
   async function addNewTask() {
     setIsLoading(true);
     const taskId = await saveEmptyTask(quizId);
-    console.log("task_id " + taskId);
     const newTask = await fetchTaskById(taskId);
     setTasks([...tasks, newTask]);
     setIsLoading(false);

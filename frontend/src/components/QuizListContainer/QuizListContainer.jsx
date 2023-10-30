@@ -1,24 +1,25 @@
 import React from 'react';
 import QuizListElement from "../QuizListElement";
 import { useNavigate } from "react-router-dom";
-import { saveEmptyQuiz } from "../../controllers/quizProvider";
+import { saveEmptyQuiz, deleteQuizById } from "../../controllers/quizProvider";
 import Loading from "../Loading";
 
 function QuizListContainer({quizList, loading, setQuizList}) {
   const navigate = useNavigate();
 
-  function deleteQuiz(quizId) {
-    const newQuizList = quizList.filter((q) => q.id !== quizId);
-    setQuizList(newQuizList);
+  async function deleteQuiz(quizId) {
+    try {
+      // const res = await deleteQuizById()
+      const newQuizList = quizList.filter((q) => q.id !== quizId);
+      setQuizList(newQuizList);
+    } catch (e){
+      console.error(e);
+    }
   }
 
   async function createQuiz() {
-    {
-
-      const newQuizId = await saveEmptyQuiz();
-      console.log(newQuizId);
-      navigate(`/quizform/${newQuizId}`);
-    }
+    const newQuizId = await saveEmptyQuiz();
+    navigate(`/quizform/${newQuizId}`);
   }
 
   return <div className="grow pt-16">
