@@ -19,29 +19,29 @@ public class AnswerController {
   }
 
   @PostMapping("/task/{taskId}")
-  public ResponseEntity<Integer> createAnswer(@PathVariable int taskId, @RequestBody NewAnswerDTO newAnswerDTO) {
-    int answerId = answerService.create(taskId, newAnswerDTO);
+  public ResponseEntity<Long> createAnswer(@PathVariable Long taskId, @RequestBody NewAnswerDTO newAnswerDTO) {
+    Long answerId = answerService.create(taskId, newAnswerDTO);
     return ResponseEntity.created(URI.create("/answer/" + answerId)).body(answerId);
   }
 
   @PostMapping("/task/{taskId}/empty")
-  public ResponseEntity<Integer> createAnswer(@PathVariable int taskId) {
-    int answerId = answerService.create(taskId);
+  public ResponseEntity<Long> createAnswer(@PathVariable Long taskId) {
+    Long answerId = answerService.create(taskId);
     return ResponseEntity.created(URI.create("/answer/" + answerId)).body(answerId);
   }
 
   @PutMapping("/update")
-  public ResponseEntity<Integer> updateAnswer(@RequestBody DetailedAnswerDTO detailedAnswerDTO) {
+  public ResponseEntity<Long> updateAnswer(@RequestBody DetailedAnswerDTO detailedAnswerDTO) {
     return ResponseEntity.ok().body(answerService.update(detailedAnswerDTO));
   }
 
   @GetMapping("/validate/{answerId}")
-  public ResponseEntity<Boolean> checkIfAnswerIsCorrect(@PathVariable int answerId) {
+  public ResponseEntity<Boolean> checkIfAnswerIsCorrect(@PathVariable Long answerId) {
     return ResponseEntity.ok().body(answerService.checkIfCorrect(answerId));
   }
 
   @GetMapping("/{answerId}")
-  public ResponseEntity<DetailedAnswerDTO> getAnswer(@PathVariable int answerId) {
+  public ResponseEntity<DetailedAnswerDTO> getAnswer(@PathVariable Long answerId) {
     return ResponseEntity.ok().body(answerService.getById(answerId));
   }
 }
