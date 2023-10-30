@@ -31,8 +31,8 @@ public class QuizController {
   }
 
   @PostMapping("/create")
-  ResponseEntity<Integer> createQuiz(@RequestBody NewQuizDTO newQuizDTO) {
-    int id = quizService.create(newQuizDTO);
+  ResponseEntity<Long> createQuiz(@RequestBody NewQuizDTO newQuizDTO) {
+    Long id = quizService.create(newQuizDTO);
     return ResponseEntity.created(URI.create(String.format("/quiz/%d", id))).body(id);
   }
 
