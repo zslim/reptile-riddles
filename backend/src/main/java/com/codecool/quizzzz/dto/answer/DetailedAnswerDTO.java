@@ -1,4 +1,4 @@
 package com.codecool.quizzzz.dto.answer;
 
-public record DetailedAnswerDTO(int answerId, String text, boolean isCorrect) {
+public record DetailedAnswerDTO(Long answerId, String text, boolean isCorrect) {
 }
