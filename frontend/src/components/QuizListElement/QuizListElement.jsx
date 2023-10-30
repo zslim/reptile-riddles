@@ -12,10 +12,9 @@ function QuizListElement({quiz, deleteQuiz}) {
     navigate(`/quizform/${id}`);
   };
 
-  const handleDeleteClick = (id) => {
+  const handleDeleteClick = async (id) => {
     try {
-      //delete request comes here
-      deleteQuiz(id);
+      await deleteQuiz(id);
     }
     catch (e) {
       console.error(e);

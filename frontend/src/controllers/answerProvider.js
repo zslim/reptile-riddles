@@ -4,7 +4,6 @@ async function validateAnswer(answerId) {
 }
 
 async function updateAnswer(answer) {
-  console.log(answer);
   const res = await fetch("/answer/update", {
     method: "PUT",
     headers: {
