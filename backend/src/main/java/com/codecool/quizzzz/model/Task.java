@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.List;
 
@@ -16,8 +17,11 @@ public class Task {
   @GeneratedValue
   private Long id;
   private int index;
+  private String question;
   @OneToMany
   @JoinColumn(name = "task_id")
   private List<Answer> answers;
+  @Column(nullable = false)
+  @ColumnDefault("30")
   private int timeLimit;
 }
