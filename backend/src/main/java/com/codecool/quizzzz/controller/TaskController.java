@@ -26,17 +26,17 @@ public class TaskController {
   }
 
   @GetMapping("/quiz/{quizId}")
-  public ResponseEntity<List<TaskDTO>> getAllTasksByQuiz(@PathVariable int quizId) {
+  public ResponseEntity<List<TaskDTO>> getAllTasksByQuiz(@PathVariable Long quizId) {
     return ResponseEntity.ok().body(taskService.getAllByQuiz(quizId));
   }
 
   @PostMapping("/quiz/{quizId}")
-  public ResponseEntity<Integer> createNewTask(@PathVariable int quizId, @RequestBody NewTaskDTO newTaskDTO) {
+  public ResponseEntity<Long> createNewTask(@PathVariable Long quizId, @RequestBody NewTaskDTO newTaskDTO) {
     return ResponseEntity.ok().body(taskService.create(quizId, newTaskDTO));
   }
 
   @PostMapping("/quiz/{quizId}/empty")
-  public ResponseEntity<Integer> createNewTask(@PathVariable int quizId) {
+  public ResponseEntity<Long> createNewTask(@PathVariable Long quizId) {
     return ResponseEntity.ok().body(taskService.create(quizId));
   }
 
