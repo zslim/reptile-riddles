@@ -26,7 +26,7 @@ public class QuizController {
   }
 
   @GetMapping("/{quizId}")
-  ResponseEntity<QuizDTO> getQuizById(@PathVariable int quizId) {
+  ResponseEntity<QuizDTO> getQuizById(@PathVariable Long quizId) {
     return ResponseEntity.ok().body(quizService.getById(quizId));
   }
 
@@ -37,18 +37,18 @@ public class QuizController {
   }
 
   @PostMapping("/createempty")
-  ResponseEntity<Integer> createQuiz() {
-    int id = quizService.create();
+  ResponseEntity<Long> createQuiz() {
+    Long id = quizService.create();
     return ResponseEntity.created(URI.create(String.format("/quiz/%d", id))).body(id);
   }
 
   @DeleteMapping("/{quizId}")
-  ResponseEntity<Integer> deleteQuiz(@PathVariable int quizId) {
+  ResponseEntity<Long> deleteQuiz(@PathVariable Long quizId) {
     return ResponseEntity.ok().body(quizService.deleteById(quizId));
   }
 
   @PatchMapping("/{quizId}")
-  ResponseEntity<Integer> renameQuiz(@PathVariable int quizId, @RequestBody NewQuizDTO newQuizDTO) {
+  ResponseEntity<Long> renameQuiz(@PathVariable Long quizId, @RequestBody NewQuizDTO newQuizDTO) {
     return ResponseEntity.ok().body(quizService.rename(newQuizDTO, quizId));
   }
 }
