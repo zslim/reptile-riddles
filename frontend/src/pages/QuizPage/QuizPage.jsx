@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import TaskPage from "../TaskPage";
 import { getQuizById } from "../../controllers/quizProvider";
 import { fetchTask } from "../../controllers/taskProvider";
-import Loader from "../../components/Loading/Loader";
+import Loading from "../../components/Loading";
 
 const QuizPage = () => {
   const {quizId} = useParams();
@@ -43,7 +43,7 @@ const QuizPage = () => {
 
   return (
     <div>
-      {loading ? <Loader/>
+      {loading ? <Loading/>
         : isPlaying ? <TaskPage firstTask={firstTask} quizId={quizId} taskCount={taskCount} taskIndex={taskIndex}
                                 setTaskIndex={setTaskIndex}/>
           : <div className="bg-[#1D2226] h-screen">

@@ -1,8 +1,8 @@
 import React from 'react';
 import QuizListElement from "../QuizListElement";
-import Loader from "../Loading/Loader";
 import { useNavigate } from "react-router-dom";
 import { saveEmptyQuiz } from "../../controllers/quizProvider";
+import Loading from "../Loading";
 
 function QuizListContainer({quizList, loading, setQuizList}) {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ function QuizListContainer({quizList, loading, setQuizList}) {
   }
 
   return <div className="grow pt-16">
-    {loading ? <Loader/>
+    {loading ? <Loading/>
       : (quizList.length === 0 ? <span>No quizzes found.</span> : quizList.map(quiz => <QuizListElement
         key={quiz.id} quiz={quiz} deleteQuiz={deleteQuiz}/>))
     }
