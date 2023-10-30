@@ -41,7 +41,7 @@ const TaskForm = ({task, setTask}) => {
   return (
     <div className="mx-auto p-4 border-t-2 border-x-2 border-zinc-500 w-5/6">
       <div>
-        <label htmlFor={task.taskId + "question"} className={"text-white"}>Question name: </label>
+        <label htmlFor={task.taskId + "question"} className="text-white">Question name: </label>
         <input className="bg-[#050409] text-white p-1 w-4/6 border border-zinc-700" id={task.taskId + "question"}
                type="text" defaultValue={question}
                onBlur={(e) => changeQuestion(e.target.value)}
