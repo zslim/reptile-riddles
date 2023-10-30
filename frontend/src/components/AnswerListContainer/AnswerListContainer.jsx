@@ -9,9 +9,8 @@ const AnswerListContainer = ({setSelectedAnswer, setIsAnswered, setIsCorrect, se
     let answerId = e.currentTarget.id;
     setSelectedAnswer(() => answer);
 
-    const response = await validateAnswer(answerId);
-
-    setIsCorrect(() => response);
+    const isCorrectAnswer = await validateAnswer(answerId);
+    setIsCorrect(() => isCorrectAnswer);
     setIsAnswered(true);
   }
 
