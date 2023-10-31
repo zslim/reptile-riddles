@@ -18,8 +18,9 @@ public class Task {
   private Long id;
   private int index;
   private String question;
+  @ManyToOne
+  private Quiz quiz;
   @OneToMany
-  @JoinColumn(name = "task_id")
   private List<Answer> answers;
   @Column(nullable = false)
   @ColumnDefault("30")

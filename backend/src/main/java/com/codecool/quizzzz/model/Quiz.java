@@ -17,6 +17,5 @@ public class Quiz {
   private Long id;
   private String title;
   @OneToMany
-  @JoinColumn(name = "quiz_id")
   private List<Task> tasks;
 }
