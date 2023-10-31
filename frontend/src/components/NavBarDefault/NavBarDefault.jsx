@@ -4,11 +4,12 @@ import PlayIcon from "../../assets/icons/PlayIcon";
 import QuizzesIcon from "../../assets/icons/QuizzesIcon";
 import MyQuizIcon from "../../assets/icons/MyQuizIcon";
 import UserIcon from "../../assets/icons/UserIcon";
+import { useEffect } from "react";
 
 export function NavBarDefault() {
   const [openNav, setOpenNav] = React.useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     window.addEventListener(
       "resize",
       () => window.innerWidth >= 960 && setOpenNav(false),
@@ -23,7 +24,7 @@ export function NavBarDefault() {
         color="blue-gray"
         className="flex items-center gap-x-2 p-1 font-medium"
       >
-        <PlayIcon />
+        <PlayIcon/>
         <a href="#" className="flex items-center">
           Games
         </a>
@@ -56,7 +57,7 @@ export function NavBarDefault() {
         color="blue-gray"
         className="flex items-center gap-x-2 p-1 font-medium"
       >
-       <UserIcon/>
+        <UserIcon/>
         <a href="#" className="flex items-center">
           Account
         </a>
