@@ -4,7 +4,7 @@ import QuizListContainer from "../../components/QuizListContainer";
 import QuizFilterContainer from "../../components/QuizFilterContainer";
 import Loading from "../../components/Loading";
 
-function QuizListPage() {
+const QuizListPage = () => {
   const [loading, setLoading] = useState(true);
   const [quizList, setQuizList] = useState([]);
 
