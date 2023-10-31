@@ -1,7 +1,7 @@
 import React from 'react';
 import LogoMain from '../../images/logo_big.png';
 
-function Homepage(props) {
+function Homepage() {
   return (
     <>
       <div className={"h-[calc(100%-52px)] fixed flex bg-inherit w-full"}>
