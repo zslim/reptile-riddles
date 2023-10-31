@@ -42,7 +42,7 @@ const QuizPage = () => {
   }
 
   return (
-    <div>
+    <>
       {loading ? <Loading/>
         : isPlaying ? <TaskPage firstTask={firstTask} quizId={quizId} taskCount={taskCount} taskIndex={taskIndex}
                                 setTaskIndex={setTaskIndex}/>
@@ -65,7 +65,7 @@ const QuizPage = () => {
             </div>
           </div>
       }
-    </div>
+    </>
   );
 };
 

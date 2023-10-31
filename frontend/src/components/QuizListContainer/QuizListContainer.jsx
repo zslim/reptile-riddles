@@ -18,8 +18,12 @@ function QuizListContainer({quizList, loading, setQuizList}) {
   }
 
   async function createQuiz() {
-    const newQuizId = await saveEmptyQuiz();
-    navigate(`/quizform/${newQuizId}`);
+    try {
+      const newQuizId = await saveEmptyQuiz();
+      navigate(`/quizform/${newQuizId}`);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   return <div className="grow pt-16">

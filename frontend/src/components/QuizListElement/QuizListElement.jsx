@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
 function QuizListElement({quiz, deleteQuiz}) {
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handlePlayClick = (id) => {
@@ -14,10 +15,13 @@ function QuizListElement({quiz, deleteQuiz}) {
 
   const handleDeleteClick = async (id) => {
     try {
+      setLoading(true);
       await deleteQuiz(id);
     }
     catch (e) {
       console.error(e);
+    } finally {
+      setLoading(false);
     }
   };
 

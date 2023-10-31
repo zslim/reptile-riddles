@@ -10,24 +10,36 @@ const TaskForm = ({task, setTask}) => {
   let [answers, setAnswers] = useState(task?.answers ?? []);
 
   async function changeCorrect(isCorrect, answerId, text) {
-    const newAnswers = answers.map(answer => answer.answerId === answerId ? {
-      answerId: answer.answerId,
-      text: answer.text,
-      isCorrect: isCorrect
-    } : answer);
-    setAnswers(() => newAnswers);
-    const res = await updateAnswer({answerId, isCorrect, text});
+    try {
+      const res = await updateAnswer({answerId, isCorrect, text});
+      const newAnswers = answers.map(answer => answer.answerId === answerId ? {
+        answerId: answer.answerId,
+        text: answer.text,
+        isCorrect: isCorrect
+      } : answer);
+      setAnswers(() => newAnswers);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   async function changeQuestion(question) {
-    setQuestion(question);
-    const res = await updateQuestion(question, task.taskId);
+    try {
+      const res = await updateQuestion(question, task.taskId);
+      setQuestion(question);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   async function addAnswer() {
-    const answerId = await saveEmptyAnswer(task.taskId);
-    const newAnswer = await fetchAnswer(answerId);
-    setAnswers([...answers, newAnswer]);
+    try {
+      const answerId = await saveEmptyAnswer(task.taskId);
+      const newAnswer = await fetchAnswer(answerId);
+      setAnswers([...answers, newAnswer]);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   function setAnswer(answer) {

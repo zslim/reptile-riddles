@@ -7,11 +7,14 @@ const AnswerListContainer = ({setSelectedAnswer, setIsAnswered, setIsCorrect, se
   async function handleAnswerSubmit(e) {
     let answer = e.currentTarget.firstChild.innerHTML;
     let answerId = e.currentTarget.id;
-    setSelectedAnswer(() => answer);
-
-    const isCorrectAnswer = await validateAnswer(answerId);
-    setIsCorrect(() => isCorrectAnswer);
-    setIsAnswered(true);
+    try {
+      const isCorrectAnswer = await validateAnswer(answerId);
+      setSelectedAnswer(() => answer);
+      setIsCorrect(() => isCorrectAnswer);
+      setIsAnswered(true);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   return (
