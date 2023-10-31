@@ -1,4 +1,28 @@
 package com.codecool.quizzzz.model;
 
-public record Task(int taskId, int quizId, int taskIndex, String question) {
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
+
+import java.util.List;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+public class Task {
+  @Id
+  @GeneratedValue
+  private Long id;
+  private int index;
+  private String question;
+  @ManyToOne
+  private Quiz quiz;
+  @OneToMany(mappedBy = "task")
+  private List<Answer> answers;
+  @Column(nullable = false)
+  @ColumnDefault("30")
+  private int timeLimit;
 }

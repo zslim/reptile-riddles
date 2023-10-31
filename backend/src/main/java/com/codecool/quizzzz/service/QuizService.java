@@ -5,8 +5,7 @@ import com.codecool.quizzzz.dto.quiz.QuizDTO;
 import com.codecool.quizzzz.exception.NotFoundException;
 import com.codecool.quizzzz.model.Quiz;
 import com.codecool.quizzzz.model.Task;
-import com.codecool.quizzzz.service.dao.quiz.QuizDAO;
-import com.codecool.quizzzz.service.dao.task.TaskDAO;
+import com.codecool.quizzzz.service.repository.QuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,51 +14,53 @@ import java.util.Optional;
 
 @Service
 public class QuizService {
-  private final QuizDAO quizDAO;
-  private final TaskDAO taskDAO;
+  private final QuizRepository quizRepository;
 
   @Autowired
-  public QuizService(QuizDAO quizDAO, TaskDAO taskDAO) {
-    this.quizDAO = quizDAO;
-    this.taskDAO = taskDAO;
+  public QuizService(QuizRepository quizRepository) {
+    this.quizRepository = quizRepository;
   }
 
   public List<QuizDTO> getAll() {
-    return quizDAO.getAll().stream().map(this::convertQuizModelToDTO).toList();
+    return quizRepository.findAll().stream().map(this::convertQuizModelToDTO).toList();
   }
 
   private QuizDTO convertQuizModelToDTO(Quiz quiz) {
-    List<Integer> taskIdList = taskDAO.getAllTasksByQuiz(quiz.id()).stream().map(Task::taskId).toList();
-    return new QuizDTO(quiz.id(), quiz.title(), taskIdList);
+    List<Long> taskIdList = quiz.getTasks().stream().map(Task::getId).toList();
+    return new QuizDTO(quiz.getId(), quiz.getTitle(), taskIdList);
   }
 
-  public QuizDTO getById(int quizId) {
-    Optional<Quiz> result = quizDAO.getById(quizId);
+  public QuizDTO getById(Long quizId) {
+    Optional<Quiz> result = quizRepository.findById(quizId);
     if (result.isEmpty()) {
       throw new NotFoundException(String.format("The quiz with id %d doesn't exist!", quizId));
     }
     return convertQuizModelToDTO(result.get());
   }
 
-  public int create(NewQuizDTO newQuizDTO) {
-    return quizDAO.create(newQuizDTO);
+  public Long create(NewQuizDTO newQuizDTO) {
+    Quiz newQuiz = new Quiz();
+    newQuiz.setTitle(newQuizDTO.title());
+    return quizRepository.save(newQuiz).getId();
   }
 
-  public int create() {
-    return quizDAO.create(new NewQuizDTO(""));
+  public Long create() {
+    return quizRepository.save(new Quiz()).getId();
   }
 
-  public int rename(NewQuizDTO newQuizDTO, int quizId) {
-    Optional<Integer> id = quizDAO.rename(newQuizDTO, quizId);
-    return id.orElseThrow(() -> new NotFoundException(String.format("The quiz with id %d doesn't exist!", quizId)));
+  public Long rename(NewQuizDTO newQuizDTO, Long quizId) {
+    Quiz toRename = quizRepository.findById(quizId)
+                                  .orElseThrow(() -> new NotFoundException(String.format(
+                                          "The quiz with id %d doesn't exist!",
+                                          quizId)));
+    toRename.setTitle(newQuizDTO.title());
+    return quizRepository.save(toRename).getId();
   }
 
-  public int deleteById(int quizId) {
-    Optional<Integer> optionalId = quizDAO.deleteById(quizId);
+  public Long deleteById(Long quizId) {
     // TODO: delete tasks and answers as well
-    if (optionalId.isPresent()) {
-      return optionalId.get();
-    }
-    throw new NotFoundException(String.format("The quiz with id %d doesn't exist!", quizId));
+    quizRepository.deleteById(quizId);
+    // TODO: figure out what this return value needs to be
+    return 0L;
   }
 }
