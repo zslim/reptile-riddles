@@ -16,7 +16,7 @@ import com.codecool.quizzzz.service.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -33,21 +33,19 @@ public class TaskService {
   }
 
   public List<TaskDTO> getAllByQuiz(Long quizId) {
-    return new ArrayList<>();
-//    return taskRepository.getAllTasksByQuiz(quizId)
-//                         .stream()
-//                         .map(this::convertTaskModelToDTO)
-//                         .sorted(Comparator.comparing(TaskDTO::taskIndex))
-//                         .toList();
+    return taskRepository.findAllByQuizId(quizId)
+                         .stream()
+                         .map(this::convertTaskModelToDTO)
+                         .sorted(Comparator.comparing(TaskDTO::taskIndex))
+                         .toList();
   }
 
   private TaskDTO convertTaskModelToDTO(Task task) {
-    return null;
-//    return new TaskDTO(task.taskId(),
-//                       task.quizId(),
-//                       task.taskIndex(),
-//                       task.question(),
-//                       convertAnswerListToAnswerDTOList(answerRepository.getAnswersOfTask(task.taskId())));
+    return new TaskDTO(task.getId(),
+                       task.getQuiz().getId(),
+                       task.getIndex(),
+                       task.getQuestion(),
+                       convertAnswerListToAnswerDTOList(answerRepository.findAllByTaskId(task.getId())));
   }
 
   private List<AnswerDTO> convertAnswerListToAnswerDTOList(List<Answer> answerList) {
@@ -55,26 +53,23 @@ public class TaskService {
   }
 
   private AnswerDTO convertAnswerModelToDTO(Answer answer) {
-    return null;
-//    return new AnswerDTO(answer.answerId(), answer.text());
+    return new AnswerDTO(answer.getId(), answer.getText());
   }
 
-  public List<DetailedTaskDTO> getAllDetailedByQuiz(int quizId) {
-    return new ArrayList<>();
-//    return taskRepository.getAllTasksByQuiz(quizId)
-//                         .stream()
-//                         .map(this::convertTaskModelToDetailedDTO)
-//                         .sorted(Comparator.comparing(DetailedTaskDTO::taskIndex))
-//                         .toList();
+  public List<DetailedTaskDTO> getAllDetailedByQuiz(Long quizId) {
+    return taskRepository.findAllByQuizId(quizId)
+                         .stream()
+                         .map(this::convertTaskModelToDetailedDTO)
+                         .sorted(Comparator.comparing(DetailedTaskDTO::taskIndex))
+                         .toList();
   }
 
   private DetailedTaskDTO convertTaskModelToDetailedDTO(Task task) {
-    return null;
-//    return new DetailedTaskDTO(task.taskId(),
-//                               task.quizId(),
-//                               task.taskIndex(),
-//                               task.question(),
-//                               convertAnswerListToDetailedAnswerDTO(answerRepository.getAnswersOfTask(task.taskId())));
+    return new DetailedTaskDTO(task.getId(),
+                               task.getQuiz().getId(),
+                               task.getIndex(),
+                               task.getQuestion(),
+                               convertAnswerListToDetailedAnswerDTO(answerRepository.findAllByTaskId(task.getId())));
   }
 
   private List<DetailedAnswerDTO> convertAnswerListToDetailedAnswerDTO(List<Answer> answerList) {
@@ -82,8 +77,7 @@ public class TaskService {
   }
 
   private DetailedAnswerDTO convertAnswerModelToDetailedAnswerDTO(Answer answer) {
-    return null;
-//    return new DetailedAnswerDTO(answer.answerId(), answer.text(), answer.isCorrect());
+    return new DetailedAnswerDTO(answer.getId(), answer.getText(), answer.isCorrect());
   }
 
   public Long create(Long quizId, NewTaskDTO newTaskDTO) {
@@ -116,34 +110,34 @@ public class TaskService {
     quiz.getTasks().add(newTask);
   }
 
-  public int update(int taskId, QuestionDTO questionDTO) {
-    return 0;
-//    Optional<Task> task = taskRepository.updateTask(taskId, questionDTO.question());
-//    return task.map(Task::taskId)
-//               .orElseThrow(() -> new NotFoundException(String.format("There is no task with taskId %d", taskId)));
+  public Long update(Long taskId, QuestionDTO questionDTO) {
+    Task task = taskRepository.findById(taskId)
+                              .orElseThrow(() -> new NotFoundException(String.format("There is no task with taskId %d",
+                                                                                     taskId)));
+    task.setQuestion(questionDTO.question());
+    return taskRepository.save(task).getId();
   }
 
-  public TaskDTO getTask(int quizId, int taskIndex) {
-    return null;
-//    Optional<Task> task = taskRepository.getTask(quizId, taskIndex);
-//    if (task.isPresent()) {
-//      return convertTaskModelToDTO(task.get());
-//    }
-//    throw new NotFoundException(String.format("There is no task with quizId %d and taskIndex %d", quizId, taskIndex));
+  public TaskDTO getTask(Long quizId, int taskIndex) {
+    Task task = taskRepository.findByQuizIdAndIndex(quizId, taskIndex)
+                              .orElseThrow(() -> new NotFoundException(String.format(
+                                      "There is no task with quizId %d and taskindex %d",
+                                      quizId,
+                                      taskIndex)));
+    return convertTaskModelToDTO(task);
   }
 
-  public TaskDTO getTask(int taskId) {
-    return null;
-//    Optional<Task> task = taskRepository.getTask(taskId);
-//    if (task.isPresent()) {
-//      return convertTaskModelToDTO(task.get());
-//    }
-//    throw new NotFoundException(String.format("There is no task with id %d.", taskId));
+  public TaskDTO getTask(Long taskId) {
+    Task task = taskRepository.findById(taskId)
+                              .orElseThrow(() -> new NotFoundException(String.format("There is no task with taskId %d",
+                                                                                     taskId)));
+    return convertTaskModelToDTO(task);
   }
 
-  public boolean deleteTask(int taskId) {
-    return false;
-//    return taskRepository.deleteTask(taskId);
-//    // TODO: delete answers as well
+  public boolean deleteTask(Long taskId) {
+    // TODO: delete answers as well
+    taskRepository.deleteById(taskId);
+    // TODO: figure out what this return value is for
+    return true;
   }
 }
