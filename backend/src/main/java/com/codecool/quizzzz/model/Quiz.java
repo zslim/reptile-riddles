@@ -16,6 +16,6 @@ public class Quiz {
   @GeneratedValue
   private Long id;
   private String title;
-  @OneToMany
+  @OneToMany(mappedBy = "quiz")
   private List<Task> tasks;
 }

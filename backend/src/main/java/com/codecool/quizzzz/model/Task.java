@@ -20,7 +20,7 @@ public class Task {
   private String question;
   @ManyToOne
   private Quiz quiz;
-  @OneToMany
+  @OneToMany(mappedBy = "task")
   private List<Answer> answers;
   @Column(nullable = false)
   @ColumnDefault("30")
