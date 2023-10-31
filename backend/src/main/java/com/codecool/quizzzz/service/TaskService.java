@@ -13,6 +13,7 @@ import com.codecool.quizzzz.model.Task;
 import com.codecool.quizzzz.service.repository.AnswerRepository;
 import com.codecool.quizzzz.service.repository.QuizRepository;
 import com.codecool.quizzzz.service.repository.TaskRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -80,6 +81,7 @@ public class TaskService {
     return new DetailedAnswerDTO(answer.getId(), answer.getText(), answer.isCorrect());
   }
 
+  @Transactional
   public Long create(Long quizId, NewTaskDTO newTaskDTO) {
     Task newTask = new Task();
     newTask.setQuestion(newTaskDTO.question());
@@ -107,7 +109,7 @@ public class TaskService {
     Quiz quiz = quizRepository.findById(quizId)
                               .orElseThrow(() -> new NotFoundException(String.format("There is no quiz with quizId %d",
                                                                                      quizId)));
-    quiz.getTasks().add(newTask);
+    quiz.addTask(newTask);
   }
 
   public Long update(Long taskId, QuestionDTO questionDTO) {
