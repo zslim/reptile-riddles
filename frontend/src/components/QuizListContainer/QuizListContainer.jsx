@@ -9,7 +9,7 @@ function QuizListContainer({quizList, loading, setQuizList}) {
 
   async function deleteQuiz(quizId) {
     try {
-      // const res = await deleteQuizById()
+      const res = await deleteQuizById(quizId);
       const newQuizList = quizList.filter((q) => q.id !== quizId);
       setQuizList(newQuizList);
     } catch (e){
