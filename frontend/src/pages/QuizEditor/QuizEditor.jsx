@@ -40,23 +40,37 @@ const QuizEditor = () => {
   }, [quizId]);
 
   async function addNewTask() {
-    try {
-      setLoading(true);
-      const newTask = {question: "", answers: [], taskId: -1, taskIndex: tasks.length};
-      setTasks([...tasks, newTask]);
-      setSelectedTask(newTask);
+    setLoading(true);
+    if (selectedTask === null || selectedTask.taskId !== -1) {
+      const newTask = await {question: "", answers: [], taskId: -1, taskIndex: tasks.length};
+      setTasks(() => [...tasks, newTask]);
+      setSelectedTask(() => newTask);
       setEditing(true);
+    } else {
+      if (window.confirm("Are you leaving this question without saving?")) {
+        let taskToOverwrite = await tasks.find((task) => task.taskId === -1);
+        taskToOverwrite = {question: "", answers: [], taskId: -1, taskIndex: tasks.length};
+        setSelectedTask(() => taskToOverwrite);
+        setTasks(() => [...tasks]);
+      }
     }
-    catch (e) {
-      console.error(e);
-    }
-    finally {
-      setLoading(false);
-    }
+    setLoading(false);
+    setEditing(true);
   }
 
   async function selectTask(taskId) {
-    // const taskToEdit = await fetchTaskById(taskId);
+    if (selectedTask !== null && selectedTask.taskId === -1){
+      if (window.confirm("Are you leaving this question without saving?")) {
+        setLoading(true);
+        const taskToEdit = await tasks.find((task) => task.taskId === taskId);
+        const updatedTasks = tasks.filter((task) => task.taskId !== selectedTask.taskId);
+        console.log(taskToEdit);
+        setSelectedTask(() => taskToEdit);
+        setTasks([...updatedTasks]);
+        setLoading(false);
+        setEditing(true);
+      }
+    }
     setLoading(true);
     const taskToEdit = await tasks.find((task) => task.taskId === taskId);
     console.log(taskToEdit);
@@ -90,7 +104,7 @@ const QuizEditor = () => {
     }
   }
 
-  async function handleTaskDelete(){
+  async function handleTaskDelete() {
     if (window.confirm("Delete?")) {
       try {
         setLoading(true);
