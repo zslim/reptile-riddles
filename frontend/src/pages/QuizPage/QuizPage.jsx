@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import TaskPage from "../TaskPage";
-import { getQuizById } from "../../controllers/quizProvider";
+import { fetchQuizById } from "../../controllers/quizProvider";
 import { fetchTask } from "../../controllers/taskProvider";
 import Loading from "../../components/Loading";
 
@@ -19,7 +19,7 @@ const QuizPage = () => {
     async function getQuiz() {
       try {
         setLoading(true);
-        const quiz = await getQuizById(quizId);
+        const quiz = await fetchQuizById(quizId);
         const task = await fetchTask(quizId, 0);
         setFirstTask(() => task);
         setQuiz(() => quiz);
@@ -42,7 +42,7 @@ const QuizPage = () => {
   }
 
   return (
-    <div>
+    <>
       {loading ? <Loading/>
         : isPlaying ? <TaskPage firstTask={firstTask} quizId={quizId} taskCount={taskCount} taskIndex={taskIndex}
                                 setTaskIndex={setTaskIndex}/>
@@ -65,7 +65,7 @@ const QuizPage = () => {
             </div>
           </div>
       }
-    </div>
+    </>
   );
 };
 

@@ -1,23 +1,28 @@
 import React from 'react';
 import QuizListElement from "../QuizListElement";
 import { useNavigate } from "react-router-dom";
-import { saveEmptyQuiz } from "../../controllers/quizProvider";
+import { saveEmptyQuiz, deleteQuizById } from "../../controllers/quizProvider";
 import Loading from "../Loading";
 
 function QuizListContainer({quizList, loading, setQuizList}) {
   const navigate = useNavigate();
 
-  function deleteQuiz(quizId) {
-    const newQuizList = quizList.filter((q) => q.id !== quizId);
-    setQuizList(newQuizList);
+  async function deleteQuiz(quizId) {
+    try {
+      // const res = await deleteQuizById()
+      const newQuizList = quizList.filter((q) => q.id !== quizId);
+      setQuizList(newQuizList);
+    } catch (e){
+      console.error(e);
+    }
   }
 
   async function createQuiz() {
-    {
-
+    try {
       const newQuizId = await saveEmptyQuiz();
-      console.log(newQuizId);
       navigate(`/quizform/${newQuizId}`);
+    } catch (e) {
+      console.error(e);
     }
   }
 
