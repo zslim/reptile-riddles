@@ -60,7 +60,7 @@ const TaskPage = ({quizId, firstTask, taskCount, setTaskIndex, taskIndex}) => {
         : <div className="bg-[#1D2226] h-screen text-white font-bold">
           <div className="text-3xl text-center text-white bg-black h-fit w-screen p-5 border-b-2 border-zinc-700">
             <div className="mx-auto w-5/6">
-              {task?.questionText}
+              {task?.question}
             </div>
             {!isAnswered && !isTimedOut ?
               <TimeCounter deadline={timeStamp} timeLeft={timeLeft} setTimeLeft={setTimeLeft}
