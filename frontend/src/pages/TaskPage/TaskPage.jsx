@@ -21,7 +21,7 @@ const TaskPage = ({quizId, firstTask, taskCount, setTaskIndex, taskIndex}) => {
   async function handleTaskChange() {
     if (taskCount > taskIndex + 1) {
       try {
-        setLoading(true);
+        setLoading(() => true);
         const newTask = await fetchTask(quizId, taskIndex + 1);
         setTask(() => newTask);
         setTaskIndex((taskIndex) => taskIndex + 1);
@@ -56,8 +56,9 @@ const TaskPage = ({quizId, firstTask, taskCount, setTaskIndex, taskIndex}) => {
 
   return (
     <>
-      {loading ? <Loading/>
-        : <div className="bg-[#1D2226] h-screen text-white font-bold">
+      {/*{loading ? <Loading/>*/}
+      {/*  : */}
+        <div className="bg-[#1D2226] h-screen text-white font-bold">
           <div className="text-3xl text-center text-white bg-black h-fit w-screen p-5 border-b-2 border-zinc-700">
             <div className="mx-auto w-5/6">
               {task?.question}
@@ -78,6 +79,7 @@ const TaskPage = ({quizId, firstTask, taskCount, setTaskIndex, taskIndex}) => {
               isCorrect={isCorrect}
               color={color}
               isAnswered={isAnswered}
+              loading={loading}
             />
             : <AnswerListContainer
               setSelectedAnswer={setSelectedAnswer}
@@ -86,10 +88,12 @@ const TaskPage = ({quizId, firstTask, taskCount, setTaskIndex, taskIndex}) => {
               setIsCorrect={setIsCorrect}
               setColor={setColor}
               resetTimer={resetTimer}
+              loading={loading}
+              setLoading={setLoading}
             />
           }
         </div>
-      }
+      {/*}*/}
     </>
   );
 };

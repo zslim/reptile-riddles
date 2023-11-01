@@ -1,9 +1,9 @@
 import checkMark from "../../assets/checkmark.png";
 import cross from "../../assets/cross.png";
 
-const ResultContainer = ({handleTaskChange, selectedAnswer, isCorrect, color, isAnswered}) => {
+const ResultContainer = ({handleTaskChange, selectedAnswer, isCorrect, color, isAnswered, loading}) => {
   return (
-    <div>
+    <>
       {isCorrect ? <div className="text-3xl text-black flex justify-center mt-5">
           <img src={checkMark} alt="check-mark" className="relative bottom-3 w-16 h-16 p-3"></img>
           <div className="h-min text-white">Correct!</div>
@@ -19,14 +19,14 @@ const ResultContainer = ({handleTaskChange, selectedAnswer, isCorrect, color, is
       {isAnswered ?
         <div className={`${color} mx-auto m-4 pointer-events-none border-4 w-6/12 ` +
           (isCorrect ? "border-icon-green" : "border-icon-red")}>
-          <div className="p-6 text-white">{selectedAnswer}</div>
+          <div className="p-6 text-white">{selectedAnswer.text}</div>
         </div>
         : null
       }
-      <button onClick={() => handleTaskChange()}
-              className="absolute text-black right-20 p-4 bg-pink-500 hover:bg-pink-600 rounded-md hover:cursor-pointer">Next
+      <button disabled={loading} onClick={() => handleTaskChange()}
+              className={`absolute text-black right-20 p-4 bg-pink-500 rounded-md ${!loading ? "hover:bg-pink-600 hover:cursor-pointer" : null}`}>Next
       </button>
-    </div>
+    </>
   );
 };
 
