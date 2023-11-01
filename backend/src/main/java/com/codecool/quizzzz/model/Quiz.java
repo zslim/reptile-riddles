@@ -1,9 +1,6 @@
 package com.codecool.quizzzz.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,11 +16,13 @@ public class Quiz {
   @GeneratedValue
   private Long id;
   private String title;
-  @OneToMany(mappedBy = "quiz")
+  @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
   private List<Task> tasks;
+  private boolean isPublic;
+  private boolean isValid;
 
-  public boolean addTask(Task task) {
+  public void addTask(Task task) {
+    this.tasks.add(task);
     task.setQuiz(this);
-    return tasks.add(task);
   }
 }

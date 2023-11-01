@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.util.List;
 
@@ -16,13 +15,13 @@ public class Task {
   @Id
   @GeneratedValue
   private Long id;
-  private int index;
-  private String question;
   @ManyToOne
   private Quiz quiz;
-  @OneToMany(mappedBy = "task")
+  @Column(nullable = false)
+  private int index;
+  private String question;
+  @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
   private List<Answer> answers;
   @Column(nullable = false)
-  @ColumnDefault("30")
   private int timeLimit;
 }
