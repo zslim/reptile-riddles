@@ -16,12 +16,15 @@ public class Quiz {
   @Id
   @GeneratedValue
   private Long id;
+  @Column(insertable = false)
   @ColumnDefault("'My new quiz'")
   private String title;
   @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
   private List<Task> tasks;
+  @Column(insertable = false)
   @ColumnDefault("false")
   private boolean isPublic;
+  @Column(insertable = false)
   @ColumnDefault("false")
   private boolean isValid;
 
