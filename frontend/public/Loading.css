@@ -1,19 +1,23 @@
-.root{
+.LoadingContainer{
+    position: absolute;
+    top: 0;
+    left: 0;
     background-color: #1D2226;
     height: 100vh;
     width: 100vw;
 }
 .Loading {
+    position: absolute;
+    top: 40%;
+    left: 45%;
     z-index: 100;
-    color: #a27c00;
+    color: #6A0F5B;
     font-size: 90px;
     text-indent: -9999em;
     overflow: hidden;
     width: 1em;
     height: 1em;
     border-radius: 50%;
-    margin: 72px auto;
-    position: relative;
     -webkit-transform: translateZ(0);
     -ms-transform: translateZ(0);
     transform: translateZ(0);

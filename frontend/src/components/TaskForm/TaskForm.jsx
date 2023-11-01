@@ -1,8 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AnswerForm from "../AnswerForm";
 
-const TaskForm = ({task, setTask, updateQuizState, handleTaskSave, handleTaskDelete}) => {
-  const [answers, setAnswers] = useState(() => mapAnswers(task?.answers) ?? []);
+const TaskForm = ({selectedTask, setSelectedTask, updateQuizState, handleTaskSave, handleTaskDelete}) => {
+  const [answers, setAnswers] = useState(() => mapAnswers(selectedTask?.answers) ?? []);
+
+  useEffect(() => {
+    let indexedAnswers = [];
+    selectedTask.answers.map((answer, i) => {
+      answer.index = i;
+      indexedAnswers.push(answer);
+    });
+    setAnswers([...indexedAnswers]);
+  }, [selectedTask]);
 
   function mapAnswers(answerList) {
     let indexedAnswers = [];
@@ -14,9 +23,9 @@ const TaskForm = ({task, setTask, updateQuizState, handleTaskSave, handleTaskDel
   }
 
   function changeQuestion(questionText) {
-    const updatedTask = task;
+    const updatedTask = selectedTask;
     updatedTask.question = questionText;
-    setTask(() => updatedTask);
+    setSelectedTask(() => updatedTask);
     updateQuizState();
   }
 
@@ -44,9 +53,9 @@ const TaskForm = ({task, setTask, updateQuizState, handleTaskSave, handleTaskDel
   }
 
   function updateTaskState() {
-    const updatedTask = task;
+    const updatedTask = selectedTask;
     updatedTask.answers = answers;
-    setTask(() => updatedTask);
+    setSelectedTask(() => updatedTask);
     updateQuizState();
   }
 
@@ -55,9 +64,9 @@ const TaskForm = ({task, setTask, updateQuizState, handleTaskSave, handleTaskDel
 
       <div className="ml-4 p-4 border-t-2 border-x-2 border-zinc-500 w-5/6">
         <div className="m-4 mb-8">
-          <label htmlFor={task.taskId + "question"} className="text-white">Question name: </label>
-          <input className="bg-[#050409] text-white p-1 w-4/6 border border-zinc-700" id={task.taskId + "question"}
-                 type="text" defaultValue={task?.question}
+          <label htmlFor={selectedTask.taskId + "question"} className="text-white">Question name: </label>
+          <input className="bg-[#050409] text-white p-1 w-4/6 border border-zinc-700" id={selectedTask.taskId + "question"}
+                 type="text" defaultValue={selectedTask.question}
                  onChange={(e) => changeQuestion(e.target.value)}/>
         </div>
         <div className="mb-4">

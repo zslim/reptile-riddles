@@ -2,8 +2,8 @@ import React from 'react';
 
 const AnswerForm = ({answer, changeCorrect, changeAnswer, deleteAnswer}) => {
   return (
-    <div className="p-2 grid grid-cols-2 items-center">
-      <div>
+    <div className="p-2 grid grid-cols-10 items-center">
+      <div className="col-span-8">
         <button className="text-white px-2 bg-red-700 hover:bg-red-600 hover:cursor-pointer"
                 onClick={() => deleteAnswer(answer.index)}
         >
@@ -21,7 +21,7 @@ const AnswerForm = ({answer, changeCorrect, changeAnswer, deleteAnswer}) => {
                })}
         />
       </div>
-      <div>
+      <div className="col-span-2">
         <label htmlFor={"checkbox-" + answer.index} className="text-white">Correct: </label>
         <input type="checkbox" defaultChecked={answer.isCorrect} id={"checkbox-" + answer.index}
                className="scale-150 m-1 accent-stone-600 hover:cursor-pointer"
