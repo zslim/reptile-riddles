@@ -138,8 +138,8 @@ const QuizEditor = () => {
     <>
       {loading ? <Loading/>
         : <div className="h-[calc(100%-52px)] fixed bg-inherit w-full grid grid-cols-12">
-          <div className="max-h-4/6 p-2 pl-6 mt-36 grid grid-cols-1 col-span-2 auto-rows-min">
-            <div className="overflow-auto pt-1 pb-1 grid grid-cols-1 gap-1">
+          <div className="max-h-4/6 p-2 pl-6 mt-10 grid grid-cols-1 col-span-2 auto-rows-min">
+            <div className="max-h-[65vh] overflow-auto pt-1 pb-1 grid grid-cols-1 gap-1">
               {tasks.map((task) => {
                 return <button key={task?.taskId}
                                className="text-white font-bold p-4 bg-neon-blue hover:bg-neon2-blue hover:cursor-pointer"
