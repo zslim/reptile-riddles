@@ -66,43 +66,48 @@ const QuizEditor = () => {
   }
 
   async function handleTaskSave() {
-    try {
-      if (selectedTask.taskId === -1){
-        setLoading(true);
-        const savedTaskId = await saveTask(quizId, selectedTask);
-        const savedTask = await fetchTaskById(savedTaskId);
-        const updatedTasks = tasks.map((task) => task.taskId === -1 ? savedTask : task);
-        setTasks(() => updatedTasks);
-        setSelectedTask(() => null);
-        setEditing(false);
-      } else {
-        console.log("Update is not available yet, delete and create a new question! 5* user experience")
+    if (window.confirm("Save changes?")) {
+      try {
+        if (selectedTask.taskId === -1) {
+          setLoading(true);
+          const savedTaskId = await saveTask(quizId, selectedTask);
+          const savedTask = await fetchTaskById(savedTaskId);
+          const updatedTasks = tasks.map((task) => task.taskId === -1 ? savedTask : task);
+          setTasks(() => updatedTasks);
+          setSelectedTask(() => null);
+          setEditing(false);
+        }
+        else {
+          console.log("Update is not available yet, delete and create a new question! 5* user experience")
+        }
       }
-    }
-    catch (e) {
-      console.error(e);
-    }
-    finally {
-      setLoading(false);
+      catch (e) {
+        console.error(e);
+      }
+      finally {
+        setLoading(false);
+      }
     }
   }
 
   async function handleTaskDelete(){
-    try {
-      setLoading(true);
-      if (setSelectedTask.taskId !== -1 ){
-        const deletedTaskId = await deleteTaskById(selectedTask.taskId);
+    if (window.confirm("Delete?")) {
+      try {
+        setLoading(true);
+        if (setSelectedTask.taskId !== -1) {
+          const deletedTaskId = await deleteTaskById(selectedTask.taskId);
+        }
+        const updatedTasks = tasks.filter((task) => task.taskId !== selectedTask.taskId);
+        setTasks(() => updatedTasks);
+        setSelectedTask(() => null);
+        setEditing(false);
       }
-      const updatedTasks = tasks.filter((task) => task.taskId !== selectedTask.taskId);
-      setTasks(() => updatedTasks);
-      setSelectedTask(() => null);
-      setEditing(false);
-    }
-    catch (e) {
-      console.error(e);
-    }
-    finally {
-      setLoading(false);
+      catch (e) {
+        console.error(e);
+      }
+      finally {
+        setLoading(false);
+      }
     }
   }
 
@@ -112,25 +117,33 @@ const QuizEditor = () => {
   }
 
   async function handleQuizSave() {
-    try {
-      setLoading(true);
-      const res = await updateQuizName(quizTitle, quizId);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
+    if (window.confirm("Save changes?")) {
+      try {
+        setLoading(true);
+        const res = await updateQuizName(quizTitle, quizId);
+      }
+      catch (e) {
+        console.error(e);
+      }
+      finally {
+        setLoading(false);
+      }
     }
   }
 
   async function handleQuizDelete() {
-    try {
-      setLoading(true);
-      const res = await deleteQuizById(quizId);
-      navigate("/quiz/all");
-    } catch (e){
-      console.error(e);
-    } finally {
-      setLoading(false);
+    if (window.confirm("Delete?")) {
+      try {
+        setLoading(true);
+        const res = await deleteQuizById(quizId);
+        navigate("/quiz/all");
+      }
+      catch (e) {
+        console.error(e);
+      }
+      finally {
+        setLoading(false);
+      }
     }
   }
 
