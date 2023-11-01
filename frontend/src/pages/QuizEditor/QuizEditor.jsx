@@ -149,8 +149,9 @@ const QuizEditor = () => {
 
   return (
     <>
-      {loading ? <Loading/>
-        : <div className="h-[calc(100%-52px)] fixed bg-inherit w-full grid grid-cols-12">
+      {/*{loading ? <Loading/>*/}
+      {/*  : */}
+        <div className="h-[calc(100%-52px)] fixed bg-inherit w-full grid grid-cols-12">
           <div className="max-h-4/6 p-2 pl-6 mt-10 grid grid-cols-1 col-span-2 auto-rows-min">
             <div className="max-h-[65vh] overflow-auto pt-1 pb-1 grid grid-cols-1 gap-1">
               {tasks.map((task) => {
@@ -197,7 +198,7 @@ const QuizEditor = () => {
             </div>
           </div>
         </div>
-      }
+      {/*}*/}
     </>
   );
 };
