@@ -1,6 +1,6 @@
 package com.codecool.quizzzz.controller;
 
-import com.codecool.quizzzz.dto.quiz.NewQuizDTO;
+import com.codecool.quizzzz.dto.quiz.EditorQuizDTO;
 import com.codecool.quizzzz.dto.quiz.QuizDTO;
 import com.codecool.quizzzz.service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,24 +31,19 @@ public class QuizController {
   }
 
   @PostMapping("/create")
-  ResponseEntity<Long> createQuiz(@RequestBody NewQuizDTO newQuizDTO) {
-    Long id = quizService.create(newQuizDTO);
-    return ResponseEntity.created(URI.create(String.format("/quiz/%d", id))).body(id);
-  }
-
-  @PostMapping("/createempty")
   ResponseEntity<Long> createQuiz() {
     Long id = quizService.create();
     return ResponseEntity.created(URI.create(String.format("/quiz/%d", id))).body(id);
   }
 
-  @DeleteMapping("/{quizId}")
-  ResponseEntity<Long> deleteQuiz(@PathVariable Long quizId) {
-    return ResponseEntity.ok().body(quizService.deleteById(quizId));
+  @PatchMapping("/{quizId}")
+  ResponseEntity<Long> updateQuiz(@PathVariable Long quizId, @RequestBody EditorQuizDTO editorQuizDTO) {
+    return ResponseEntity.ok().body(quizService.update(quizId, editorQuizDTO));
   }
 
-  @PatchMapping("/{quizId}")
-  ResponseEntity<Long> renameQuiz(@PathVariable Long quizId, @RequestBody NewQuizDTO newQuizDTO) {
-    return ResponseEntity.ok().body(quizService.rename(newQuizDTO, quizId));
+  @DeleteMapping("/{quizId}")
+  ResponseEntity<Boolean> deleteQuiz(@PathVariable Long quizId) {
+    quizService.deleteById(quizId);
+    return ResponseEntity.ok().body(true);
   }
 }
