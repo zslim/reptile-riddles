@@ -4,7 +4,7 @@ const TimeCounter = ({deadline, timeLeft, setTimeLeft, handleDeadline, isAnswere
 
   useEffect(() => {
       const interval = 1000;
-      let expected = (new Date()).getTime();
+      let expected = (new Date()).getTime() + interval;
       let difference = 0;
       const cycle = setInterval(() => {
         difference = expected - (new Date).getTime();
@@ -13,7 +13,7 @@ const TimeCounter = ({deadline, timeLeft, setTimeLeft, handleDeadline, isAnswere
         if (toDisplay !== timeLeft) {
           setTimeLeft(() => toDisplay);
         }
-        expected = (new Date).getTime() + interval;
+        expected += interval;
         if ((newTimeLeft / 1000) < 0 || isAnswered) {
           clearInterval(cycle);
           handleDeadline();
