@@ -235,7 +235,7 @@ const QuizEditor = () => {
             <div>
               <label htmlFor="name" className="text-white text-xl">Quiz title: </label>
               <input className="p-2 text-xl bg-[#050409] text-white border-2 border-zinc-700 w-4/6"
-                     defaultValue={quiz.title}
+                     value={quiz.title}
                      type="text" placeholder="Eg. My quiz" id="name"
                      onChange={(e) => setQuiz({...quiz, title: e.target.value})}
               />
