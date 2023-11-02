@@ -22,7 +22,7 @@ async function fetchAllQuizzes() {
 }
 
 async function saveEmptyQuiz() {
-  const httpRes = await fetch(`/quiz/createempty`, {
+  const httpRes = await fetch(`/quiz/create`, {
     method: "POST"
   });
   return await httpRes.json();

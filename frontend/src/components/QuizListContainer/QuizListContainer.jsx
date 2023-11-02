@@ -8,12 +8,14 @@ function QuizListContainer({quizList, loading, setQuizList}) {
   const navigate = useNavigate();
 
   async function deleteQuiz(quizId) {
-    try {
-      // const res = await deleteQuizById()
-      const newQuizList = quizList.filter((q) => q.id !== quizId);
-      setQuizList(newQuizList);
-    } catch (e){
-      console.error(e);
+    if (window.confirm("Delete?")){
+      try {
+        const res = await deleteQuizById(quizId);
+        const newQuizList = quizList.filter((q) => q.id !== quizId);
+        setQuizList(newQuizList);
+      } catch (e){
+        console.error(e);
+      }
     }
   }
 
