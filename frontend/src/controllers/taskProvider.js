@@ -18,15 +18,6 @@ async function fetchDetailedTasksByQuizId(quizId) {
   return await res.json();
 }
 
-async function saveEmptyTask(quizId) {
-  const res = await fetch(`/task/quiz/${quizId}/empty`, {
-    method: "POST", headers: {
-      "Content-Type": "application/json"
-    }
-  });
-  return await res.json();
-}
-
 async function saveTask(quizId, task) {
   const res = await fetch(`/task/quiz/${quizId}`, {
     method: "POST",
@@ -38,20 +29,21 @@ async function saveTask(quizId, task) {
   return await res.json();
 }
 
-async function updateQuestion(question, taskId) {
-  const httpRes = await fetch(`/task/${taskId}`, {
-    method: "PATCH", body: JSON.stringify({
-      "question": question
-    }), headers: {
-      "Content-Type": "application/json"
-    }
-  });
-  return await httpRes.json();
-}
-
 async function deleteTaskById(taskId) {
   const res = await fetch(`/task/${taskId}`, {
     method: "DELETE", headers: {
+      "Content-Type": "application/json"
+    }
+  });
+  return await res.json();
+}
+
+
+async function updateTask(taskId, task) {
+  const res = await fetch(`/task/${taskId}`, {
+    method: "PATCH",
+    body: JSON.stringify(task),
+    headers: {
       "Content-Type": "application/json"
     }
   });
@@ -62,9 +54,8 @@ module.exports = {
   fetchTask: fetchTaskByIndex,
   fetchTasksByQuizId,
   fetchDetailedTasksByQuizId,
-  saveEmptyTask,
   fetchTaskById,
-  updateQuestion,
   saveTask,
-  deleteTaskById
+  deleteTaskById,
+  updateTask
 };

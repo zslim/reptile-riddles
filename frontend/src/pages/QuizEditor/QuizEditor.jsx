@@ -5,7 +5,7 @@ import {
   deleteTaskById,
   fetchDetailedTasksByQuizId,
   fetchTaskById,
-  saveTask
+  saveTask, updateTask
 } from "../../controllers/taskProvider";
 import TaskForm from "../../components/TaskForm/TaskForm";
 import Loading from "../../components/Loading";
@@ -18,6 +18,9 @@ const QuizEditor = () => {
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState(false);
   const navigate = useNavigate();
+
+  const MAXIMUM_NUMBER_OF_ANSWERS = 6;
+  const MINIMUM_NUMBER_OF_ANSWERS = 2;
 
   useEffect(() => {
     async function getQuiz() {
@@ -40,36 +43,55 @@ const QuizEditor = () => {
   }, [quizId]);
 
   async function addNewTask() {
-    try {
-      setLoading(true);
-      const newTask = {question: "", answers: [], taskId: -1, taskIndex: tasks.length};
-      setTasks([...tasks, newTask]);
-      setSelectedTask(newTask);
+    setLoading(true);
+    if (selectedTask === null || selectedTask.taskId !== -1) {
+      const newTask = await {question: "", answers: [], taskId: -1, taskIndex: tasks.length};
+      for (let i = 0; i < MINIMUM_NUMBER_OF_ANSWERS; i++){
+        newTask.answers.push({text:"", isCorrect: false});
+      }
+      setTasks(() => [...tasks, newTask]);
+      setSelectedTask(() => newTask);
       setEditing(true);
+    } else {
+      if (window.confirm("Are you leaving this question without saving?")) {
+        let taskToOverwrite = await tasks.find((task) => task.taskId === -1);
+        taskToOverwrite = {question: "", answers: [], taskId: -1, taskIndex: tasks.length};
+        for (let i = 0; i < MINIMUM_NUMBER_OF_ANSWERS; i++){
+          taskToOverwrite.answers.push({text:"", isCorrect: false});
+        }
+        setSelectedTask(() => taskToOverwrite);
+        setTasks(() => [...tasks]);
+      }
     }
-    catch (e) {
-      console.error(e);
-    }
-    finally {
-      setLoading(false);
-    }
+    setLoading(false);
+    setEditing(true);
   }
 
   async function selectTask(taskId) {
-    // const taskToEdit = await fetchTaskById(taskId);
-    setLoading(true);
-    const taskToEdit = await tasks.find((task) => task.taskId === taskId);
-    console.log(taskToEdit);
-    setSelectedTask(() => taskToEdit);
-    setLoading(false);
-    setEditing(true);
+    if (selectedTask !== null && selectedTask.taskId === -1){
+      if (window.confirm("Are you leaving this question without saving?")) {
+        setLoading(true);
+        const taskToEdit = await tasks.find((task) => task.taskId === taskId);
+        const updatedTasks = tasks.filter((task) => task.taskId !== selectedTask.taskId);
+        setSelectedTask(() => taskToEdit);
+        setTasks([...updatedTasks]);
+        setLoading(false);
+        setEditing(true);
+      }
+    } else {
+      setLoading(true);
+      const taskToEdit = await tasks.find((task) => task.taskId === taskId);
+      setSelectedTask(() => taskToEdit);
+      setLoading(false);
+      setEditing(true);
+    }
   }
 
   async function handleTaskSave() {
     if (window.confirm("Save changes?")) {
       try {
+        setLoading(true);
         if (selectedTask.taskId === -1) {
-          setLoading(true);
           const savedTaskId = await saveTask(quizId, selectedTask);
           const savedTask = await fetchTaskById(savedTaskId);
           const updatedTasks = tasks.map((task) => task.taskId === -1 ? savedTask : task);
@@ -78,7 +100,11 @@ const QuizEditor = () => {
           setEditing(false);
         }
         else {
-          console.log("Update is not available yet, delete and create a new question! 5* user experience")
+          const savedTask = await updateTask(selectedTask.taskId, selectedTask);
+          const updatedTasks = tasks.map((task) => task.taskId === -1 ? savedTask : task);
+          setTasks(() => updatedTasks);
+          setSelectedTask(() => null);
+          setEditing(false);
         }
       }
       catch (e) {
@@ -90,7 +116,7 @@ const QuizEditor = () => {
     }
   }
 
-  async function handleTaskDelete(){
+  async function handleTaskDelete() {
     if (window.confirm("Delete?")) {
       try {
         setLoading(true);
@@ -155,8 +181,10 @@ const QuizEditor = () => {
           <div className="max-h-4/6 p-2 pl-6 mt-10 grid grid-cols-1 col-span-2 auto-rows-min">
             <div className="max-h-[65vh] overflow-auto pt-1 pb-1 grid grid-cols-1 gap-1">
               {tasks.map((task) => {
-                return <button key={task?.taskId}
-                               className="text-white font-bold p-4 bg-neon-blue hover:bg-neon2-blue hover:cursor-pointer"
+                return <button key={task.taskId}
+                               className={`text-white font-bold p-4 
+                               ${selectedTask === null ? "bg-neon-blue hover:bg-neon2-blue" : task.taskId === selectedTask.taskId 
+                               ? "bg-neon-pink hover:bg-neon2-pink" : "bg-neon-blue hover:bg-neon2-blue"} hover:cursor-pointer`}
                                onClick={() => selectTask(task.taskId)}>{task.taskIndex + 1}. Question
                 </button>
               })}
@@ -191,6 +219,8 @@ const QuizEditor = () => {
                             updateQuizState={updateQuizState}
                             handleTaskSave={handleTaskSave}
                             handleTaskDelete={handleTaskDelete}
+                            MAXIMUM_NUMBER_OF_ANSWERS={MAXIMUM_NUMBER_OF_ANSWERS}
+                            MINIMUM_NUMBER_OF_ANSWERS={MINIMUM_NUMBER_OF_ANSWERS}
                   />
                 </>
                 : null
