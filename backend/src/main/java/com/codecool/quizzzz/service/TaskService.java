@@ -1,119 +1,134 @@
 package com.codecool.quizzzz.service;
 
-import com.codecool.quizzzz.dto.answer.AnswerDTO;
-import com.codecool.quizzzz.dto.answer.DetailedAnswerDTO;
-import com.codecool.quizzzz.dto.task.DetailedTaskDTO;
-import com.codecool.quizzzz.dto.task.NewTaskDTO;
-import com.codecool.quizzzz.dto.task.QuestionDTO;
-import com.codecool.quizzzz.dto.task.TaskDTO;
+import com.codecool.quizzzz.dto.answer.EditorAnswerDTO;
+import com.codecool.quizzzz.dto.answer.GameAnswerDTO;
+import com.codecool.quizzzz.dto.task.EditorTaskDTO;
+import com.codecool.quizzzz.dto.task.GameTaskDTO;
 import com.codecool.quizzzz.exception.NotFoundException;
 import com.codecool.quizzzz.model.Answer;
+import com.codecool.quizzzz.model.Quiz;
 import com.codecool.quizzzz.model.Task;
-import com.codecool.quizzzz.service.dao.task.AnswerDAO;
-import com.codecool.quizzzz.service.dao.task.TaskDAO;
+import com.codecool.quizzzz.service.repository.AnswerRepository;
+import com.codecool.quizzzz.service.repository.QuizRepository;
+import com.codecool.quizzzz.service.repository.TaskRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TaskService {
-  private final TaskDAO taskDAO;
-  private final AnswerDAO answerDAO;
+  private final TaskRepository taskRepository;
+  private final AnswerRepository answerRepository;
+  private final QuizRepository quizRepository;
 
   @Autowired
-  public TaskService(TaskDAO taskDAO, AnswerDAO answerDAO) {
-    this.taskDAO = taskDAO;
-    this.answerDAO = answerDAO;
+  public TaskService(TaskRepository taskRepository, AnswerRepository answerRepository, QuizRepository quizRepository) {
+    this.taskRepository = taskRepository;
+    this.answerRepository = answerRepository;
+    this.quizRepository = quizRepository;
   }
 
-  public List<TaskDTO> getAllByQuiz(int quizId) {
-    return taskDAO.getAllTasksByQuiz(quizId)
-                  .stream()
-                  .map(this::convertTaskModelToDTO)
-                  .sorted(Comparator.comparing(TaskDTO::taskIndex))
-                  .toList();
+  public List<GameTaskDTO> getAllByQuiz(Long quizId) {
+    return taskRepository.findAllByQuizId(quizId)
+                         .stream()
+                         .map(this::modelToGameDTO)
+                         .sorted(Comparator.comparing(GameTaskDTO::taskIndex))
+                         .toList();
   }
 
-  private TaskDTO convertTaskModelToDTO(Task task) {
-    return new TaskDTO(task.taskId(),
-                       task.quizId(),
-                       task.taskIndex(),
-                       task.question(),
-                       convertAnswerListToAnswerDTOList(answerDAO.getAnswersOfTask(task.taskId())));
+  public List<EditorTaskDTO> getAllDetailedByQuiz(Long quizId) {
+    return taskRepository.findAllByQuizId(quizId)
+                         .stream()
+                         .map(this::modelToEditorDTO)
+                         .sorted(Comparator.comparing(EditorTaskDTO::taskIndex))
+                         .toList();
   }
 
-  private List<AnswerDTO> convertAnswerListToAnswerDTOList(List<Answer> answerList) {
+  @Transactional
+  public Long create(Long quizId, EditorTaskDTO editorTaskDTO) {
+    Quiz quiz = quizRepository.findById(quizId)
+                              .orElseThrow(() -> new NotFoundException(String.format("There is no quiz with quizId %d",
+                                                                                     quizId)));
+    Task newTask = new Task();
+    updateTaskFromDTO(newTask, editorTaskDTO);
+    quiz.addTask(newTask);
+    quizRepository.save(quiz);
+    return newTask.getId();
+  }
+
+  @Transactional
+  public Long update(Long taskId, EditorTaskDTO editorTaskDTO) {
+    Task task = taskRepository.findById(taskId)
+                              .orElseThrow(() -> new NotFoundException(String.format("There is no task with taskId %d",
+                                                                                     taskId)));
+    updateTaskFromDTO(task, editorTaskDTO);
+    return taskRepository.save(task).getId();
+  }
+
+  public GameTaskDTO getTask(Long quizId, int taskIndex) {
+    Task task = taskRepository.findByQuizIdAndIndex(quizId, taskIndex)
+                              .orElseThrow(() -> new NotFoundException(String.format(
+                                      "There is no task with quizId %d and taskindex %d",
+                                      quizId,
+                                      taskIndex)));
+    return modelToGameDTO(task);
+  }
+
+  public GameTaskDTO getTask(Long taskId) {
+    Task task = taskRepository.findById(taskId)
+                              .orElseThrow(() -> new NotFoundException(String.format("There is no task with taskId %d",
+                                                                                     taskId)));
+    return modelToGameDTO(task);
+  }
+
+  public boolean deleteTask(Long taskId) {
+    taskRepository.deleteById(taskId);
+    return true;
+  }
+
+  private GameTaskDTO modelToGameDTO(Task task) {
+    return new GameTaskDTO(task.getId(),
+                           task.getQuiz().getId(),
+                           task.getIndex(),
+                           task.getQuestion(),
+                           convertAnswerListToAnswerDTOList(answerRepository.findAllByTaskId(task.getId())));
+  }
+
+  private EditorTaskDTO modelToEditorDTO(Task task) {
+    return new EditorTaskDTO(task.getId(),
+                             task.getIndex(),
+                             task.getQuestion(),
+                             convertAnswerListToDetailedAnswerDTO(answerRepository.findAllByTaskId(task.getId())));
+  }
+
+  private List<GameAnswerDTO> convertAnswerListToAnswerDTOList(List<Answer> answerList) {
     return answerList.stream().map(this::convertAnswerModelToDTO).toList();
   }
 
-  private AnswerDTO convertAnswerModelToDTO(Answer answer) {
-    return new AnswerDTO(answer.answerId(), answer.text());
+  private GameAnswerDTO convertAnswerModelToDTO(Answer answer) {
+    return new GameAnswerDTO(answer.getId(), answer.getText());
   }
 
-  public List<DetailedTaskDTO> getAllDetailedByQuiz(int quizId) {
-    return taskDAO.getAllTasksByQuiz(quizId)
-                  .stream()
-                  .map(this::convertTaskModelToDetailedDTO)
-                  .sorted(Comparator.comparing(DetailedTaskDTO::taskIndex))
-                  .toList();
-  }
-
-  private DetailedTaskDTO convertTaskModelToDetailedDTO(Task task) {
-    return new DetailedTaskDTO(task.taskId(),
-                               task.quizId(),
-                               task.taskIndex(),
-                               task.question(),
-                               convertAnswerListToDetailedAnswerDTO(answerDAO.getAnswersOfTask(task.taskId())));
-  }
-
-  private List<DetailedAnswerDTO> convertAnswerListToDetailedAnswerDTO(List<Answer> answerList) {
+  private List<EditorAnswerDTO> convertAnswerListToDetailedAnswerDTO(List<Answer> answerList) {
     return answerList.stream().map(this::convertAnswerModelToDetailedAnswerDTO).toList();
   }
 
-  private DetailedAnswerDTO convertAnswerModelToDetailedAnswerDTO(Answer answer) {
-    return new DetailedAnswerDTO(answer.answerId(), answer.text(), answer.isCorrect());
+  private EditorAnswerDTO convertAnswerModelToDetailedAnswerDTO(Answer answer) {
+    return new EditorAnswerDTO(answer.getId(), answer.getText(), answer.isCorrect());
   }
 
-  public int create(int quizId, NewTaskDTO newTaskDTO) {
-    int taskId = taskDAO.createNewTask(quizId, newTaskDTO);
-    answerDAO.addAnswersToTask(taskId, newTaskDTO.answers());
-    return taskId;
-  }
-
-  public int create(int quizId) {
-    NewTaskDTO newTaskDTO = new NewTaskDTO("", List.of());
-    int taskId = taskDAO.createNewTask(quizId, newTaskDTO);
-    answerDAO.addAnswersToTask(taskId, newTaskDTO.answers());
-    return taskId;
-  }
-
-  public int update(int taskId, QuestionDTO questionDTO) {
-    Optional<Task> task = taskDAO.updateTask(taskId, questionDTO.question());
-    return task.map(Task::taskId)
-               .orElseThrow(() -> new NotFoundException(String.format("There is no task with taskId %d", taskId)));
-  }
-
-  public TaskDTO getTask(int quizId, int taskIndex) {
-    Optional<Task> task = taskDAO.getTask(quizId, taskIndex);
-    if (task.isPresent()) {
-      return convertTaskModelToDTO(task.get());
+  private void updateTaskFromDTO(Task task, EditorTaskDTO editorTaskDTO) {
+    task.setQuestion(editorTaskDTO.question());
+    task.setIndex(editorTaskDTO.taskIndex());
+    task.deleteAllAnswers();
+    for (EditorAnswerDTO editorAnswerDTO : editorTaskDTO.answers()) {
+      Answer newAnswer = new Answer();
+      newAnswer.setText(editorAnswerDTO.text());
+      newAnswer.setCorrect(editorAnswerDTO.isCorrect());
+      task.addAnswer(newAnswer);
     }
-    throw new NotFoundException(String.format("There is no task with quizId %d and taskIndex %d", quizId, taskIndex));
-  }
-
-  public TaskDTO getTask(int taskId) {
-    Optional<Task> task = taskDAO.getTask(taskId);
-    if (task.isPresent()) {
-      return convertTaskModelToDTO(task.get());
-    }
-    throw new NotFoundException(String.format("There is no task with id %d.", taskId));
-  }
-
-  public boolean deleteTask(int taskId) {
-    return taskDAO.deleteTask(taskId);
-    // TODO: delete answers as well
   }
 }
