@@ -1,5 +1,6 @@
 package com.codecool.quizzzz.controller;
 
+import com.codecool.quizzzz.dto.task.BriefTaskDTO;
 import com.codecool.quizzzz.dto.task.EditorTaskDTO;
 import com.codecool.quizzzz.dto.task.GameTaskDTO;
 import com.codecool.quizzzz.service.TaskService;
@@ -31,6 +32,11 @@ public class TaskController {
   @GetMapping("/quiz/detailed/{quizId}")
   public ResponseEntity<List<EditorTaskDTO>> getAllDetailedTasksByQuiz(@PathVariable Long quizId) {
     return ResponseEntity.ok().body(taskService.getAllDetailedByQuiz(quizId));
+  }
+
+  @GetMapping("/quiz/brief/{quizId}")
+  public ResponseEntity<List<BriefTaskDTO>> getAllBriefTasksByQuiz(@PathVariable Long quizId) {
+    return ResponseEntity.ok().body(taskService.getAllBriefByQuiz(quizId));
   }
 
   @GetMapping("/quiz/{quizId}")

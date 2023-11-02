@@ -7,6 +7,10 @@ import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -20,4 +24,8 @@ public class Answer {
   private Task task;
   private String text;
   private boolean isCorrect;
+  @CreationTimestamp
+  private LocalDateTime createdAt;
+  @UpdateTimestamp
+  private LocalDateTime modifiedAt;
 }
