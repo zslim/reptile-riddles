@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import AnswerForm from "../AnswerForm";
 
-const TaskForm = ({task, setTask, updateQuizState, handleTaskSave, handleTaskDelete}) => {
-  const [answers, setAnswers] = useState(() => mapAnswers(task?.answers) ?? []);
+const TaskForm = ({task, setTask, updateQuizState, handleTaskSave, handleTaskDelete, MAXIMUM_NUMBER_OF_ANSWERS, MINIMUM_NUMBER_OF_ANSWERS}) => {
+  const [answers, setAnswers] = useState(() => indexAnswers(task?.answers) ?? []);
 
-  function mapAnswers(answerList) {
+  function indexAnswers(answerList) {
     let indexedAnswers = [];
     answerList.map((answer, i) => {
       answer.index = i;
@@ -40,7 +40,8 @@ const TaskForm = ({task, setTask, updateQuizState, handleTaskSave, handleTaskDel
 
   function deleteAnswer(answerIndex){
     const updatedAnswers = answers.filter((answer) => answer.index !== answerIndex);
-    setAnswers(() => updatedAnswers);
+    const updatedIndexedAnswers = indexAnswers(updatedAnswers);
+    setAnswers(() => updatedIndexedAnswers);
   }
 
   function updateTaskState() {
@@ -66,7 +67,7 @@ const TaskForm = ({task, setTask, updateQuizState, handleTaskSave, handleTaskDel
               <AnswerForm answer={answer} changeCorrect={changeCorrect} changeAnswer={changeAnswer} deleteAnswer={deleteAnswer}/>
             </div>
           ))}
-          {answers.length < 4
+          {answers.length < MAXIMUM_NUMBER_OF_ANSWERS
             ? <div>
               <button
                 className="text-white mt-4 font-bold left-1 p-2 bg-green-800 hover:bg-green-700 hover:cursor-pointer relative"

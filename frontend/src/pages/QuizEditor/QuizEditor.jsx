@@ -19,6 +19,9 @@ const QuizEditor = () => {
   const [editing, setEditing] = useState(false);
   const navigate = useNavigate();
 
+  const MAXIMUM_NUMBER_OF_ANSWERS = 6;
+  const MINIMUM_NUMBER_OF_ANSWERS = 2;
+
   useEffect(() => {
     async function getQuiz() {
       try {
@@ -43,6 +46,9 @@ const QuizEditor = () => {
     setLoading(true);
     if (selectedTask === null || selectedTask.taskId !== -1) {
       const newTask = await {question: "", answers: [], taskId: -1, taskIndex: tasks.length};
+      for (let i = 0; i < MINIMUM_NUMBER_OF_ANSWERS; i++){
+        newTask.answers.push({text:"", isCorrect: false});
+      }
       setTasks(() => [...tasks, newTask]);
       setSelectedTask(() => newTask);
       setEditing(true);
@@ -50,6 +56,9 @@ const QuizEditor = () => {
       if (window.confirm("Are you leaving this question without saving?")) {
         let taskToOverwrite = await tasks.find((task) => task.taskId === -1);
         taskToOverwrite = {question: "", answers: [], taskId: -1, taskIndex: tasks.length};
+        for (let i = 0; i < MINIMUM_NUMBER_OF_ANSWERS; i++){
+          taskToOverwrite.answers.push({text:"", isCorrect: false});
+        }
         setSelectedTask(() => taskToOverwrite);
         setTasks(() => [...tasks]);
       }
@@ -205,6 +214,8 @@ const QuizEditor = () => {
                             updateQuizState={updateQuizState}
                             handleTaskSave={handleTaskSave}
                             handleTaskDelete={handleTaskDelete}
+                            MAXIMUM_NUMBER_OF_ANSWERS={MAXIMUM_NUMBER_OF_ANSWERS}
+                            MINIMUM_NUMBER_OF_ANSWERS={MINIMUM_NUMBER_OF_ANSWERS}
                   />
                 </>
                 : null
