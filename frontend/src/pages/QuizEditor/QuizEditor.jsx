@@ -167,8 +167,10 @@ const QuizEditor = () => {
           <div className="max-h-4/6 p-2 pl-6 mt-10 grid grid-cols-1 col-span-2 auto-rows-min">
             <div className="max-h-[65vh] overflow-auto pt-1 pb-1 grid grid-cols-1 gap-1">
               {tasks.map((task) => {
-                return <button key={task?.taskId}
-                               className="text-white font-bold p-4 bg-neon-blue hover:bg-neon2-blue hover:cursor-pointer"
+                return <button key={task.taskId}
+                               className={`text-white font-bold p-4 
+                               ${selectedTask === null ? "bg-neon-blue hover:bg-neon2-blue" : task.taskId === selectedTask.taskId 
+                               ? "bg-neon-pink hover:bg-neon2-pink" : "bg-neon-blue hover:bg-neon2-blue"} hover:cursor-pointer`}
                                onClick={() => selectTask(task.taskId)}>{task.taskIndex + 1}. Question
                 </button>
               })}
