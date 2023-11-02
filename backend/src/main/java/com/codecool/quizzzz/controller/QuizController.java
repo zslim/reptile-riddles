@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -28,6 +29,11 @@ public class QuizController {
   @GetMapping("/{quizId}")
   ResponseEntity<QuizDTO> getQuizById(@PathVariable Long quizId) {
     return ResponseEntity.ok().body(quizService.getById(quizId));
+  }
+
+  @GetMapping("/modified/{quizId}")
+  ResponseEntity<LocalDateTime> getQuizModifiedAt(@PathVariable Long quizId) {
+    return ResponseEntity.ok(quizService.getQuizLastModified(quizId));
   }
 
   @PostMapping("/create")

@@ -9,6 +9,7 @@ import com.codecool.quizzzz.service.repository.QuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -30,6 +31,13 @@ public class QuizService {
                                            "The quiz with id %d doesn't exist!",
                                            quizId)));
     return modelToDTO(foundQuiz);
+  }
+
+  public LocalDateTime getQuizLastModified(Long quizId) {
+    return quizRepository.findById(quizId)
+                         .orElseThrow(() -> new NotFoundException(String.format("The quiz with id %d doesn't exist!",
+                                                                                quizId)))
+                         .getModifiedAt();
   }
 
   public Long create() {
