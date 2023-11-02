@@ -16,8 +16,8 @@ public class Answer {
   @Id
   @GeneratedValue
   private Long id;
-  private String text;
-  private boolean isCorrect;
   @ManyToOne
   private Task task;
+  private String text;
+  private boolean isCorrect;
 }

@@ -1,6 +1,6 @@
 package com.codecool.quizzzz.service;
 
-import com.codecool.quizzzz.dto.answer.DetailedAnswerDTO;
+import com.codecool.quizzzz.dto.answer.EditorAnswerDTO;
 import com.codecool.quizzzz.dto.answer.NewAnswerDTO;
 import com.codecool.quizzzz.exception.NotFoundException;
 import com.codecool.quizzzz.model.Answer;
@@ -48,16 +48,16 @@ public class AnswerService {
     throw new NotFoundException("\"There is no task with taskId: " + taskId);
   }
 
-  public Long update(DetailedAnswerDTO detailedAnswerDTO) {
-    Optional<Answer> answerOptional = answerRepository.findById(detailedAnswerDTO.answerId());
+  public Long update(EditorAnswerDTO editorAnswerDTO) {
+    Optional<Answer> answerOptional = answerRepository.findById(editorAnswerDTO.answerId());
     if (answerOptional.isPresent()) {
       Answer answer = answerOptional.get();
-      answer.setText(detailedAnswerDTO.text());
-      answer.setCorrect(detailedAnswerDTO.isCorrect());
+      answer.setText(editorAnswerDTO.text());
+      answer.setCorrect(editorAnswerDTO.isCorrect());
       Answer savedAnswer = answerRepository.save(answer);
       return savedAnswer.getId();
     }
-    throw new NotFoundException(String.format("There is no answer with answerId: %d", detailedAnswerDTO.answerId()));
+    throw new NotFoundException(String.format("There is no answer with answerId: %d", editorAnswerDTO.answerId()));
   }
 
   public boolean checkIfCorrect(Long answerId) {
@@ -68,11 +68,11 @@ public class AnswerService {
     throw new NotFoundException(String.format("There is no answer with answerId: " + answerId));
   }
 
-  public DetailedAnswerDTO getById(Long answerId) {
+  public EditorAnswerDTO getById(Long answerId) {
     Optional<Answer> answerOptional = answerRepository.findById(answerId);
     if (answerOptional.isPresent()) {
       Answer answer = answerOptional.get();
-      return new DetailedAnswerDTO(answer.getId(), answer.getText(), answer.isCorrect());
+      return new EditorAnswerDTO(answer.getId(), answer.getText(), answer.isCorrect());
     }
     throw new NotFoundException(String.format("There is no answer with answerId: " + answerId));
   }

@@ -1,11 +1,9 @@
 package com.codecool.quizzzz.service;
 
-import com.codecool.quizzzz.dto.answer.AnswerDTO;
-import com.codecool.quizzzz.dto.answer.DetailedAnswerDTO;
-import com.codecool.quizzzz.dto.task.DetailedTaskDTO;
-import com.codecool.quizzzz.dto.task.NewTaskDTO;
-import com.codecool.quizzzz.dto.task.QuestionDTO;
-import com.codecool.quizzzz.dto.task.TaskDTO;
+import com.codecool.quizzzz.dto.answer.EditorAnswerDTO;
+import com.codecool.quizzzz.dto.answer.GameAnswerDTO;
+import com.codecool.quizzzz.dto.task.EditorTaskDTO;
+import com.codecool.quizzzz.dto.task.GameTaskDTO;
 import com.codecool.quizzzz.exception.NotFoundException;
 import com.codecool.quizzzz.model.Answer;
 import com.codecool.quizzzz.model.Quiz;
@@ -33,113 +31,104 @@ public class TaskService {
     this.quizRepository = quizRepository;
   }
 
-  public List<TaskDTO> getAllByQuiz(Long quizId) {
+  public List<GameTaskDTO> getAllByQuiz(Long quizId) {
     return taskRepository.findAllByQuizId(quizId)
                          .stream()
-                         .map(this::convertTaskModelToDTO)
-                         .sorted(Comparator.comparing(TaskDTO::taskIndex))
+                         .map(this::modelToGameDTO)
+                         .sorted(Comparator.comparing(GameTaskDTO::taskIndex))
                          .toList();
   }
 
-  private TaskDTO convertTaskModelToDTO(Task task) {
-    return new TaskDTO(task.getId(),
-                       task.getQuiz().getId(),
-                       task.getIndex(),
-                       task.getQuestion(),
-                       convertAnswerListToAnswerDTOList(answerRepository.findAllByTaskId(task.getId())));
-  }
-
-  private List<AnswerDTO> convertAnswerListToAnswerDTOList(List<Answer> answerList) {
-    return answerList.stream().map(this::convertAnswerModelToDTO).toList();
-  }
-
-  private AnswerDTO convertAnswerModelToDTO(Answer answer) {
-    return new AnswerDTO(answer.getId(), answer.getText());
-  }
-
-  public List<DetailedTaskDTO> getAllDetailedByQuiz(Long quizId) {
+  public List<EditorTaskDTO> getAllDetailedByQuiz(Long quizId) {
     return taskRepository.findAllByQuizId(quizId)
                          .stream()
-                         .map(this::convertTaskModelToDetailedDTO)
-                         .sorted(Comparator.comparing(DetailedTaskDTO::taskIndex))
+                         .map(this::modelToEditorDTO)
+                         .sorted(Comparator.comparing(EditorTaskDTO::taskIndex))
                          .toList();
-  }
-
-  private DetailedTaskDTO convertTaskModelToDetailedDTO(Task task) {
-    return new DetailedTaskDTO(task.getId(),
-                               task.getQuiz().getId(),
-                               task.getIndex(),
-                               task.getQuestion(),
-                               convertAnswerListToDetailedAnswerDTO(answerRepository.findAllByTaskId(task.getId())));
-  }
-
-  private List<DetailedAnswerDTO> convertAnswerListToDetailedAnswerDTO(List<Answer> answerList) {
-    return answerList.stream().map(this::convertAnswerModelToDetailedAnswerDTO).toList();
-  }
-
-  private DetailedAnswerDTO convertAnswerModelToDetailedAnswerDTO(Answer answer) {
-    return new DetailedAnswerDTO(answer.getId(), answer.getText(), answer.isCorrect());
   }
 
   @Transactional
-  public Long create(Long quizId, NewTaskDTO newTaskDTO) {
-    Task newTask = new Task();
-    newTask.setQuestion(newTaskDTO.question());
-
-    List<Answer> newAnswerList = newTaskDTO.answers().stream().map(newAnswerDTO -> {
-      Answer newAnswer = new Answer();
-      newAnswer.setText(newAnswerDTO.text());
-      newAnswer.setCorrect(newAnswerDTO.isCorrect());
-      return newAnswer;
-    }).toList();
-    newTask.setAnswers(newAnswerList);
-    answerRepository.saveAll(newAnswerList);
-
-    addTaskToQuizById(quizId, newTask);
-    return taskRepository.save(newTask).getId();
-  }
-
-  public Long create(Long quizId) {
-    Task newTask = new Task();
-    addTaskToQuizById(quizId, newTask);
-    return taskRepository.save(newTask).getId();
-  }
-
-  private void addTaskToQuizById(Long quizId, Task newTask) {
+  public Long create(Long quizId, EditorTaskDTO editorTaskDTO) {
     Quiz quiz = quizRepository.findById(quizId)
                               .orElseThrow(() -> new NotFoundException(String.format("There is no quiz with quizId %d",
                                                                                      quizId)));
+    Task newTask = new Task();
+    updateTaskFromDTO(newTask, editorTaskDTO);
     quiz.addTask(newTask);
+    quizRepository.save(quiz);
+    return newTask.getId();
   }
 
-  public Long update(Long taskId, QuestionDTO questionDTO) {
+  @Transactional
+  public Long update(Long taskId, EditorTaskDTO editorTaskDTO) {
     Task task = taskRepository.findById(taskId)
                               .orElseThrow(() -> new NotFoundException(String.format("There is no task with taskId %d",
                                                                                      taskId)));
-    task.setQuestion(questionDTO.question());
+    updateTaskFromDTO(task, editorTaskDTO);
     return taskRepository.save(task).getId();
   }
 
-  public TaskDTO getTask(Long quizId, int taskIndex) {
+  public GameTaskDTO getTask(Long quizId, int taskIndex) {
     Task task = taskRepository.findByQuizIdAndIndex(quizId, taskIndex)
                               .orElseThrow(() -> new NotFoundException(String.format(
                                       "There is no task with quizId %d and taskindex %d",
                                       quizId,
                                       taskIndex)));
-    return convertTaskModelToDTO(task);
+    return modelToGameDTO(task);
   }
 
-  public TaskDTO getTask(Long taskId) {
+  public GameTaskDTO getTask(Long taskId) {
     Task task = taskRepository.findById(taskId)
                               .orElseThrow(() -> new NotFoundException(String.format("There is no task with taskId %d",
                                                                                      taskId)));
-    return convertTaskModelToDTO(task);
+    return modelToGameDTO(task);
   }
 
   public boolean deleteTask(Long taskId) {
-    // TODO: delete answers as well
     taskRepository.deleteById(taskId);
-    // TODO: figure out what this return value is for
     return true;
+  }
+
+  private GameTaskDTO modelToGameDTO(Task task) {
+    return new GameTaskDTO(task.getId(),
+                           task.getQuiz().getId(),
+                           task.getIndex(),
+                           task.getQuestion(),
+                           convertAnswerListToAnswerDTOList(answerRepository.findAllByTaskId(task.getId())));
+  }
+
+  private EditorTaskDTO modelToEditorDTO(Task task) {
+    return new EditorTaskDTO(task.getId(),
+                             task.getIndex(),
+                             task.getQuestion(),
+                             convertAnswerListToDetailedAnswerDTO(answerRepository.findAllByTaskId(task.getId())));
+  }
+
+  private List<GameAnswerDTO> convertAnswerListToAnswerDTOList(List<Answer> answerList) {
+    return answerList.stream().map(this::convertAnswerModelToDTO).toList();
+  }
+
+  private GameAnswerDTO convertAnswerModelToDTO(Answer answer) {
+    return new GameAnswerDTO(answer.getId(), answer.getText());
+  }
+
+  private List<EditorAnswerDTO> convertAnswerListToDetailedAnswerDTO(List<Answer> answerList) {
+    return answerList.stream().map(this::convertAnswerModelToDetailedAnswerDTO).toList();
+  }
+
+  private EditorAnswerDTO convertAnswerModelToDetailedAnswerDTO(Answer answer) {
+    return new EditorAnswerDTO(answer.getId(), answer.getText(), answer.isCorrect());
+  }
+
+  private void updateTaskFromDTO(Task task, EditorTaskDTO editorTaskDTO) {
+    task.setQuestion(editorTaskDTO.question());
+    task.setIndex(editorTaskDTO.taskIndex());
+    task.deleteAllAnswers();
+    for (EditorAnswerDTO editorAnswerDTO : editorTaskDTO.answers()) {
+      Answer newAnswer = new Answer();
+      newAnswer.setText(editorAnswerDTO.text());
+      newAnswer.setCorrect(editorAnswerDTO.isCorrect());
+      task.addAnswer(newAnswer);
+    }
   }
 }
