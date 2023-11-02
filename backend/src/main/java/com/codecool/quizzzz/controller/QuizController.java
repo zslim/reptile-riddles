@@ -1,7 +1,7 @@
 package com.codecool.quizzzz.controller;
 
-import com.codecool.quizzzz.dto.quiz.EditorQuizDTO;
-import com.codecool.quizzzz.dto.quiz.QuizDTO;
+import com.codecool.quizzzz.dto.quiz.IncomingEditorQuizDTO;
+import com.codecool.quizzzz.dto.quiz.OutgoingEditorQuizDTO;
 import com.codecool.quizzzz.service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +22,12 @@ public class QuizController {
   }
 
   @GetMapping("/all")
-  ResponseEntity<List<QuizDTO>> getAllQuiz() {
+  ResponseEntity<List<OutgoingEditorQuizDTO>> getAllQuiz() {
     return ResponseEntity.ok().body(quizService.getAll());
   }
 
   @GetMapping("/{quizId}")
-  ResponseEntity<QuizDTO> getQuizById(@PathVariable Long quizId) {
+  ResponseEntity<OutgoingEditorQuizDTO> getQuizById(@PathVariable Long quizId) {
     return ResponseEntity.ok().body(quizService.getById(quizId));
   }
 
@@ -43,8 +43,8 @@ public class QuizController {
   }
 
   @PatchMapping("/{quizId}")
-  ResponseEntity<Long> updateQuiz(@PathVariable Long quizId, @RequestBody EditorQuizDTO editorQuizDTO) {
-    return ResponseEntity.ok().body(quizService.update(quizId, editorQuizDTO));
+  ResponseEntity<Long> updateQuiz(@PathVariable Long quizId, @RequestBody IncomingEditorQuizDTO incomingEditorQuizDTO) {
+    return ResponseEntity.ok().body(quizService.update(quizId, incomingEditorQuizDTO));
   }
 
   @DeleteMapping("/{quizId}")
