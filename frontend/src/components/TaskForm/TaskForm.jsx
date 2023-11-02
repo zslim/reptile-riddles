@@ -1,17 +1,8 @@
 import React, { useState } from 'react';
 import AnswerForm from "../AnswerForm";
 
-const TaskForm = ({task, setTask, updateQuizState, handleTaskSave, handleTaskDelete, MAXIMUM_NUMBER_OF_ANSWERS, MINIMUM_NUMBER_OF_ANSWERS}) => {
-  const [answers, setAnswers] = useState(() => indexAnswers(task?.answers) ?? []);
-
-  function indexAnswers(answerList) {
-    let indexedAnswers = [];
-    answerList.map((answer, i) => {
-      answer.index = i;
-      indexedAnswers.push(answer);
-    });
-    return indexedAnswers;
-  }
+const TaskForm = ({task, setTask, updateQuizState, handleTaskSave, handleTaskDelete, MAXIMUM_NUMBER_OF_ANSWERS, MINIMUM_NUMBER_OF_ANSWERS, indexAnswers}) => {
+  const [answers, setAnswers] = useState(() => task?.answers ?? []);
 
   function changeQuestion(questionText) {
     const updatedTask = task;
@@ -28,7 +19,7 @@ const TaskForm = ({task, setTask, updateQuizState, handleTaskSave, handleTaskDel
   }
 
   async function addAnswer() {
-    setAnswers(() => [...answers, {text: "", isCorrect: false, answerId: -1, index: answers.length}]);
+    setAnswers((answers) => indexAnswers([...answers, {text: "", isCorrect: false, answerId: -1,}]));
     updateTaskState();
   }
 
@@ -42,6 +33,7 @@ const TaskForm = ({task, setTask, updateQuizState, handleTaskSave, handleTaskDel
     const updatedAnswers = answers.filter((answer) => answer.index !== answerIndex);
     const updatedIndexedAnswers = indexAnswers(updatedAnswers);
     setAnswers(() => updatedIndexedAnswers);
+    updateTaskState();
   }
 
   function updateTaskState() {
@@ -62,8 +54,10 @@ const TaskForm = ({task, setTask, updateQuizState, handleTaskSave, handleTaskDel
                  onChange={(e) => changeQuestion(e.target.value)}/>
         </div>
         <div className="mb-4">
-          {answers.map((answer) => (
-              <AnswerForm answer={answer} changeCorrect={changeCorrect} changeAnswer={changeAnswer} deleteAnswer={deleteAnswer}/>
+          {answers.map((answer, i) => (
+            <div key={"answer" + answer.index}>
+              <AnswerForm index={i} answer={answer} changeCorrect={changeCorrect} changeAnswer={changeAnswer} deleteAnswer={deleteAnswer}/>
+            </div>
           ))}
           {answers.length < MAXIMUM_NUMBER_OF_ANSWERS
             ? <div>

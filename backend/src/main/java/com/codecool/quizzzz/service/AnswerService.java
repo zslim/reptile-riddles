@@ -57,6 +57,7 @@ public class AnswerService {
       Answer savedAnswer = answerRepository.save(answer);
       return savedAnswer.getId();
     }
+
     throw new NotFoundException(String.format("There is no answer with answerId: %d", editorAnswerDTO.answerId()));
   }
 

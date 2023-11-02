@@ -15,6 +15,7 @@ const QuizEditor = () => {
   const [quizTitle, setQuizTitle] = useState("");
   const [tasks, setTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [answerIndex, setAnswerIndex] = useState(1);
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState(false);
   const navigate = useNavigate();
@@ -45,20 +46,26 @@ const QuizEditor = () => {
   async function addNewTask() {
     setLoading(true);
     if (selectedTask === null || selectedTask.taskId !== -1) {
-      const newTask = await {question: "", answers: [], taskId: -1, taskIndex: tasks.length};
+      const newTask = {question: "", answers: [], taskId: -1, taskIndex: tasks.length};
+      let tempIndex = answerIndex;
       for (let i = 0; i < MINIMUM_NUMBER_OF_ANSWERS; i++){
-        newTask.answers.push({text:"", isCorrect: false});
+        newTask.answers.push({text:"", isCorrect: false, index: tempIndex});
+        tempIndex++;
       }
-      setTasks(() => [...tasks, newTask]);
+      setAnswerIndex(() => tempIndex);
+      setTasks((tasks) => [...tasks, newTask]);
       setSelectedTask(() => newTask);
       setEditing(true);
     } else {
       if (window.confirm("Are you leaving this question without saving?")) {
         let taskToOverwrite = await tasks.find((task) => task.taskId === -1);
         taskToOverwrite = {question: "", answers: [], taskId: -1, taskIndex: tasks.length};
+        let tempIndex = answerIndex;
         for (let i = 0; i < MINIMUM_NUMBER_OF_ANSWERS; i++){
-          taskToOverwrite.answers.push({text:"", isCorrect: false});
+          taskToOverwrite.answers.push({text:"", isCorrect: false, index: tempIndex});
+          tempIndex++;
         }
+          setAnswerIndex(() => tempIndex);
         setSelectedTask(() => taskToOverwrite);
         setTasks(() => [...tasks]);
       }
@@ -71,7 +78,7 @@ const QuizEditor = () => {
     if (selectedTask !== null && selectedTask.taskId === -1){
       if (window.confirm("Are you leaving this question without saving?")) {
         setLoading(true);
-        const taskToEdit = await tasks.find((task) => task.taskId === taskId);
+        const taskToEdit = tasks.find((task) => task.taskId === taskId);
         const updatedTasks = tasks.filter((task) => task.taskId !== selectedTask.taskId);
         setSelectedTask(() => taskToEdit);
         setTasks([...updatedTasks]);
@@ -80,7 +87,7 @@ const QuizEditor = () => {
       }
     } else {
       setLoading(true);
-      const taskToEdit = await tasks.find((task) => task.taskId === taskId);
+      const taskToEdit = tasks.find((task) => task.taskId === taskId);
       setSelectedTask(() => taskToEdit);
       setLoading(false);
       setEditing(true);
@@ -92,6 +99,7 @@ const QuizEditor = () => {
       try {
         setLoading(true);
         if (selectedTask.taskId === -1) {
+          console.log(selectedTask);
           const savedTaskId = await saveTask(quizId, selectedTask);
           const savedTask = await fetchTaskById(savedTaskId);
           const updatedTasks = tasks.map((task) => task.taskId === -1 ? savedTask : task);
@@ -157,6 +165,21 @@ const QuizEditor = () => {
     }
   }
 
+  function indexAnswers(answerList) {
+    let indexedAnswers = [];
+    let tempIndex = answerIndex;
+    answerList.map((answer, i) => {
+      if (!("index" in answer) || answer.index === undefined){
+        answer.index = tempIndex;
+        tempIndex++;
+      }
+      indexedAnswers.push(answer);
+    });
+    setAnswerIndex(() => tempIndex);
+    console.log(indexedAnswers);
+    return indexedAnswers;
+  }
+
   async function handleQuizDelete() {
     if (window.confirm("Delete?")) {
       try {
@@ -181,7 +204,7 @@ const QuizEditor = () => {
           <div className="max-h-4/6 p-2 pl-6 mt-10 grid grid-cols-1 col-span-2 auto-rows-min">
             <div className="max-h-[65vh] overflow-auto pt-1 pb-1 grid grid-cols-1 gap-1">
               {tasks.map((task) => {
-                return <button key={task.taskId}
+                return <button key={"task" + task.taskId}
                                className={`text-white font-bold p-4 
                                ${selectedTask === null ? "bg-neon-blue hover:bg-neon2-blue" : task.taskId === selectedTask.taskId 
                                ? "bg-neon-pink hover:bg-neon2-pink" : "bg-neon-blue hover:bg-neon2-blue"} hover:cursor-pointer`}
@@ -219,6 +242,7 @@ const QuizEditor = () => {
                             updateQuizState={updateQuizState}
                             handleTaskSave={handleTaskSave}
                             handleTaskDelete={handleTaskDelete}
+                            indexAnswers={indexAnswers}
                             MAXIMUM_NUMBER_OF_ANSWERS={MAXIMUM_NUMBER_OF_ANSWERS}
                             MINIMUM_NUMBER_OF_ANSWERS={MINIMUM_NUMBER_OF_ANSWERS}
                   />

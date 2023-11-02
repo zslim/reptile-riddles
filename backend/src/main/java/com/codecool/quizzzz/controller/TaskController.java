@@ -24,8 +24,8 @@ public class TaskController {
   }
 
   @GetMapping("/{taskId}")
-  public ResponseEntity<GameTaskDTO> getTask(@PathVariable Long taskId) {
-    return ResponseEntity.ok().body(taskService.getTask(taskId));
+  public ResponseEntity<EditorTaskDTO> getTask(@PathVariable Long taskId) {
+    return ResponseEntity.ok().body(taskService.getTaskToEdit(taskId));
   }
 
   @GetMapping("/quiz/detailed/{quizId}")

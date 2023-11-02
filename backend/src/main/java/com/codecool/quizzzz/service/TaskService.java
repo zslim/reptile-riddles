@@ -84,6 +84,13 @@ public class TaskService {
     return modelToGameDTO(task);
   }
 
+  public EditorTaskDTO getTaskToEdit(Long taskId) {
+    Task task = taskRepository.findById(taskId)
+                              .orElseThrow(() -> new NotFoundException(String.format("There is no task with taskId %d",
+                                                                                     taskId)));
+    return modelToEditorDTO(task);
+  }
+
   public boolean deleteTask(Long taskId) {
     taskRepository.deleteById(taskId);
     return true;
