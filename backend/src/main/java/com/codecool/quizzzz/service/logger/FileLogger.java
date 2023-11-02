@@ -1,4 +1,4 @@
-package com.codecool.quizzzz.service.filelogger;
+package com.codecool.quizzzz.service.logger;
 
 import org.springframework.stereotype.Service;
 
@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 import java.time.LocalDateTime;
 
 @Service
-public class FileLoggerImpl implements FileLogger {
+public class FileLogger implements Logger {
   private final String FILE_PATH = System.getenv("LOG_PATH");
   @Override
   public void logError(String content) {
@@ -23,7 +23,7 @@ public class FileLoggerImpl implements FileLogger {
   private void log(String content, String type){
     try {
       PrintWriter writer = new PrintWriter(new FileWriter(FILE_PATH, true));
-      writer.println(String.format("[%s]: [%s] \n" + content + "\n", LocalDateTime.now(), type));
+      writer.println(String.format("[%s]: [%s] \n%s\n", LocalDateTime.now(), type, content));
       writer.close();
     } catch (IOException e) {
       System.out.println(e);

@@ -1,7 +1,7 @@
 package com.codecool.quizzzz.exception;
 
-import com.codecool.quizzzz.service.filelogger.FileLogger;
-import com.codecool.quizzzz.service.filelogger.FileLoggerImpl;
+import com.codecool.quizzzz.service.logger.FileLogger;
+import com.codecool.quizzzz.service.logger.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,7 +14,7 @@ import java.time.ZonedDateTime;
 
 @ControllerAdvice
 public class ApiExceptionHandler {
-  private final FileLogger logger = new FileLoggerImpl();
+  private final Logger logger = new FileLogger();
   @ExceptionHandler(value = {NotFoundException.class})
   public ResponseEntity<Object> handleNotFoundException(NotFoundException e) {
     HttpStatus status = HttpStatus.NOT_FOUND;
@@ -22,7 +22,7 @@ public class ApiExceptionHandler {
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
     e.printStackTrace(pw);
-    String sStackTrace = sw.toString(); // stack trace as a string
+    String sStackTrace = sw.toString();
     logger.logError(sStackTrace);
     return new ResponseEntity<>(apiException, status);
   }
