@@ -60,6 +60,6 @@ public class QuizService {
 
   private QuizDTO modelToDTO(Quiz quiz) {
     List<Long> taskIdList = quiz.getTasks().stream().map(Task::getId).toList();
-    return new QuizDTO(quiz.getId(), quiz.getTitle(), taskIdList);
+    return new QuizDTO(quiz.getId(), quiz.getTitle(), taskIdList, quiz.getCreatedAt(), quiz.getModifiedAt());
   }
 }
