@@ -38,11 +38,24 @@ async function deleteTaskById(taskId) {
   return await res.json();
 }
 
+
+async function updateTask(taskId, task) {
+  const res = await fetch(`/task/${taskId}`, {
+    method: "PATCH",
+    body: JSON.stringify(task),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
+  return await res.json();
+}
+
 module.exports = {
   fetchTask: fetchTaskByIndex,
   fetchTasksByQuizId,
   fetchDetailedTasksByQuizId,
   fetchTaskById,
   saveTask,
-  deleteTaskById
+  deleteTaskById,
+  updateTask
 };

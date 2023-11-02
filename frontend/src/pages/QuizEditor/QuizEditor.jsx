@@ -5,7 +5,7 @@ import {
   deleteTaskById,
   fetchDetailedTasksByQuizId,
   fetchTaskById,
-  saveTask
+  saveTask, updateTask
 } from "../../controllers/taskProvider";
 import TaskForm from "../../components/TaskForm/TaskForm";
 import Loading from "../../components/Loading";
@@ -90,8 +90,8 @@ const QuizEditor = () => {
   async function handleTaskSave() {
     if (window.confirm("Save changes?")) {
       try {
+        setLoading(true);
         if (selectedTask.taskId === -1) {
-          setLoading(true);
           const savedTaskId = await saveTask(quizId, selectedTask);
           const savedTask = await fetchTaskById(savedTaskId);
           const updatedTasks = tasks.map((task) => task.taskId === -1 ? savedTask : task);
@@ -100,7 +100,11 @@ const QuizEditor = () => {
           setEditing(false);
         }
         else {
-          console.log("Update is not available yet, delete and create a new question! 5* user experience")
+          const savedTask = await updateTask(selectedTask.taskId, selectedTask);
+          const updatedTasks = tasks.map((task) => task.taskId === -1 ? savedTask : task);
+          setTasks(() => updatedTasks);
+          setSelectedTask(() => null);
+          setEditing(false);
         }
       }
       catch (e) {
