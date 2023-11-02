@@ -11,7 +11,7 @@ const AnswerForm = ({index, answer, changeCorrect, changeAnswer, deleteAnswer}) 
         </button>
         <label htmlFor={"answer-" + answer.index}
                className="text-white ml-4">{(index + 1) + ". answer: "}</label>
-        <input className="ml-1 bg-[#050409] text-white p-1 border border-zinc-700 w-4/6" defaultValue={answer.text}
+        <input className="ml-1 bg-[#050409] text-white p-1 border border-zinc-700 w-4/6" value={answer.text}
                type="text" id={"answer-" + answer.index}
                onChange={(e) => changeAnswer({
                  isCorrect: answer.isCorrect,
