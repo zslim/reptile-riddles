@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -21,7 +23,26 @@ public class Task {
   private int index;
   private String question;
   @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
-  private List<Answer> answers;
+  private List<Answer> answers = new ArrayList<>();
   @Column(nullable = false)
   private int timeLimit;
+
+  public void addAnswer(Answer answer) {
+    this.answers.add(answer);
+    answer.setTask(this);
+  }
+
+  public void addAllAnswers(Collection<? extends Answer> c) {
+    for (Answer a : c) {
+      this.addAnswer(a);
+    }
+  }
+
+  public void removeAnswer(Answer a) {
+    this.answers.remove(a);
+  }
+
+  public void deleteAllAnswers() {
+    this.answers.forEach(a -> a.setTask(null));
+  }
 }
