@@ -2,5 +2,5 @@ package com.codecool.quizzzz.dto.quiz;
 
 import java.util.List;
 
-public record QuizDTO(int id, String title, List<Integer> taskIdList) {
+public record QuizDTO(Long id, String title, List<Long> taskIdList) {
 }
