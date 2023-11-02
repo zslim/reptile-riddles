@@ -2,7 +2,7 @@ import React from 'react';
 
 const AnswerForm = ({answer, changeCorrect, changeAnswer, deleteAnswer}) => {
   return (
-    <div className="p-2 grid grid-cols-2 items-center">
+    <div className="p-2 grid grid-cols-2 items-center" key={answer.index}>
       <div>
         <button className="text-white px-2 bg-red-700 hover:bg-red-600 hover:cursor-pointer"
                 onClick={() => deleteAnswer(answer.index)}

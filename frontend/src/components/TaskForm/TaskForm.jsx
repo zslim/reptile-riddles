@@ -63,9 +63,7 @@ const TaskForm = ({task, setTask, updateQuizState, handleTaskSave, handleTaskDel
         </div>
         <div className="mb-4">
           {answers.map((answer) => (
-            <div key={answer.index}>
               <AnswerForm answer={answer} changeCorrect={changeCorrect} changeAnswer={changeAnswer} deleteAnswer={deleteAnswer}/>
-            </div>
           ))}
           {answers.length < MAXIMUM_NUMBER_OF_ANSWERS
             ? <div>

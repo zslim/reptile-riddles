@@ -1,7 +1,7 @@
 import AnswerButton from "../AnswerButton/AnswerButton";
 import { validateAnswer } from "../../controllers/answerProvider";
 
-const AnswerListContainer = ({setSelectedAnswer, setIsAnswered, setIsCorrect, setColor, task}) => {
+const AnswerListContainer = ({setSelectedAnswer, setIsAnswered, setIsCorrect, setColor, task, resetTimer}) => {
   const BUTTON_COLORS = ['purple', 'pink', 'green', 'blue'];
 
   async function handleAnswerSubmit(e) {
@@ -12,6 +12,7 @@ const AnswerListContainer = ({setSelectedAnswer, setIsAnswered, setIsCorrect, se
       setSelectedAnswer(() => answer);
       setIsCorrect(() => isCorrectAnswer);
       setIsAnswered(true);
+      resetTimer();
     } catch (e) {
       console.error(e);
     }
