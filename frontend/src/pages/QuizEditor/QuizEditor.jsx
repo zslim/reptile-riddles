@@ -64,19 +64,18 @@ const QuizEditor = () => {
         setLoading(true);
         const taskToEdit = await tasks.find((task) => task.taskId === taskId);
         const updatedTasks = tasks.filter((task) => task.taskId !== selectedTask.taskId);
-        console.log(taskToEdit);
         setSelectedTask(() => taskToEdit);
         setTasks([...updatedTasks]);
         setLoading(false);
         setEditing(true);
       }
+    } else {
+      setLoading(true);
+      const taskToEdit = await tasks.find((task) => task.taskId === taskId);
+      setSelectedTask(() => taskToEdit);
+      setLoading(false);
+      setEditing(true);
     }
-    setLoading(true);
-    const taskToEdit = await tasks.find((task) => task.taskId === taskId);
-    console.log(taskToEdit);
-    setSelectedTask(() => taskToEdit);
-    setLoading(false);
-    setEditing(true);
   }
 
   async function handleTaskSave() {
