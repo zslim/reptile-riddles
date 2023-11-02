@@ -33,11 +33,11 @@ public class QuizService {
     return modelToDTO(foundQuiz);
   }
 
-  public LocalDateTime getQuizLastModified(Long quizId) {
+  public LocalDateTime getQuizLastModifiedAt(Long quizId) {
     return quizRepository.findById(quizId)
                          .orElseThrow(() -> new NotFoundException(String.format("The quiz with id %d doesn't exist!",
                                                                                 quizId)))
-                         .getModifiedAt();
+                         .getLastModifiedTimestamp();
   }
 
   public Long create() {

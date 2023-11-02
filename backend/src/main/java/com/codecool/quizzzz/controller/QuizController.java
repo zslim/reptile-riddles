@@ -32,8 +32,8 @@ public class QuizController {
   }
 
   @GetMapping("/modified/{quizId}")
-  ResponseEntity<LocalDateTime> getQuizModifiedAt(@PathVariable Long quizId) {
-    return ResponseEntity.ok(quizService.getQuizLastModified(quizId));
+  ResponseEntity<LocalDateTime> getQuizLastModifiedAt(@PathVariable Long quizId) {
+    return ResponseEntity.ok(quizService.getQuizLastModifiedAt(quizId));
   }
 
   @PostMapping("/create")
