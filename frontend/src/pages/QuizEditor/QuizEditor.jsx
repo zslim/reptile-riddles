@@ -147,7 +147,7 @@ const QuizEditor = () => {
         if (selectedTask.taskId !== -1) {
           await deleteTaskById(selectedTask.taskId);
         }
-        setTaskList((taskIdList) => [...taskIdList.filter((task) => task.taskId !== selectedTask.taskId)]);
+        setTaskList((taskIdList) => [...taskIdList.filter((task) => task !== selectedTask.taskId)]);
         setSelectedTask({...selectedTask, taskId: -2, taskIndex: -1, question: ''});
 
         setEditing(false);
