@@ -166,6 +166,7 @@ const QuizEditor = () => {
       try {
         setLoading(true);
         await updateQuizName(quiz.title, quizId);
+        navigate("/quiz/all");
       }
       catch (e) {
         console.error(e);
