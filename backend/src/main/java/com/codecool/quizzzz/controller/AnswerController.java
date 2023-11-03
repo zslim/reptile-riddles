@@ -1,7 +1,6 @@
 package com.codecool.quizzzz.controller;
 
 import com.codecool.quizzzz.dto.answer.EditorAnswerDTO;
-import com.codecool.quizzzz.dto.answer.NewAnswerDTO;
 import com.codecool.quizzzz.service.AnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,18 +18,12 @@ public class AnswerController {
   }
 
   @PostMapping("/task/{taskId}")
-  public ResponseEntity<Long> createAnswer(@PathVariable Long taskId, @RequestBody NewAnswerDTO newAnswerDTO) {
-    Long answerId = answerService.create(taskId, newAnswerDTO);
+  public ResponseEntity<Long> createAnswer(@PathVariable Long taskId, @RequestBody EditorAnswerDTO editorAnswerDTO) {
+    Long answerId = answerService.create(taskId, editorAnswerDTO);
     return ResponseEntity.created(URI.create("/answer/" + answerId)).body(answerId);
   }
 
-  @PostMapping("/task/{taskId}/empty")
-  public ResponseEntity<Long> createAnswer(@PathVariable Long taskId) {
-    Long answerId = answerService.create(taskId);
-    return ResponseEntity.created(URI.create("/answer/" + answerId)).body(answerId);
-  }
-
-  @PutMapping("/update")
+  @PatchMapping("/update")
   public ResponseEntity<Long> updateAnswer(@RequestBody EditorAnswerDTO editorAnswerDTO) {
     return ResponseEntity.ok().body(answerService.update(editorAnswerDTO));
   }
@@ -38,10 +31,5 @@ public class AnswerController {
   @GetMapping("/validate/{answerId}")
   public ResponseEntity<Boolean> checkIfAnswerIsCorrect(@PathVariable Long answerId) {
     return ResponseEntity.ok().body(answerService.checkIfCorrect(answerId));
-  }
-
-  @GetMapping("/{answerId}")
-  public ResponseEntity<EditorAnswerDTO> getAnswer(@PathVariable Long answerId) {
-    return ResponseEntity.ok().body(answerService.getById(answerId));
   }
 }

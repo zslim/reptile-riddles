@@ -2,6 +2,7 @@ package com.codecool.quizzzz.service;
 
 import com.codecool.quizzzz.dto.answer.EditorAnswerDTO;
 import com.codecool.quizzzz.dto.answer.GameAnswerDTO;
+import com.codecool.quizzzz.dto.task.BriefTaskDTO;
 import com.codecool.quizzzz.dto.task.EditorTaskDTO;
 import com.codecool.quizzzz.dto.task.GameTaskDTO;
 import com.codecool.quizzzz.exception.NotFoundException;
@@ -47,6 +48,14 @@ public class TaskService {
                          .toList();
   }
 
+  public List<BriefTaskDTO> getAllBriefByQuiz(Long quizId) {
+    return taskRepository.findAllByQuizId(quizId)
+                         .stream()
+                         .map(this::modelToBriefDTO)
+                         .sorted(Comparator.comparing(BriefTaskDTO::taskIndex))
+                         .toList();
+  }
+
   @Transactional
   public Long create(Long quizId, EditorTaskDTO editorTaskDTO) {
     Quiz quiz = quizRepository.findById(quizId)
@@ -84,6 +93,13 @@ public class TaskService {
     return modelToGameDTO(task);
   }
 
+  public EditorTaskDTO getTaskToEdit(Long taskId) {
+    Task task = taskRepository.findById(taskId)
+                              .orElseThrow(() -> new NotFoundException(String.format("There is no task with taskId %d",
+                                                                                     taskId)));
+    return modelToEditorDTO(task);
+  }
+
   public boolean deleteTask(Long taskId) {
     taskRepository.deleteById(taskId);
     return true;
@@ -102,6 +118,10 @@ public class TaskService {
                              task.getIndex(),
                              task.getQuestion(),
                              convertAnswerListToDetailedAnswerDTO(answerRepository.findAllByTaskId(task.getId())));
+  }
+
+  private BriefTaskDTO modelToBriefDTO(Task task) {
+    return new BriefTaskDTO(task.getId(), task.getIndex(), task.getQuestion());
   }
 
   private List<GameAnswerDTO> convertAnswerListToAnswerDTOList(List<Answer> answerList) {

@@ -18,6 +18,11 @@ async function fetchDetailedTasksByQuizId(quizId) {
   return await res.json();
 }
 
+async function fetchDetailedTaskById(taskId) {
+  const res = await fetch(`/task/${taskId}`);
+  return await res.json();
+}
+
 async function saveTask(quizId, task) {
   const res = await fetch(`/task/quiz/${quizId}`, {
     method: "POST",
@@ -57,5 +62,6 @@ module.exports = {
   fetchTaskById,
   saveTask,
   deleteTaskById,
-  updateTask
+  updateTask,
+  fetchDetailedTaskById
 };

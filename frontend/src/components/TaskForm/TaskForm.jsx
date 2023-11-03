@@ -1,69 +1,53 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AnswerForm from "../AnswerForm";
 
-const TaskForm = ({task, setTask, updateQuizState, handleTaskSave, handleTaskDelete, MAXIMUM_NUMBER_OF_ANSWERS, MINIMUM_NUMBER_OF_ANSWERS}) => {
-  const [answers, setAnswers] = useState(() => indexAnswers(task?.answers) ?? []);
-
-  function indexAnswers(answerList) {
-    let indexedAnswers = [];
-    answerList.map((answer, i) => {
-      answer.index = i;
-      indexedAnswers.push(answer);
-    });
-    return indexedAnswers;
-  }
-
-  function changeQuestion(questionText) {
-    const updatedTask = task;
-    updatedTask.question = questionText;
-    setTask(() => updatedTask);
-    updateQuizState();
-  }
+const TaskForm = ({
+                    selectedTask,
+                    setSelectedTask,
+                    handleTaskSave,
+                    handleTaskDelete,
+                    answers,
+                    setAnswers,
+                    MAXIMUM_NUMBER_OF_ANSWERS,
+                    MINIMUM_NUMBER_OF_ANSWERS,
+                    indexAnswers
+                  }) => {
 
   function changeCorrect(isCorrect, index) {
     const currentAnswer = answers.find((answer) => answer.index === index);
     currentAnswer.isCorrect = isCorrect;
     setAnswers(() => answers);
-    updateTaskState();
   }
 
   async function addAnswer() {
-    setAnswers(() => [...answers, {text: "", isCorrect: false, answerId: -1, index: answers.length}]);
-    updateTaskState();
+    const indexedAnswer = indexAnswers([{text: "", isCorrect: false, answerId: -1,}])[0];
+    setAnswers((answers) => [...answers, indexedAnswer]);
   }
 
   function changeAnswer(answer) {
     const updatedAnswers = answers.map(currAnswer => currAnswer.index === answer.index ? answer : currAnswer);
-    setAnswers(() => updatedAnswers);
-    updateTaskState();
+    setAnswers(updatedAnswers);
   }
 
-  function deleteAnswer(answerIndex){
-    const updatedAnswers = answers.filter((answer) => answer.index !== answerIndex);
-    const updatedIndexedAnswers = indexAnswers(updatedAnswers);
-    setAnswers(() => updatedIndexedAnswers);
-  }
-
-  function updateTaskState() {
-    const updatedTask = task;
-    updatedTask.answers = answers;
-    setTask(() => updatedTask);
-    updateQuizState();
+  function deleteAnswer(answerIndex) {
+    setAnswers((answers) => [...answers.filter((answer) => answer.index !== answerIndex)]);
   }
 
   return (
     <>
-
       <div className="ml-4 p-4 border-t-2 border-x-2 border-zinc-500 w-5/6">
         <div className="m-4 mb-8">
-          <label htmlFor={task.taskId + "question"} className="text-white">Question name: </label>
-          <input className="bg-[#050409] text-white p-1 w-4/6 border border-zinc-700" id={task.taskId + "question"}
-                 type="text" defaultValue={task?.question}
-                 onChange={(e) => changeQuestion(e.target.value)}/>
+          <label htmlFor={selectedTask.taskId + "question"} className="text-white">Question name: </label>
+          <input className="bg-[#050409] text-white p-1 w-4/6 border border-zinc-700" id={selectedTask.taskId + "question"}
+                 type="text" value={selectedTask.question}
+                 onChange={(e) => setSelectedTask({...selectedTask, question: e.target.value})}/>
         </div>
         <div className="mb-4">
-          {answers.map((answer) => (
-              <AnswerForm answer={answer} changeCorrect={changeCorrect} changeAnswer={changeAnswer} deleteAnswer={deleteAnswer}/>
+          {answers.map((answer, i) => (
+            <div key={"answer" + answer.index}>
+              <AnswerForm index={i} answer={answer} changeCorrect={changeCorrect} changeAnswer={changeAnswer}
+                          deleteAnswer={deleteAnswer}/>
+            </div>
           ))}
           {answers.length < MAXIMUM_NUMBER_OF_ANSWERS
             ? <div>
@@ -83,7 +67,6 @@ const TaskForm = ({task, setTask, updateQuizState, handleTaskSave, handleTaskDel
         className="m-4 text-white w-24 font-bold p-4 bg-red-800 hover:bg-red-700 hover:cursor-pointer"
         onClick={() => handleTaskDelete()}>Delete
       </button>
-
     </>
   );
 };

@@ -1,8 +1,8 @@
 import React from 'react';
 
-const AnswerForm = ({answer, changeCorrect, changeAnswer, deleteAnswer}) => {
+const AnswerForm = ({index, answer, changeCorrect, changeAnswer, deleteAnswer}) => {
   return (
-    <div className="p-2 grid grid-cols-2 items-center" key={answer.index}>
+    <div className="p-2 grid grid-cols-2 items-center">
       <div>
         <button className="text-white px-2 bg-red-700 hover:bg-red-600 hover:cursor-pointer"
                 onClick={() => deleteAnswer(answer.index)}
@@ -10,8 +10,8 @@ const AnswerForm = ({answer, changeCorrect, changeAnswer, deleteAnswer}) => {
           -
         </button>
         <label htmlFor={"answer-" + answer.index}
-               className="text-white ml-4">{(answer.index + 1) + ". answer: "}</label>
-        <input className="ml-1 bg-[#050409] text-white p-1 border border-zinc-700 w-4/6" defaultValue={answer.text}
+               className="text-white ml-4">{(index + 1) + ". answer: "}</label>
+        <input className="ml-1 bg-[#050409] text-white p-1 border border-zinc-700 w-4/6" value={answer.text}
                type="text" id={"answer-" + answer.index}
                onChange={(e) => changeAnswer({
                  isCorrect: answer.isCorrect,
