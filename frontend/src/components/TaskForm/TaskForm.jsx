@@ -3,11 +3,11 @@ import AnswerForm from "../AnswerForm";
 
 const TaskForm = ({
                     selectedTask,
-                    setSelectedTask,
+                    handleTaskChange,
                     handleTaskSave,
                     handleTaskDelete,
                     answers,
-                    setAnswers,
+                    handleAnswersChange,
                     MAXIMUM_NUMBER_OF_ANSWERS,
                     MINIMUM_NUMBER_OF_ANSWERS,
                     indexAnswers
@@ -16,21 +16,21 @@ const TaskForm = ({
   function changeCorrect(isCorrect, index) {
     const currentAnswer = answers.find((answer) => answer.index === index);
     currentAnswer.isCorrect = isCorrect;
-    setAnswers(() => answers);
+    handleAnswersChange(answers);
   }
 
   async function addAnswer() {
     const indexedAnswer = indexAnswers([{text: "", isCorrect: false, answerId: -1,}])[0];
-    setAnswers((answers) => [...answers, indexedAnswer]);
+    handleAnswersChange([...answers, indexedAnswer]);
   }
 
   function changeAnswer(answer) {
     const updatedAnswers = answers.map(currAnswer => currAnswer.index === answer.index ? answer : currAnswer);
-    setAnswers(updatedAnswers);
+    handleAnswersChange(updatedAnswers);
   }
 
   function deleteAnswer(answerIndex) {
-    setAnswers((answers) => [...answers.filter((answer) => answer.index !== answerIndex)]);
+    handleAnswersChange((answers) => [...answers.filter((answer) => answer.index !== answerIndex)]);
   }
 
   return (
@@ -40,7 +40,7 @@ const TaskForm = ({
           <label htmlFor={selectedTask.taskId + "question"} className="text-white">Question name: </label>
           <input className="bg-[#050409] text-white p-1 w-4/6 border border-zinc-700" id={selectedTask.taskId + "question"}
                  type="text" value={selectedTask.question}
-                 onChange={(e) => setSelectedTask({...selectedTask, question: e.target.value})}/>
+                 onChange={(e) => handleTaskChange({...selectedTask, question: e.target.value})}/>
         </div>
         <div className="mb-4">
           {answers.map((answer, i) => (
