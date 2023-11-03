@@ -41,38 +41,20 @@ const QuizEditor = () => {
     getQuiz();
   }, [quizId]);
 
-  async function addNewTask() {
-    setLoading(true);
+  function addNewTask() {
     if (selectedTask.taskId !== -1) {
-      let tempAnswerIndex = answerIndex;
-      const newAnswers = [];
-      for (let i = 0; i < MINIMUM_NUMBER_OF_ANSWERS; i++) {
-        newAnswers.push({text: "", isCorrect: false, index: tempAnswerIndex});
-        tempAnswerIndex++;
-      }
-      setAnswers(newAnswers);
-      setAnswerIndex(tempAnswerIndex);
-
+      addEmptyAnswers();
       setSelectedTask({...selectedTask, question: '', taskId: -1, taskIndex: taskList.length});
       setTaskList((taskIdList) => [...taskIdList, -1]);
-
       setEditing(true);
     }
     else {
       if (window.confirm("Are you leaving this question without saving?")) {
+        addEmptyAnswers()
         setSelectedTask({...selectedTask, question: ""});
-        const newAnswers = [];
-        let tempIndex = answerIndex;
-        for (let i = 0; i < MINIMUM_NUMBER_OF_ANSWERS; i++) {
-          newAnswers.push({text: "", isCorrect: false, index: tempIndex});
-          tempIndex++;
-        }
-        setAnswers(newAnswers);
-        setAnswerIndex(tempIndex);
+        setEditing(true);
       }
     }
-    setLoading(false);
-    setEditing(true);
   }
 
   async function selectTask(taskId) {
@@ -82,27 +64,15 @@ const QuizEditor = () => {
           setLoading(true);
           const newTask = await fetchDetailedTaskById(taskId);
           setTaskList((taskIdList) => [...taskIdList.filter((id) => id !== -1)]);
-          setSelectedTask({
-            ...selectedTask,
-            question: newTask.question,
-            taskId: newTask.taskId,
-            taskIndex: newTask.taskIndex
-          });
-          setAnswers(() => indexAnswers(newTask.answers));
-          setLoading(false);
+          updateTaskAndAnswersState(newTask);
           setEditing(true);
+          setLoading(false);
         }
       }
       else {
         setLoading(true);
         const newTask = await fetchDetailedTaskById(taskId);
-        setSelectedTask({
-          ...selectedTask,
-          question: newTask.question,
-          taskId: newTask.taskId,
-          taskIndex: newTask.taskIndex
-        });
-        setAnswers(() => indexAnswers(newTask.answers));
+        updateTaskAndAnswersState(newTask);
         setLoading(false);
         setEditing(true);
       }
@@ -183,7 +153,7 @@ const QuizEditor = () => {
     let answerIndexes = answers.map((answer) => answer.index);
     answerList.map((answer) => {
       if (!("index" in answer) || answer.index === undefined) {
-        while (answerIndexes.includes(tempIndex)){
+        while (answerIndexes.includes(tempIndex)) {
           tempIndex++;
         }
         answer.index = tempIndex;
@@ -211,63 +181,92 @@ const QuizEditor = () => {
     }
   }
 
+  function addEmptyAnswers() {
+    let tempAnswerIndex = answerIndex;
+    const newAnswers = [];
+    for (let i = 0; i < MINIMUM_NUMBER_OF_ANSWERS; i++) {
+      newAnswers.push({text: "", isCorrect: false, index: tempAnswerIndex});
+      tempAnswerIndex++;
+    }
+    setAnswers(newAnswers);
+    setAnswerIndex(tempAnswerIndex);
+  }
+
+  function updateTaskAndAnswersState(newTask) {
+    setSelectedTask({
+      ...selectedTask,
+      question: newTask.question,
+      taskId: newTask.taskId,
+      taskIndex: newTask.taskIndex
+    });
+    setAnswers(() => indexAnswers(newTask.answers));
+  }
+
+  function handleTaskChange(task){
+    setSelectedTask(task);
+  }
+
+  function handleAnswersChange(answers){
+    setAnswers(answers);
+  }
+
   return (
     <>
       {/*{loading ? <Loading/>*/}
       {/*  :*/}
-        <div className="h-[calc(100%-52px)] fixed bg-inherit w-full grid grid-cols-12">
-          <div className="max-h-4/6 p-2 pl-6 mt-10 grid grid-cols-1 col-span-2 auto-rows-min">
-            <div className="max-h-[65vh] overflow-auto pt-1 pb-1 grid grid-cols-1 gap-1">
-              {taskList.map((task, i) => {
-                return <button key={"task" + task}
-                               className={`text-white font-bold p-4 
+      <div className="h-[calc(100%-52px)] fixed bg-inherit w-full grid grid-cols-12">
+        <div className="max-h-4/6 p-2 pl-6 mt-10 grid grid-cols-1 col-span-2 auto-rows-min">
+          <div className="max-h-[65vh] overflow-auto pt-1 pb-1 grid grid-cols-1 gap-1">
+            {taskList.map((task, i) => {
+              return <button key={"task" + task}
+                             className={`text-white font-bold p-4 
                                ${selectedTask === null ? "bg-neon-blue hover:bg-neon2-blue" : task === selectedTask.taskId
-                                 ? "bg-neon-pink hover:bg-neon2-pink" : "bg-neon-blue hover:bg-neon2-blue"} hover:cursor-pointer`}
-                               onClick={() => selectTask(task)}>{i + 1}. Question
-                </button>
-              })}
-            </div>
-            <button
-              className="h-fit text-white font-bold p-4 mt-4 bg-green-800 hover:bg-green-700 hover:cursor-pointer"
-              onClick={() => addNewTask()}>Add Question
-            </button>
+                               ? "bg-neon-pink hover:bg-neon2-pink" : "bg-neon-blue hover:bg-neon2-blue"} hover:cursor-pointer`}
+                             onClick={() => selectTask(task)}>{i + 1}. Question
+              </button>
+            })}
           </div>
-          <div className="ml-20 w-full pl-4 pt-12 col-span-8">
-            <div>
-              <label htmlFor="name" className="text-white text-xl">Quiz title: </label>
-              <input className="p-2 text-xl bg-[#050409] text-white border-2 border-zinc-700 w-4/6"
-                     value={quiz.title}
-                     type="text" placeholder="Eg. My quiz" id="name"
-                     onChange={(e) => setQuiz({...quiz, title: e.target.value})}
-              />
-            </div>
-            <button
-              className="m-4 text-white w-24 font-bold p-4 bg-green-800 hover:bg-green-700 hover:cursor-pointer"
-              onClick={() => handleQuizSave()}>Save
-            </button>
-            <button
-              className="m-4 text-white w-24 font-bold p-4 bg-red-800 hover:bg-red-700 hover:cursor-pointer"
-              onClick={() => handleQuizDelete()}>Delete
-            </button>
-            <div className="pb-4 pt-8">
-              {editing
-                ? <>
-                  <TaskForm selectedTask={selectedTask}
-                            setSelectedTask={setSelectedTask}
-                            answers={answers}
-                            setAnswers={setAnswers}
-                            handleTaskSave={handleTaskSave}
-                            handleTaskDelete={handleTaskDelete}
-                            indexAnswers={indexAnswers}
-                            MAXIMUM_NUMBER_OF_ANSWERS={MAXIMUM_NUMBER_OF_ANSWERS}
-                            MINIMUM_NUMBER_OF_ANSWERS={MINIMUM_NUMBER_OF_ANSWERS}
-                  />
-                </>
-                : null
-              }
-            </div>
+          <button
+            className="h-fit text-white font-bold p-4 mt-4 bg-green-800 hover:bg-green-700 hover:cursor-pointer"
+            onClick={() => addNewTask()}>Add Question
+          </button>
+        </div>
+        <div className="ml-20 w-full pl-4 pt-12 col-span-8">
+          <div>
+            <label htmlFor="name" className="text-white text-xl">Quiz title: </label>
+            <input className="p-2 text-xl bg-[#050409] text-white border-2 border-zinc-700 w-4/6"
+                   value={quiz.title}
+                   type="text" placeholder="Eg. My quiz" id="name"
+                   onChange={(e) => setQuiz({...quiz, title: e.target.value})}
+            />
+          </div>
+          <button
+            className="m-4 text-white w-24 font-bold p-4 bg-green-800 hover:bg-green-700 hover:cursor-pointer"
+            onClick={() => handleQuizSave()}>Save
+          </button>
+          <button
+            className="m-4 text-white w-24 font-bold p-4 bg-red-800 hover:bg-red-700 hover:cursor-pointer"
+            onClick={() => handleQuizDelete()}>Delete
+          </button>
+          <div className="pb-4 pt-8">
+            {editing
+              ? <>
+                <TaskForm selectedTask={selectedTask}
+                          handleTaskChange={handleTaskChange}
+                          answers={answers}
+                          handleAnswersChange={handleAnswersChange}
+                          handleTaskSave={handleTaskSave}
+                          handleTaskDelete={handleTaskDelete}
+                          indexAnswers={indexAnswers}
+                          MAXIMUM_NUMBER_OF_ANSWERS={MAXIMUM_NUMBER_OF_ANSWERS}
+                          MINIMUM_NUMBER_OF_ANSWERS={MINIMUM_NUMBER_OF_ANSWERS}
+                />
+              </>
+              : null
+            }
           </div>
         </div>
+      </div>
       {/*}*/}
     </>
   );
