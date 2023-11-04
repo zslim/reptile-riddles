@@ -1,4 +1,4 @@
 package com.codecool.quizzzz.dto.task;
 
-public record QuestionDTO(String question) {
+public record QuestionDTO(String question, int taskIndex) {
 }
