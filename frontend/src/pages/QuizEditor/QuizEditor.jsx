@@ -72,8 +72,8 @@ const QuizEditor = () => {
         setLoading(true);
         const newTask = await fetchDetailedTaskById(taskId);
         updateTaskAndAnswersState(newTask);
-        setLoading(false);
         setEditing(true);
+        setLoading(false);
       }
     }
   }
@@ -88,17 +88,14 @@ const QuizEditor = () => {
           const savedTaskId = await saveTask(quizId, taskDTO);
           setTaskList((taskIdList) => [...(taskIdList.filter((id) => id !== -1)), savedTaskId]);
           setSelectedTask({...selectedTask, taskId: -2, taskIndex: -1, question: ''});
-
-          setEditing(false);
         }
         else {
           const taskDTO = selectedTask;
           taskDTO.answers = answers;
           await updateTask(selectedTask.taskId, taskDTO);
           setSelectedTask({...selectedTask, taskId: -2, taskIndex: -1, question: ''});
-
-          setEditing(false);
         }
+        setEditing(false);
       }
       catch (e) {
         console.error(e);
@@ -201,11 +198,11 @@ const QuizEditor = () => {
     setAnswers(() => indexAnswers(newTask.answers));
   }
 
-  function handleTaskChange(task){
+  function handleTaskChange(task) {
     setSelectedTask(task);
   }
 
-  function handleAnswersChange(answers){
+  function handleAnswersChange(answers) {
     setAnswers(answers);
   }
 
@@ -230,21 +227,13 @@ const QuizEditor = () => {
         </div>
         <div className="ml-20 w-full pl-4 pt-12 col-span-8">
           <div>
-            <label htmlFor="name" className="text-white text-xl">Quiz title: </label>
-            <input className="p-2 text-xl bg-[#050409] text-white border-2 border-zinc-700 w-4/6"
+            <label htmlFor="name" className="text-white text-3xl">Quiz title: </label>
+            <input className="ml-6 w-4/6 p-3 text-3xl bg-[#050409] text-white border-2 border-zinc-700"
                    value={quiz.title}
                    type="text" placeholder="Eg. My quiz" id="name"
                    onChange={(e) => setQuiz({...quiz, title: e.target.value})}
             />
           </div>
-          <button
-            className="m-4 text-white w-24 font-bold p-4 bg-green-800 hover:bg-green-700 hover:cursor-pointer"
-            onClick={() => handleQuizSave()}>Save
-          </button>
-          <button
-            className="m-4 text-white w-24 font-bold p-4 bg-red-800 hover:bg-red-700 hover:cursor-pointer"
-            onClick={() => handleQuizDelete()}>Delete
-          </button>
           <div className="pb-4 pt-8">
             {editing
               ? <>
@@ -262,6 +251,14 @@ const QuizEditor = () => {
               : null
             }
           </div>
+          <button
+            className="mr-4 mt-6 text-white w-40 font-bold p-4 bg-green-800 hover:bg-green-700 hover:cursor-pointer"
+            onClick={() => handleQuizSave()}>Save quiz
+          </button>
+          <button
+            className="mt-6 text-white w-40 font-bold p-4 bg-red-800 hover:bg-red-700 hover:cursor-pointer"
+            onClick={() => handleQuizDelete()}>Delete quiz
+          </button>
         </div>
       </div>
     </>
