@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/answer")
@@ -18,13 +19,13 @@ public class AnswerController {
   }
 
   @PostMapping("/task/{taskId}")
-  public ResponseEntity<Long> createAnswer(@PathVariable Long taskId, @RequestBody EditorAnswerDTO editorAnswerDTO) {
-    Long answerId = answerService.create(taskId, editorAnswerDTO);
-    return ResponseEntity.created(URI.create("/answer/" + answerId)).body(answerId);
+  public ResponseEntity<LocalDateTime> createAnswer(@PathVariable Long taskId, @RequestBody EditorAnswerDTO editorAnswerDTO) {
+    LocalDateTime modifiedAt = answerService.create(taskId, editorAnswerDTO);
+    return ResponseEntity.created(URI.create("/answer")).body(modifiedAt);
   }
 
   @PatchMapping("/update/{answerId}")
-  public ResponseEntity<Long> updateAnswer(@PathVariable Long answerId, @RequestBody EditorAnswerDTO editorAnswerDTO) {
+  public ResponseEntity<LocalDateTime> updateAnswer(@PathVariable Long answerId, @RequestBody EditorAnswerDTO editorAnswerDTO) {
     return ResponseEntity.ok().body(answerService.update(answerId, editorAnswerDTO));
   }
 

@@ -118,11 +118,12 @@ public class TaskService {
     return new EditorTaskDTO(task.getId(),
                              task.getIndex(),
                              task.getQuestion(),
-                             convertAnswerListToDetailedAnswerDTO(answerRepository.findAllByTaskId(task.getId())));
+                             convertAnswerListToDetailedAnswerDTO(answerRepository.findAllByTaskId(task.getId())),
+                             task.getModifiedAt());
   }
 
   private BriefTaskDTO modelToBriefDTO(Task task) {
-    return new BriefTaskDTO(task.getId(), task.getIndex(), task.getQuestion());
+    return new BriefTaskDTO(task.getId(), task.getIndex(), task.getQuestion(), task.getModifiedAt());
   }
 
   private List<GameAnswerDTO> convertAnswerListToAnswerDTOList(List<Answer> answerList) {
@@ -138,7 +139,7 @@ public class TaskService {
   }
 
   private EditorAnswerDTO convertAnswerModelToDetailedAnswerDTO(Answer answer) {
-    return new EditorAnswerDTO(answer.getId(), answer.getText(), answer.isCorrect());
+    return new EditorAnswerDTO(answer.getId(), answer.getText(), answer.isCorrect(), answer.getModifiedAt());
   }
 
   private void updateTaskFromDTO(Task task, EditorTaskDTO editorTaskDTO) {
@@ -153,7 +154,7 @@ public class TaskService {
     }
   }
 
-  public Long createQuestion(Long quizId, QuestionDTO questionDTO) {
+  public BriefTaskDTO createQuestion(Long quizId, QuestionDTO questionDTO) {
     Task newTask = new Task();
     Quiz quiz = quizRepository.findById(quizId)
                               .orElseThrow(() -> new NotFoundException(String.format("There is no quiz with quizId %d",
@@ -161,15 +162,25 @@ public class TaskService {
     newTask.setQuiz(quiz);
     newTask.setQuestion(questionDTO.question());
     newTask.setIndex(questionDTO.taskIndex());
-    return taskRepository.save(newTask).getId();
+    Long id = taskRepository.save(newTask).getId();
+    Task savedTask = taskRepository.findById(id).get();
+    return new BriefTaskDTO(savedTask.getId(),
+                            savedTask.getIndex(),
+                            savedTask.getQuestion(),
+                            savedTask.getModifiedAt());
   }
 
-  public Long updateQuestion(Long taskId, QuestionDTO questionDTO) {
+  public BriefTaskDTO updateQuestion(Long taskId, QuestionDTO questionDTO) {
     Task task = taskRepository.findById(taskId)
                               .orElseThrow(() -> new NotFoundException(String.format("There is no task with taskId %d",
                                                                                      taskId)));
     task.setQuestion(questionDTO.question());
     task.setIndex(questionDTO.taskIndex());
-    return taskRepository.save(task).getId();
+    Long id = taskRepository.save(task).getId();
+    Task updatedTask = taskRepository.findById(id).get();
+    return new BriefTaskDTO(updatedTask.getId(),
+                            updatedTask.getIndex(),
+                            updatedTask.getQuestion(),
+                            updatedTask.getModifiedAt());
   }
 }

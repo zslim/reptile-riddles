@@ -51,12 +51,12 @@ public class TaskController {
   }
 
   @PostMapping("/question/{quizId}")
-  public ResponseEntity<Long> createNewQuestion(@PathVariable Long quizId, @RequestBody QuestionDTO questionDTO) {
+  public ResponseEntity<BriefTaskDTO> createNewQuestion(@PathVariable Long quizId, @RequestBody QuestionDTO questionDTO) {
     return ResponseEntity.ok().body(taskService.createQuestion(quizId, questionDTO));
   }
 
   @PatchMapping("/question/{taskId}")
-  public ResponseEntity<Long> updateQuestion(@PathVariable Long taskId, @RequestBody QuestionDTO questionDTO) {
+  public ResponseEntity<BriefTaskDTO> updateQuestion(@PathVariable Long taskId, @RequestBody QuestionDTO questionDTO) {
     return ResponseEntity.ok().body(taskService.updateQuestion(taskId, questionDTO));
   }
 

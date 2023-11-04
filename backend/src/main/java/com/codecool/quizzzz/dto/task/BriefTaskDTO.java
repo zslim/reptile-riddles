@@ -1,4 +1,6 @@
 package com.codecool.quizzzz.dto.task;
 
-public record BriefTaskDTO(Long taskId, int taskIndex, String question) {
+import java.time.LocalDateTime;
+
+public record BriefTaskDTO(Long taskId, int taskIndex, String question, LocalDateTime modifiedAt) {
 }
