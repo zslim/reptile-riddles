@@ -3,6 +3,7 @@ package com.codecool.quizzzz.controller;
 import com.codecool.quizzzz.dto.task.BriefTaskDTO;
 import com.codecool.quizzzz.dto.task.EditorTaskDTO;
 import com.codecool.quizzzz.dto.task.GameTaskDTO;
+import com.codecool.quizzzz.dto.task.QuestionDTO;
 import com.codecool.quizzzz.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +48,16 @@ public class TaskController {
   @PostMapping("/quiz/{quizId}")
   public ResponseEntity<Long> createNewTask(@PathVariable Long quizId, @RequestBody EditorTaskDTO editorTaskDTO) {
     return ResponseEntity.ok().body(taskService.create(quizId, editorTaskDTO));
+  }
+
+  @PostMapping("/question/{quizId}")
+  public ResponseEntity<Long> createNewQuestion(@PathVariable Long quizId, @RequestBody QuestionDTO questionDTO) {
+    return ResponseEntity.ok().body(taskService.createQuestion(quizId, questionDTO));
+  }
+
+  @PatchMapping("/question/{taskId}")
+  public ResponseEntity<Long> updateQuestion(@PathVariable Long taskId, @RequestBody QuestionDTO questionDTO) {
+    return ResponseEntity.ok().body(taskService.updateQuestion(taskId, questionDTO));
   }
 
   @PatchMapping("/{taskId}")

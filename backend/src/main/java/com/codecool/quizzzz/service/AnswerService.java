@@ -1,7 +1,6 @@
 package com.codecool.quizzzz.service;
 
 import com.codecool.quizzzz.dto.answer.EditorAnswerDTO;
-import com.codecool.quizzzz.dto.answer.NewAnswerDTO;
 import com.codecool.quizzzz.exception.NotFoundException;
 import com.codecool.quizzzz.model.Answer;
 import com.codecool.quizzzz.model.Task;
@@ -32,8 +31,8 @@ public class AnswerService {
     return answerRepository.save(newAnswer).getId();
   }
 
-  public Long update(EditorAnswerDTO editorAnswerDTO) {
-    Answer answer = answerRepository.findById(editorAnswerDTO.answerId())
+  public Long update(Long answerId, EditorAnswerDTO editorAnswerDTO) {
+    Answer answer = answerRepository.findById(answerId)
                                     .orElseThrow(() -> new NotFoundException(String.format(
                                             "There is no answer with answerId: %d",
                                             editorAnswerDTO.answerId())));
@@ -47,5 +46,9 @@ public class AnswerService {
                            .orElseThrow(() -> new NotFoundException(String.format("There is no answer with answerId: %d",
                                                                                   answerId)))
                            .isCorrect();
+  }
+
+  public void delete(Long answerId) {
+    answerRepository.deleteById(answerId);
   }
 }

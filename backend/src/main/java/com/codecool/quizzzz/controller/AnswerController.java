@@ -23,9 +23,15 @@ public class AnswerController {
     return ResponseEntity.created(URI.create("/answer/" + answerId)).body(answerId);
   }
 
-  @PatchMapping("/update")
-  public ResponseEntity<Long> updateAnswer(@RequestBody EditorAnswerDTO editorAnswerDTO) {
-    return ResponseEntity.ok().body(answerService.update(editorAnswerDTO));
+  @PatchMapping("/update/{answerId}")
+  public ResponseEntity<Long> updateAnswer(@PathVariable Long answerId, @RequestBody EditorAnswerDTO editorAnswerDTO) {
+    return ResponseEntity.ok().body(answerService.update(answerId, editorAnswerDTO));
+  }
+
+  @DeleteMapping("/{answerId}")
+  public ResponseEntity<Long> deleteAnswer(@PathVariable Long answerId) {
+    answerService.delete(answerId);
+    return ResponseEntity.ok(answerId);
   }
 
   @GetMapping("/validate/{answerId}")

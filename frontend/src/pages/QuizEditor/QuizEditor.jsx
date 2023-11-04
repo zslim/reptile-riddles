@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { deleteQuizById, fetchQuizById, updateQuizName } from "../../controllers/quizProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  deleteTaskById, fetchDetailedTaskById,
-  saveTask, updateTask
+  deleteTaskById, fetchDetailedTaskById, saveQuestion,
+  saveTask, updateQuestion, updateTask
 } from "../../controllers/taskProvider";
 import TaskForm from "../../components/TaskForm/TaskForm";
+import { deleteAnswerById, magicalAnswerUpdate, saveAnswerList, updateAnswer } from "../../controllers/answerProvider";
 
 const QuizEditor = () => {
   const {quizId} = useParams();
@@ -17,8 +18,10 @@ const QuizEditor = () => {
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState(false);
   const navigate = useNavigate();
+  const [currentQuizInDb, setCurrentQuizInDb] = useState({title: ''});
+  const [currentTaskInDb, setCurrentTaskInDb] = useState({taskId: -10, taskIndex: -10, question: ''});
+  const [currentAnswersInDb, setCurrentAnswersInDb] = useState([]);
 
-  let currentTaskInDb = {};
   const MAXIMUM_NUMBER_OF_ANSWERS = 6;
   const MINIMUM_NUMBER_OF_ANSWERS = 2;
 
@@ -27,6 +30,7 @@ const QuizEditor = () => {
       try {
         setLoading(true);
         const newQuiz = await fetchQuizById(quizId);
+        setCurrentQuizInDb({...setCurrentQuizInDb, title: newQuiz.title});
         setQuiz({...quiz, title: newQuiz.title});
         setTaskList([...newQuiz.taskIdList]);
       }
@@ -44,13 +48,15 @@ const QuizEditor = () => {
   function addNewTask() {
     if (selectedTask.taskId !== -1) {
       addEmptyAnswers();
+      resetTaskData();
       setSelectedTask({...selectedTask, question: '', taskId: -1, taskIndex: taskList.length});
       setTaskList((taskIdList) => [...taskIdList, -1]);
       setEditing(true);
     }
     else {
       if (window.confirm("Are you leaving this question without saving?")) {
-        addEmptyAnswers()
+        addEmptyAnswers();
+        resetTaskData();
         setSelectedTask({...selectedTask, question: ""});
         setEditing(true);
       }
@@ -58,8 +64,9 @@ const QuizEditor = () => {
   }
 
   async function selectTask(taskId) {
-    if (taskId !== -1) {
-      if (selectedTask.taskId === -1) {
+    if (taskId >= 0) {
+      if (selectedTask.taskId === -1 ||
+        (!checkTaskEquality(currentTaskInDb, selectedTask, currentAnswersInDb, answers) && selectedTask.taskId > 0)) {
         if (window.confirm("Are you leaving this question without saving?")) {
           setLoading(true);
           const newTask = await fetchDetailedTaskById(taskId);
@@ -80,31 +87,82 @@ const QuizEditor = () => {
   }
 
   async function handleTaskSave() {
-    if (window.confirm("Save changes?")) {
-      try {
-        setLoading(true);
-        if (selectedTask.taskId === -1 || selectedTask.taskId === undefined) {
-          const taskDTO = selectedTask;
-          taskDTO.answers = answers;
-          const savedTaskId = await saveTask(quizId, taskDTO);
-          setTaskList((taskIdList) => [...(taskIdList.filter((id) => id !== -1)), savedTaskId]);
-          setSelectedTask({...selectedTask, taskId: -2, taskIndex: -1, question: ''});
-        }
-        else {
-          const taskDTO = selectedTask;
-          taskDTO.answers = answers;
-          await updateTask(selectedTask.taskId, taskDTO);
-          setSelectedTask({...selectedTask, taskId: -2, taskIndex: -1, question: ''});
-        }
-        setEditing(false);
-      }
-      catch (e) {
-        console.error(e);
-      }
-      finally {
-        setLoading(false);
+    if (selectedTask.taskId === -1 || selectedTask.taskId === undefined) {
+      if (window.confirm("Save new task?")) {
+        await saveNewTask();
       }
     }
+    else if (!checkTaskEquality(currentTaskInDb, selectedTask, currentAnswersInDb, answers)) {
+      if (window.confirm("Save changes?")) {
+        await updateExistingTask();
+      }
+    }
+  }
+
+  async function saveNewTask() {
+    try {
+      setLoading(true);
+      const savedTaskId = await saveQuestion(quizId, selectedTask);
+      await saveAnswerList(savedTaskId, answers);
+      resetTaskData();
+      setTaskList((taskIdList) => [...(taskIdList.filter((id) => id !== -1)), savedTaskId]);
+      setSelectedTask({...selectedTask, taskId: -2, taskIndex: -1, question: ''});
+      setEditing(false);
+    }
+    catch (e) {
+      console.error(e);
+    }
+    finally {
+      setLoading(false);
+    }
+  }
+
+  async function updateExistingTask() {
+    try {
+      setLoading(true);
+      const taskDTO = selectedTask;
+      taskDTO.answers = answers;
+      await updateChangedObjects();
+      resetTaskData();
+      setSelectedTask({...selectedTask, taskId: -2, taskIndex: -1, question: ''});
+      setEditing(false);
+    }
+    catch (e) {
+      console.error(e);
+    }
+    finally {
+      setLoading(false);
+    }
+  }
+
+  async function updateChangedObjects() {
+    if (!checkEqualityOnFieldsInDb(currentTaskInDb, selectedTask)) {
+      await updateQuestion(selectedTask.taskId, selectedTask);
+    }
+    await updateChangedAnswers();
+  }
+
+  async function updateChangedAnswers() {
+    let answersToPost = [];
+    let answersToUpdate = [];
+    let answersToDelete = [];
+
+    for (const answer of currentAnswersInDb) {
+      const answerWithMatchingId = answers.find((a) => a.answerId === answer.answerId);
+      if (answerWithMatchingId === undefined) {
+        answersToDelete.push(answer);
+      }
+      else if (!checkEqualityOnFieldsInDb(answer, answerWithMatchingId)) {
+        answersToUpdate.push(answerWithMatchingId);
+      }
+    }
+    for (const answer of answers) {
+      if (currentAnswersInDb.find((a) => a.answerId === answer.answerId) === undefined) {
+        answersToPost.push(answer);
+      }
+    }
+
+    await magicalAnswerUpdate(answersToDelete, answersToUpdate, answersToPost, selectedTask.taskId);
   }
 
   async function handleTaskDelete() {
@@ -113,6 +171,7 @@ const QuizEditor = () => {
         setLoading(true);
         if (selectedTask.taskId !== -1) {
           await deleteTaskById(selectedTask.taskId);
+          resetTaskData();
         }
         setTaskList((taskIdList) => [...taskIdList.filter((task) => task !== selectedTask.taskId)]);
         setSelectedTask({...selectedTask, taskId: -2, taskIndex: -1, question: ''});
@@ -129,7 +188,8 @@ const QuizEditor = () => {
   }
 
   async function handleQuizSave() {
-    if (window.confirm("Save changes?")) {
+    if (editing) {
+      await handleTaskSave();
       try {
         setLoading(true);
         await updateQuizName(quiz.title, quizId);
@@ -140,6 +200,27 @@ const QuizEditor = () => {
       }
       finally {
         setLoading(false);
+      }
+
+    }
+    else {
+      if (!checkEqualityOnFieldsInDb(currentQuizInDb, quiz)) {
+        if (window.confirm("Save changes?")) {
+          try {
+            setLoading(true);
+            await updateQuizName(quiz.title, quizId);
+            navigate("/quiz/all");
+          }
+          catch (e) {
+            console.error(e);
+          }
+          finally {
+            setLoading(false);
+          }
+        }
+      }
+      else {
+        navigate("/quiz/all");
       }
     }
   }
@@ -190,19 +271,59 @@ const QuizEditor = () => {
   }
 
   function updateTaskAndAnswersState(newTask) {
+    setCurrentTaskInDb({
+      ...currentTaskInDb,
+      question: newTask.question,
+      taskId: newTask.taskId,
+      taskIndex: newTask.taskIndex
+    });
     setSelectedTask({
       ...selectedTask,
       question: newTask.question,
       taskId: newTask.taskId,
       taskIndex: newTask.taskIndex
     });
+    setCurrentAnswersInDb(newTask.answers);
     setAnswers(() => indexAnswers(newTask.answers));
+  }
+
+  function resetTaskData() {
+    setCurrentTaskInDb({
+      ...currentTaskInDb,
+      question: "",
+      taskId: -10,
+      taskIndex: -10
+    });
+    setCurrentAnswersInDb([]);
   }
 
   function checkEqualityOnFieldsInDb(objectInDb, objectOnFrontend) {
     let isEqual = true;
     for (const [key, data] of Object.entries(objectInDb)) {
       if (objectOnFrontend[key] !== data) {
+        isEqual = false;
+      }
+    }
+    if (Object.entries(objectInDb) < 1) {
+      isEqual = false;
+    }
+    return isEqual;
+  }
+
+  function checkTaskEquality(taskInDb, taskOnFrontend, answersInDb, answersOnFrontend) {
+    let isEqual = true;
+    if (checkEqualityOnFieldsInDb(taskInDb, taskOnFrontend) === false) {
+      isEqual = false;
+    }
+    if (answersInDb.length !== answersOnFrontend.length) {
+      isEqual = false;
+    }
+    for (const answer of answersInDb) {
+      const answerWithMatchingId = answersOnFrontend.find((a) => a.answerId === answer.answerId);
+      if (answerWithMatchingId === undefined) {
+        isEqual = false;
+      }
+      else if (checkEqualityOnFieldsInDb(answer, answerWithMatchingId) === false) {
         isEqual = false;
       }
     }

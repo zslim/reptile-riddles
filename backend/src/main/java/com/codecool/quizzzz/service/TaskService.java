@@ -5,6 +5,7 @@ import com.codecool.quizzzz.dto.answer.GameAnswerDTO;
 import com.codecool.quizzzz.dto.task.BriefTaskDTO;
 import com.codecool.quizzzz.dto.task.EditorTaskDTO;
 import com.codecool.quizzzz.dto.task.GameTaskDTO;
+import com.codecool.quizzzz.dto.task.QuestionDTO;
 import com.codecool.quizzzz.exception.NotFoundException;
 import com.codecool.quizzzz.model.Answer;
 import com.codecool.quizzzz.model.Quiz;
@@ -150,5 +151,25 @@ public class TaskService {
       newAnswer.setCorrect(editorAnswerDTO.isCorrect());
       task.addAnswer(newAnswer);
     }
+  }
+
+  public Long createQuestion(Long quizId, QuestionDTO questionDTO) {
+    Task newTask = new Task();
+    Quiz quiz = quizRepository.findById(quizId)
+                              .orElseThrow(() -> new NotFoundException(String.format("There is no quiz with quizId %d",
+                                                                                     quizId)));
+    newTask.setQuiz(quiz);
+    newTask.setQuestion(questionDTO.question());
+    newTask.setIndex(questionDTO.taskIndex());
+    return taskRepository.save(newTask).getId();
+  }
+
+  public Long updateQuestion(Long taskId, QuestionDTO questionDTO) {
+    Task task = taskRepository.findById(taskId)
+                              .orElseThrow(() -> new NotFoundException(String.format("There is no task with taskId %d",
+                                                                                     taskId)));
+    task.setQuestion(questionDTO.question());
+    task.setIndex(questionDTO.taskIndex());
+    return taskRepository.save(task).getId();
   }
 }
