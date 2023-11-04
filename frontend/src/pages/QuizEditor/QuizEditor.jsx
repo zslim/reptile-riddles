@@ -145,7 +145,6 @@ const QuizEditor = () => {
     try {
       setLoading(true);
       const newTask = await fetchDetailedTaskById(taskId);
-      console.log(newTask);
       updateTaskState(newTask);
       setEditing(true);
     }
@@ -164,10 +163,14 @@ const QuizEditor = () => {
       }
       else {
         await saveTask();
+        const modifiedAt = await fetchModifiedAtById(quizId);
+        setQuiz({...quiz, modifiedAt: modifiedAt});
       }
     }
     else {
       await saveTask();
+      const modifiedAt = await fetchModifiedAtById(quizId);
+      setQuiz({...quiz, modifiedAt: modifiedAt});
     }
   }
 
@@ -181,6 +184,10 @@ const QuizEditor = () => {
       if (window.confirm("Save changes?")) {
         await updateExistingTask();
       }
+    } else {
+      setEditing(false);
+      resetSelectedTaskState();
+      resetTaskDatabaseStatus();
     }
   }
 
@@ -190,8 +197,6 @@ const QuizEditor = () => {
       const savedTask = await saveQuestion(quizId, selectedTask);
       setQuiz({...quiz, modifiedAt: savedTask.modifiedAt});
       await saveAnswerList(savedTask.taskId, answers);
-      const modifiedAt = await fetchModifiedAtById(quizId);
-      setQuiz({...quiz, modifiedAt: modifiedAt});
       resetTaskDatabaseStatus();
       setTaskList((taskList) => [...(taskList.filter((task) => task.taskId !== -1)), savedTask]);
       setSelectedTask({...selectedTask, taskId: -2, taskIndex: -1, question: ''});
@@ -227,8 +232,6 @@ const QuizEditor = () => {
       setTaskList([...taskList.map((task) => task.taskId === updatedQuestion.taskId ? updatedQuestion : task)]);
     }
     await updateChangedAnswers();
-    const modifiedAt = await fetchModifiedAtById(quizId);
-    setQuiz({...quiz, modifiedAt: modifiedAt});
   }
 
   async function updateChangedAnswers() {
@@ -301,7 +304,8 @@ const QuizEditor = () => {
       else {
         await saveQuiz();
       }
-    } else {
+    }
+    else {
       await saveQuiz();
     }
   }
@@ -312,13 +316,8 @@ const QuizEditor = () => {
       await saveQuizName();
     }
     else {
-      if (!checkEqualityOnFieldsInDb(currentQuizInDb, quiz)) {
-        if (window.confirm("Save changes?")) {
-          await saveQuizName()
-        }
-      }
-      else {
-        navigate("/quiz/all");
+      if (window.confirm("Save changes?")) {
+        await saveQuizName()
       }
     }
   }
@@ -483,7 +482,6 @@ const QuizEditor = () => {
         <div className="max-h-4/6 p-2 pl-6 mt-10 grid grid-cols-1 col-span-2 auto-rows-min">
           <div className="max-h-[65vh] overflow-auto pt-1 pb-1 grid grid-cols-1 gap-1">
             {taskList.map((task, i) => {
-              console.log(task);
               return <button key={"task" + task.taskId}
                              className={`text-white font-bold p-4 
                                ${selectedTask === null ? "bg-neon-blue hover:bg-neon2-blue" : task.taskId === selectedTask.taskId
