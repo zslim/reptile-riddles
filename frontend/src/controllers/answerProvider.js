@@ -14,10 +14,9 @@ async function saveAnswer(taskId, answer) {
 }
 
 async function saveAnswerList(taskId, answerList) {
-  const promises = [];
-  for (const answer of answerList) {
-    promises.push(await saveAnswer(taskId, answer));
-  }
+  const promises = answerList.map(async (answer) => {
+    return (await saveAnswer(taskId, answer))
+  });
   const resAll = await Promise.all(promises);
   return resAll.map((res) => res.json());
 }
@@ -28,6 +27,14 @@ async function deleteAnswerById(answerId) {
       "Content-Type": "application/json"
     }
   });
+}
+
+async function deleteAnswerList(answerList) {
+  const promises = answerList.map(async (answer) => {
+    return (await deleteAnswerById(answer.answerId))
+  });
+  const resAll = await Promise.all(promises);
+  return resAll.map((res) => res.json());
 }
 
 async function updateAnswer(answer) {
@@ -42,15 +49,10 @@ async function updateAnswer(answer) {
 
 async function magicalAnswerUpdate(answersToDelete, answersToUpdate, answersToSave, taskId) {
   const promises = [];
-  for (const answer of answersToDelete) {
-    promises.push(await deleteAnswerById(answer.answerId));
-  }
-  for (const answer of answersToUpdate) {
-    promises.push(await updateAnswer(answer));
-  }
-  for (const answer of answersToSave) {
-    promises.push(await saveAnswer(taskId, answer));
-  }
+  answersToDelete.map(async (answer) => promises.push(await deleteAnswerById(answer.answerId)));
+  answersToUpdate.map(async (answer) => promises.push(await updateAnswer(answer)));
+  answersToSave.map(async (answer) => promises.push(await saveAnswer(taskId, answer)));
+
   const resAll = await Promise.all(promises);
   return resAll.map((res) => res.json());
 }
@@ -58,5 +60,6 @@ async function magicalAnswerUpdate(answersToDelete, answersToUpdate, answersToSa
 module.exports = {
   validateAnswer,
   saveAnswerList,
+  deleteAnswerList,
   magicalAnswerUpdate
 };

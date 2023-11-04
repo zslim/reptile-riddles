@@ -2,22 +2,28 @@ import React, { useEffect, useState } from 'react';
 import { deleteQuizById, fetchQuizById, updateQuizName } from "../../controllers/quizProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  deleteTaskById, fetchDetailedTaskById, saveQuestion,
-  saveTask, updateQuestion, updateTask
+  deleteTaskById, fetchDetailedTaskById, saveQuestion, updateQuestion,
 } from "../../controllers/taskProvider";
 import TaskForm from "../../components/TaskForm/TaskForm";
-import { deleteAnswerById, magicalAnswerUpdate, saveAnswerList, updateAnswer } from "../../controllers/answerProvider";
+import {
+  deleteAnswerList,
+  magicalAnswerUpdate,
+  saveAnswerList,
+} from "../../controllers/answerProvider";
 
 const QuizEditor = () => {
   const {quizId} = useParams();
+  const navigate = useNavigate();
+
   const [taskList, setTaskList] = useState([]);
   const [selectedTask, setSelectedTask] = useState({taskId: -2, taskIndex: -1, question: ''});
   const [quiz, setQuiz] = useState({title: ''});
   const [answers, setAnswers] = useState([]);
+
   const [answerIndex, setAnswerIndex] = useState(1);
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState(false);
-  const navigate = useNavigate();
+
   const [currentQuizInDb, setCurrentQuizInDb] = useState({title: ''});
   const [currentTaskInDb, setCurrentTaskInDb] = useState({taskId: -10, taskIndex: -10, question: ''});
   const [currentAnswersInDb, setCurrentAnswersInDb] = useState([]);
@@ -120,8 +126,6 @@ const QuizEditor = () => {
   async function updateExistingTask() {
     try {
       setLoading(true);
-      const taskDTO = selectedTask;
-      taskDTO.answers = answers;
       await updateChangedObjects();
       resetTaskData();
       setSelectedTask({...selectedTask, taskId: -2, taskIndex: -1, question: ''});
@@ -171,6 +175,7 @@ const QuizEditor = () => {
         setLoading(true);
         if (selectedTask.taskId !== -1) {
           await deleteTaskById(selectedTask.taskId);
+          await deleteAnswerList(answers);
           resetTaskData();
         }
         setTaskList((taskIdList) => [...taskIdList.filter((task) => task !== selectedTask.taskId)]);
@@ -190,38 +195,31 @@ const QuizEditor = () => {
   async function handleQuizSave() {
     if (editing) {
       await handleTaskSave();
-      try {
-        setLoading(true);
-        await updateQuizName(quiz.title, quizId);
-        navigate("/quiz/all");
-      }
-      catch (e) {
-        console.error(e);
-      }
-      finally {
-        setLoading(false);
-      }
-
+      await saveQuiz();
     }
     else {
       if (!checkEqualityOnFieldsInDb(currentQuizInDb, quiz)) {
         if (window.confirm("Save changes?")) {
-          try {
-            setLoading(true);
-            await updateQuizName(quiz.title, quizId);
-            navigate("/quiz/all");
-          }
-          catch (e) {
-            console.error(e);
-          }
-          finally {
-            setLoading(false);
-          }
+          await saveQuiz()
         }
       }
       else {
         navigate("/quiz/all");
       }
+    }
+  }
+
+  async function saveQuiz() {
+    try {
+      setLoading(true);
+      await updateQuizName(quiz.title, quizId);
+      navigate("/quiz/all");
+    }
+    catch (e) {
+      console.error(e);
+    }
+    finally {
+      setLoading(false);
     }
   }
 
