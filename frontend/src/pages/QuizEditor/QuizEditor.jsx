@@ -18,6 +18,7 @@ const QuizEditor = () => {
   const [editing, setEditing] = useState(false);
   const navigate = useNavigate();
 
+  let currentTaskInDb = {};
   const MAXIMUM_NUMBER_OF_ANSWERS = 6;
   const MINIMUM_NUMBER_OF_ANSWERS = 2;
 
@@ -196,6 +197,16 @@ const QuizEditor = () => {
       taskIndex: newTask.taskIndex
     });
     setAnswers(() => indexAnswers(newTask.answers));
+  }
+
+  function checkEqualityOnFieldsInDb(objectInDb, objectOnFrontend) {
+    let isEqual = true;
+    for (const [key, data] of Object.entries(objectInDb)) {
+      if (objectOnFrontend[key] !== data) {
+        isEqual = false;
+      }
+    }
+    return isEqual;
   }
 
   function handleTaskChange(task) {
