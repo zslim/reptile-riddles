@@ -106,8 +106,9 @@ const QuizEditor = () => {
   function addTask() {
     addEmptyAnswers();
     resetTaskDatabaseStatus();
-    setSelectedTask({...selectedTask, question: '', taskId: -1, taskIndex: taskList.length});
-    setTaskList((taskList) => [...taskList, {taskId: -1, question: '', taskIndex: taskList.length}]);
+    const taskIndex = calculateTaskIndex();
+    setSelectedTask({...selectedTask, question: '', taskId: -1, taskIndex: taskIndex});
+    setTaskList((taskList) => [...taskList, {taskId: -1, question: '', taskIndex: taskIndex}]);
     setEditing(true);
   }
 
@@ -300,6 +301,7 @@ const QuizEditor = () => {
       else {
         await saveQuiz();
       }
+    } else {
       await saveQuiz();
     }
   }
@@ -335,6 +337,22 @@ const QuizEditor = () => {
     }
   }
 
+  async function handleQuizDelete() {
+    if (window.confirm("Delete?")) {
+      try {
+        setLoading(true);
+        await deleteQuizById(quizId);
+        navigate("/quiz/all");
+      }
+      catch (e) {
+        console.error(e);
+      }
+      finally {
+        setLoading(false);
+      }
+    }
+  }
+
   function indexAnswers(answerList) {
     let indexedAnswers = [];
     let tempIndex = answerIndex;
@@ -353,20 +371,10 @@ const QuizEditor = () => {
     return indexedAnswers;
   }
 
-  async function handleQuizDelete() {
-    if (window.confirm("Delete?")) {
-      try {
-        setLoading(true);
-        await deleteQuizById(quizId);
-        navigate("/quiz/all");
-      }
-      catch (e) {
-        console.error(e);
-      }
-      finally {
-        setLoading(false);
-      }
-    }
+  function calculateTaskIndex() {
+    let maxTaskIndex = -1;
+    taskList.map((task) => task.taskIndex > maxTaskIndex ? maxTaskIndex = task.taskIndex : null);
+    return maxTaskIndex + 1;
   }
 
   function addEmptyAnswers() {
