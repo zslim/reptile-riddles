@@ -65,7 +65,7 @@ public class QuizService {
                                      quiz.getTitle(),
                                      taskList,
                                      quiz.getCreatedAt(),
-                                     quiz.getModifiedAt());
+                                     quiz.getLastModifiedTimestamp());
   }
 
   private BriefTaskDTO convertTaskModelToBriefTaskDTO(Task task) {
