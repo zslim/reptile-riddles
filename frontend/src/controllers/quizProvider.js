@@ -35,10 +35,9 @@ async function deleteQuizById(quizId) {
   return await httpRes.json();
 }
 
-
 async function fetchModifiedAtById(quizId) {
   const httpRes = await fetch(`/quiz/modified/${quizId}`);
   return await httpRes.json();
 }
 
-module.exports = {updateQuizName, fetchQuizById, fetchAllQuizzes, saveEmptyQuiz, deleteQuizById};
+module.exports = {updateQuizName, fetchQuizById, fetchAllQuizzes, saveEmptyQuiz, deleteQuizById, fetchModifiedAtById};

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { deleteQuizById, fetchQuizById, updateQuizName } from "../../controllers/quizProvider";
+import { deleteQuizById, fetchModifiedAtById, fetchQuizById, updateQuizName } from "../../controllers/quizProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   deleteTaskById, fetchDetailedTaskById, saveQuestion, updateQuestion,
@@ -17,7 +17,7 @@ const QuizEditor = () => {
 
   const [taskList, setTaskList] = useState([]);
   const [selectedTask, setSelectedTask] = useState({taskId: -2, taskIndex: -1, question: ''});
-  const [quiz, setQuiz] = useState({title: ''});
+  const [quiz, setQuiz] = useState({title: '', modifiedAt: new Date(0)});
   const [answers, setAnswers] = useState([]);
 
   const [answerIndex, setAnswerIndex] = useState(1);
@@ -37,8 +37,8 @@ const QuizEditor = () => {
         setLoading(true);
         const newQuiz = await fetchQuizById(quizId);
         setCurrentQuizInDb({...setCurrentQuizInDb, title: newQuiz.title});
-        setQuiz({...quiz, title: newQuiz.title});
-        setTaskList([...newQuiz.taskIdList]);
+        setQuiz({...quiz, title: newQuiz.title, modifiedAt: newQuiz.modifiedAt});
+        setTaskList([...newQuiz.taskList]);
       }
       catch (error) {
         console.error(error);
@@ -51,54 +51,132 @@ const QuizEditor = () => {
     getQuiz();
   }, [quizId]);
 
+  async function getLatestQuizVersion() {
+    try {
+      setLoading(true);
+      setEditing(false);
+      resetTaskDatabaseStatus();
+      resetSelectedTaskState();
+      const newQuiz = await fetchQuizById(quizId);
+      setCurrentQuizInDb({...setCurrentQuizInDb, title: newQuiz.title});
+      setQuiz({...quiz, title: newQuiz.title, modifiedAt: newQuiz.modifiedAt});
+      setTaskList([...newQuiz.taskList]);
+    }
+    catch (e) {
+      console.error(e);
+    }
+    finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleTaskAddition() {
+    if (await checkLastQuizModification() !== quiz.modifiedAt) {
+      if (window.confirm("This quiz has been updated! Do you want to get the latest version?")) {
+        await getLatestQuizVersion();
+      }
+      else {
+        addNewTask();
+      }
+    }
+    else {
+      addNewTask();
+    }
+  }
+
   function addNewTask() {
-    if (selectedTask.taskId !== -1) {
-      addEmptyAnswers();
-      resetTaskData();
-      setSelectedTask({...selectedTask, question: '', taskId: -1, taskIndex: taskList.length});
-      setTaskList((taskIdList) => [...taskIdList, -1]);
-      setEditing(true);
+    if (selectedTask.taskId > 0 && !isEqualWithTaskInDatabase(currentTaskInDb, selectedTask, currentAnswersInDb, answers)) {
+      if (window.confirm("You have unsaved modifications! Are you discarding them?")) {
+        addTask();
+      }
+    }
+    else if (selectedTask.taskId !== -1) {
+      addTask();
     }
     else {
       if (window.confirm("Are you leaving this question without saving?")) {
         addEmptyAnswers();
-        resetTaskData();
+        resetTaskDatabaseStatus();
         setSelectedTask({...selectedTask, question: ""});
         setEditing(true);
       }
     }
   }
 
-  async function selectTask(taskId) {
+  function addTask() {
+    addEmptyAnswers();
+    resetTaskDatabaseStatus();
+    setSelectedTask({...selectedTask, question: '', taskId: -1, taskIndex: taskList.length});
+    setTaskList((taskList) => [...taskList, {taskId: -1, question: '', taskIndex: taskList.length}]);
+    setEditing(true);
+  }
+
+  async function handleTaskSelection(taskId) {
+    if (await checkLastQuizModification() !== quiz.modifiedAt) {
+      if (window.confirm("This quiz has been updated! Do you want to get the latest version?")) {
+        await getLatestQuizVersion();
+      }
+      else {
+        await selectNewTask(taskId);
+      }
+    }
+    else {
+      await selectNewTask(taskId);
+    }
+  }
+
+  async function selectNewTask(taskId) {
     if (taskId >= 0) {
       if (selectedTask.taskId === -1 ||
-        (!checkTaskEquality(currentTaskInDb, selectedTask, currentAnswersInDb, answers) && selectedTask.taskId > 0)) {
+        (!isEqualWithTaskInDatabase(currentTaskInDb, selectedTask, currentAnswersInDb, answers) && selectedTask.taskId > 0)) {
         if (window.confirm("Are you leaving this question without saving?")) {
-          setLoading(true);
-          const newTask = await fetchDetailedTaskById(taskId);
-          setTaskList((taskIdList) => [...taskIdList.filter((id) => id !== -1)]);
-          updateTaskAndAnswersState(newTask);
-          setEditing(true);
-          setLoading(false);
+          await selectTask(taskId);
+          setTaskList((taskList) => [...taskList.filter((task) => task.taskId !== -1)]);
         }
       }
       else {
-        setLoading(true);
-        const newTask = await fetchDetailedTaskById(taskId);
-        updateTaskAndAnswersState(newTask);
-        setEditing(true);
-        setLoading(false);
+        await selectTask(taskId);
       }
     }
   }
 
+  async function selectTask(taskId) {
+    try {
+      setLoading(true);
+      const newTask = await fetchDetailedTaskById(taskId);
+      console.log(newTask);
+      updateTaskState(newTask);
+      setEditing(true);
+    }
+    catch (e) {
+      console.error(e);
+    }
+    finally {
+      setLoading(false);
+    }
+  }
+
   async function handleTaskSave() {
+    if (await checkLastQuizModification() !== quiz.modifiedAt) {
+      if (window.confirm("This quiz has been updated! Do you want to get the latest version?")) {
+        await getLatestQuizVersion();
+      }
+      else {
+        await saveTask();
+      }
+    }
+    else {
+      await saveTask();
+    }
+  }
+
+  async function saveTask() {
     if (selectedTask.taskId === -1 || selectedTask.taskId === undefined) {
       if (window.confirm("Save new task?")) {
         await saveNewTask();
       }
     }
-    else if (!checkTaskEquality(currentTaskInDb, selectedTask, currentAnswersInDb, answers)) {
+    else if (!isEqualWithTaskInDatabase(currentTaskInDb, selectedTask, currentAnswersInDb, answers)) {
       if (window.confirm("Save changes?")) {
         await updateExistingTask();
       }
@@ -108,10 +186,13 @@ const QuizEditor = () => {
   async function saveNewTask() {
     try {
       setLoading(true);
-      const savedTaskId = await saveQuestion(quizId, selectedTask);
-      await saveAnswerList(savedTaskId, answers);
-      resetTaskData();
-      setTaskList((taskIdList) => [...(taskIdList.filter((id) => id !== -1)), savedTaskId]);
+      const savedTask = await saveQuestion(quizId, selectedTask);
+      setQuiz({...quiz, modifiedAt: savedTask.modifiedAt});
+      await saveAnswerList(savedTask.taskId, answers);
+      const modifiedAt = await fetchModifiedAtById(quizId);
+      setQuiz({...quiz, modifiedAt: modifiedAt});
+      resetTaskDatabaseStatus();
+      setTaskList((taskList) => [...(taskList.filter((task) => task.taskId !== -1)), savedTask]);
       setSelectedTask({...selectedTask, taskId: -2, taskIndex: -1, question: ''});
       setEditing(false);
     }
@@ -127,7 +208,7 @@ const QuizEditor = () => {
     try {
       setLoading(true);
       await updateChangedObjects();
-      resetTaskData();
+      resetTaskDatabaseStatus();
       setSelectedTask({...selectedTask, taskId: -2, taskIndex: -1, question: ''});
       setEditing(false);
     }
@@ -141,9 +222,12 @@ const QuizEditor = () => {
 
   async function updateChangedObjects() {
     if (!checkEqualityOnFieldsInDb(currentTaskInDb, selectedTask)) {
-      await updateQuestion(selectedTask.taskId, selectedTask);
+      const updatedQuestion = await updateQuestion(selectedTask.taskId, selectedTask);
+      setTaskList([...taskList.map((task) => task.taskId === updatedQuestion.taskId ? updatedQuestion : task)]);
     }
     await updateChangedAnswers();
+    const modifiedAt = await fetchModifiedAtById(quizId);
+    setQuiz({...quiz, modifiedAt: modifiedAt});
   }
 
   async function updateChangedAnswers() {
@@ -170,15 +254,31 @@ const QuizEditor = () => {
   }
 
   async function handleTaskDelete() {
+    if (await checkLastQuizModification() !== quiz.modifiedAt) {
+      if (window.confirm("This quiz has been updated! Do you want to get the latest version?")) {
+        await getLatestQuizVersion();
+      }
+      else {
+        await deleteTask();
+      }
+    }
+    else {
+      await deleteTask();
+    }
+  }
+
+  async function deleteTask() {
     if (window.confirm("Delete?")) {
       try {
         setLoading(true);
         if (selectedTask.taskId !== -1) {
           await deleteTaskById(selectedTask.taskId);
           await deleteAnswerList(answers);
-          resetTaskData();
+          const modifiedAt = await fetchModifiedAtById(quizId);
+          setQuiz({...quiz, modifiedAt: modifiedAt});
+          resetTaskDatabaseStatus();
         }
-        setTaskList((taskIdList) => [...taskIdList.filter((task) => task !== selectedTask.taskId)]);
+        setTaskList((taskList) => [...taskList.filter((task) => task.taskId !== selectedTask.taskId)]);
         setSelectedTask({...selectedTask, taskId: -2, taskIndex: -1, question: ''});
 
         setEditing(false);
@@ -193,14 +293,26 @@ const QuizEditor = () => {
   }
 
   async function handleQuizSave() {
+    if (await checkLastQuizModification() !== quiz.modifiedAt) {
+      if (window.confirm("This quiz has been updated! Do you want to get the latest version?")) {
+        await getLatestQuizVersion();
+      }
+      else {
+        await saveQuiz();
+      }
+      await saveQuiz();
+    }
+  }
+
+  async function saveQuiz() {
     if (editing) {
       await handleTaskSave();
-      await saveQuiz();
+      await saveQuizName();
     }
     else {
       if (!checkEqualityOnFieldsInDb(currentQuizInDb, quiz)) {
         if (window.confirm("Save changes?")) {
-          await saveQuiz()
+          await saveQuizName()
         }
       }
       else {
@@ -209,7 +321,7 @@ const QuizEditor = () => {
     }
   }
 
-  async function saveQuiz() {
+  async function saveQuizName() {
     try {
       setLoading(true);
       await updateQuizName(quiz.title, quizId);
@@ -268,7 +380,7 @@ const QuizEditor = () => {
     setAnswerIndex(tempAnswerIndex);
   }
 
-  function updateTaskAndAnswersState(newTask) {
+  function updateTaskState(newTask) {
     setCurrentTaskInDb({
       ...currentTaskInDb,
       question: newTask.question,
@@ -282,10 +394,18 @@ const QuizEditor = () => {
       taskIndex: newTask.taskIndex
     });
     setCurrentAnswersInDb(newTask.answers);
-    setAnswers(() => indexAnswers(newTask.answers));
+    setAnswers(indexAnswers(newTask.answers));
   }
 
-  function resetTaskData() {
+  function resetSelectedTaskState() {
+    setSelectedTask({
+      ...currentTaskInDb,
+      taskId: -2, taskIndex: -1, question: ''
+    });
+    setAnswers([]);
+  }
+
+  function resetTaskDatabaseStatus() {
     setCurrentTaskInDb({
       ...currentTaskInDb,
       question: "",
@@ -308,7 +428,7 @@ const QuizEditor = () => {
     return isEqual;
   }
 
-  function checkTaskEquality(taskInDb, taskOnFrontend, answersInDb, answersOnFrontend) {
+  function isEqualWithTaskInDatabase(taskInDb, taskOnFrontend, answersInDb, answersOnFrontend) {
     let isEqual = true;
     if (checkEqualityOnFieldsInDb(taskInDb, taskOnFrontend) === false) {
       isEqual = false;
@@ -328,6 +448,19 @@ const QuizEditor = () => {
     return isEqual;
   }
 
+  async function checkLastQuizModification() {
+    try {
+      setLoading(true);
+      return await fetchModifiedAtById(quizId);
+    }
+    catch (e) {
+      console.error(e)
+    }
+    finally {
+      setLoading(false);
+    }
+  }
+
   function handleTaskChange(task) {
     setSelectedTask(task);
   }
@@ -342,17 +475,18 @@ const QuizEditor = () => {
         <div className="max-h-4/6 p-2 pl-6 mt-10 grid grid-cols-1 col-span-2 auto-rows-min">
           <div className="max-h-[65vh] overflow-auto pt-1 pb-1 grid grid-cols-1 gap-1">
             {taskList.map((task, i) => {
-              return <button key={"task" + task}
+              console.log(task);
+              return <button key={"task" + task.taskId}
                              className={`text-white font-bold p-4 
-                               ${selectedTask === null ? "bg-neon-blue hover:bg-neon2-blue" : task === selectedTask.taskId
+                               ${selectedTask === null ? "bg-neon-blue hover:bg-neon2-blue" : task.taskId === selectedTask.taskId
                                ? "bg-neon-pink hover:bg-neon2-pink" : "bg-neon-blue hover:bg-neon2-blue"} hover:cursor-pointer`}
-                             onClick={() => selectTask(task)}>{i + 1}. Question
+                             onClick={() => handleTaskSelection(task.taskId)}>{i + 1}. Question
               </button>
             })}
           </div>
           <button
             className="h-fit text-white font-bold p-4 mt-4 bg-green-800 hover:bg-green-700 hover:cursor-pointer"
-            onClick={() => addNewTask()}>Add Question
+            onClick={() => handleTaskAddition()}>Add Question
           </button>
         </div>
         <div className="ml-20 w-full pl-4 pt-12 col-span-8">
