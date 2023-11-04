@@ -23,7 +23,7 @@ const QuizPage = () => {
         const task = await fetchTask(quizId, 0);
         setFirstTask(() => task);
         setQuiz(() => quiz);
-        setTaskCount(() => quiz.taskIdList.length);
+        setTaskCount(() => quiz.taskList.length);
         setTaskIndex(0);
       }
       catch (error) {
