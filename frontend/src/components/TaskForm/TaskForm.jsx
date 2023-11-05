@@ -34,22 +34,27 @@ const TaskForm = ({
 
   return (
     <>
-      <div className="p-4 border-2 border-zinc-500 w-5/6">
-        <div className="m-4 mb-8">
-          <label htmlFor={selectedTask.taskId + "question"} className="text-white">Question name: </label>
-          <input className="bg-[#050409] text-white p-1 w-4/6 border border-zinc-700"
+      <div className="p-4 border-2 border-zinc-500 w-5/6 bg-zinc-800">
+        <div className="m-4 mb-6">
+          <label htmlFor={selectedTask.taskId + "question"} className="text-white text-xl">Question </label>
+          <input className="bg-[#050409] text-white text-xl p-1 w-5/6 border border-zinc-700"
                  id={selectedTask.taskId + "question"}
                  type="text" value={selectedTask.question}
                  onChange={(e) => handleTaskChange({...selectedTask, question: e.target.value})}/>
         </div>
-        <div>
-          <label htmlFor={selectedTask.taskId + "time"} className="text-white">Time limit(seconds): </label>
-          <input className="bg-[#050409] text-white p-1 w-1/6 border border-zinc-700"
+        <div className="m-4 mb-2">
+          <label htmlFor={selectedTask.taskId + "time"} className="text-white">Time limit (seconds) </label>
+          <input className="bg-[#050409] text-white p-1 w-16 border border-zinc-700"
                  id={selectedTask.taskId + "time"}
-                 type="text" value={selectedTask.timeLimit}
+                 type="number" value={selectedTask.timeLimit}
                  onChange={(e) => handleTaskChange({...selectedTask, timeLimit: e.target.value})}/>
         </div>
-        <div className="mb-4">
+        <div>
+          <div className="text-white text-sm m-4 mb-0 mt-0">
+            <p className="text-left">Answer options
+            <span className="float-right">Correct</span>
+            </p>
+          </div>
           {answers.map((answer, i) => (
             <div key={"answer" + answer.index}>
               <AnswerForm index={i} answer={answer} changeCorrect={changeCorrect} changeAnswer={changeAnswer}
@@ -57,21 +62,21 @@ const TaskForm = ({
             </div>
           ))}
           {answers.length < MAXIMUM_NUMBER_OF_ANSWERS
-            ? <div className="ml-24">
+            ? <div className="ml-4">
               <button
-                className="text-white mt-4 font-bold left-1 p-2 bg-green-800 hover:bg-green-700 hover:cursor-pointer relative"
-                onClick={() => addAnswer()}>Add Answer
+                className="text-white mt-2 left-1 p-1 px-3 bg-green-950 border-2 border-zinc-700 hover:bg-green-900 hover:cursor-pointer relative"
+                onClick={() => addAnswer()}>Add option
               </button>
             </div>
             : null}
         </div>
-        <div className="mt-12">
+        <div className="mt-4">
           <button
-            className="m-4 text-white w-24 font-bold p-4 bg-green-800 hover:bg-green-700 hover:cursor-pointer"
+            className="m-4 mb-2 text-white w-24 font-bold p-2 bg-green-800 hover:bg-green-700 hover:cursor-pointer"
             onClick={() => handleTaskSave()}>Save
           </button>
           <button
-            className="m-4 text-white w-24 font-bold p-4 bg-red-800 hover:bg-red-700 hover:cursor-pointer"
+            className="m-4 mb-2 text-stone-300 w-24 font-bold p-2 bg-zinc-950 hover:bg-zinc-900 border-2 border-zinc-700 hover:cursor-pointer"
             onClick={() => handleTaskDelete()}>Delete
           </button>
         </div>

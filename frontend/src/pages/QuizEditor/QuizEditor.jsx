@@ -491,7 +491,12 @@ const QuizEditor = () => {
     <>
       <div className="h-[calc(100%-52px)] fixed bg-inherit w-full grid grid-cols-12">
         <div className="max-h-4/6 p-2 pl-6 mt-10 grid grid-cols-1 col-span-2 auto-rows-min">
+          <button
+            className="h-fit text-white font-bold mb-4 p-4 bg-green-800 hover:bg-green-700 hover:cursor-pointer"
+            onClick={() => handleTaskAddition()}>Add Question
+          </button>
           <div className="max-h-[65vh] overflow-auto pt-1 pb-1 grid grid-cols-1 gap-1">
+
             {taskList.map((task, i) => {
               return <button key={"task" + task.taskId}
                              className={`text-white font-bold p-4 
@@ -501,21 +506,18 @@ const QuizEditor = () => {
               </button>
             })}
           </div>
-          <button
-            className="h-fit text-white font-bold p-4 mt-4 bg-green-800 hover:bg-green-700 hover:cursor-pointer"
-            onClick={() => handleTaskAddition()}>Add Question
-          </button>
+
         </div>
-        <div className="ml-20 w-full pl-4 pt-12 col-span-8">
+        <div className="ml-20 w-full pl-4 pt-8 col-span-8">
           <div>
-            <label htmlFor="name" className="text-white text-3xl">Quiz title: </label>
-            <input className="ml-6 w-4/6 p-3 text-3xl bg-[#050409] text-white border-2 border-zinc-700"
+            <label htmlFor="name" className="text-white text-2xl">Quiz title: </label>
+            <input className="ml-6 w-4/6 p-2 text-2xl bg-[#050409] text-white border-2 border-zinc-700"
                    value={quiz.title}
-                   type="text" placeholder="Eg. My quiz" id="name"
+                   type="text" id="name"
                    onChange={(e) => setQuiz({...quiz, title: e.target.value})}
             />
           </div>
-          <div className="pb-4 pt-8">
+          <div className="pb-4 pt-6">
             {editing
               ? <>
                 <TaskForm selectedTask={selectedTask}
@@ -533,11 +535,11 @@ const QuizEditor = () => {
             }
           </div>
           <button
-            className="mr-4 mt-6 text-white w-40 font-bold p-4 bg-green-800 hover:bg-green-700 hover:cursor-pointer"
+            className="mr-4 mt-2 text-white w-40 font-bold p-4 bg-green-800 hover:bg-green-700 hover:cursor-pointer"
             onClick={() => handleQuizSave()}>Save quiz
           </button>
           <button
-            className="mt-6 text-white w-40 font-bold p-4 bg-red-800 hover:bg-red-700 hover:cursor-pointer"
+            className="mt-2 text-white w-40 font-bold p-4 bg-zinc-950 hover:bg-zinc-900 border-2 border-zinc-700 hover:cursor-pointer"
             onClick={() => handleQuizDelete()}>Delete quiz
           </button>
         </div>
