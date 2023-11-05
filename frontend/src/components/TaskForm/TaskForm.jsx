@@ -42,6 +42,13 @@ const TaskForm = ({
                  type="text" value={selectedTask.question}
                  onChange={(e) => handleTaskChange({...selectedTask, question: e.target.value})}/>
         </div>
+        <div>
+          <label htmlFor={selectedTask.taskId + "time"} className="text-white">Time limit(seconds): </label>
+          <input className="bg-[#050409] text-white p-1 w-1/6 border border-zinc-700"
+                 id={selectedTask.taskId + "time"}
+                 type="text" value={selectedTask.timeLimit}
+                 onChange={(e) => handleTaskChange({...selectedTask, timeLimit: e.target.value})}/>
+        </div>
         <div className="mb-4">
           {answers.map((answer, i) => (
             <div key={"answer" + answer.index}>
