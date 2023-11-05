@@ -487,6 +487,12 @@ const QuizEditor = () => {
     setAnswers(answers);
   }
 
+  function createQuestionLabel(question) {
+    const maxLength = 24;
+    const length = Math.min(maxLength, question.length);
+    return question.substring(0, length) + (question.length > maxLength ? "..." : "");
+  }
+
   return (
     <>
       <div className="h-[calc(100%-52px)] fixed bg-inherit w-full grid grid-cols-12">
@@ -499,10 +505,10 @@ const QuizEditor = () => {
 
             {taskList.map((task, i) => {
               return <button key={"task" + task.taskId}
-                             className={`text-white font-bold p-4 
+                             className={`text-white font-bold p-4 text-left
                                ${selectedTask === null ? "bg-neon-blue hover:bg-neon2-blue" : task.taskId === selectedTask.taskId
                                ? "bg-neon-pink hover:bg-neon2-pink" : "bg-neon-blue hover:bg-neon2-blue"} hover:cursor-pointer`}
-                             onClick={() => handleTaskSelection(task.taskId)}>{i + 1}. Question
+                             onClick={() => handleTaskSelection(task.taskId)}>{i + 1}. {createQuestionLabel(task.question)}
               </button>
             })}
           </div>
