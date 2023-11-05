@@ -69,6 +69,6 @@ public class QuizService {
   }
 
   private BriefTaskDTO convertTaskModelToBriefTaskDTO(Task task) {
-    return new BriefTaskDTO(task.getId(), task.getIndex(), task.getQuestion(), task.getModifiedAt());
+    return new BriefTaskDTO(task.getId(), task.getIndex(), task.getQuestion());
   }
 }

@@ -2,10 +2,7 @@ package com.codecool.quizzzz.service;
 
 import com.codecool.quizzzz.dto.answer.EditorAnswerDTO;
 import com.codecool.quizzzz.dto.answer.GameAnswerDTO;
-import com.codecool.quizzzz.dto.task.BriefTaskDTO;
-import com.codecool.quizzzz.dto.task.EditorTaskDTO;
-import com.codecool.quizzzz.dto.task.GameTaskDTO;
-import com.codecool.quizzzz.dto.task.QuestionDTO;
+import com.codecool.quizzzz.dto.task.*;
 import com.codecool.quizzzz.exception.NotFoundException;
 import com.codecool.quizzzz.model.Answer;
 import com.codecool.quizzzz.model.Quiz;
@@ -111,7 +108,8 @@ public class TaskService {
                            task.getQuiz().getId(),
                            task.getIndex(),
                            task.getQuestion(),
-                           convertAnswerListToAnswerDTOList(answerRepository.findAllByTaskId(task.getId())));
+                           convertAnswerListToAnswerDTOList(answerRepository.findAllByTaskId(task.getId())),
+                           task.getTimeLimit());
   }
 
   private EditorTaskDTO modelToEditorDTO(Task task) {
@@ -119,11 +117,16 @@ public class TaskService {
                              task.getIndex(),
                              task.getQuestion(),
                              convertAnswerListToDetailedAnswerDTO(answerRepository.findAllByTaskId(task.getId())),
+                             task.getTimeLimit(),
                              task.getModifiedAt());
   }
 
+  private IncomingQuestionDTO modelToQuestionDTO(Task task) {
+    return new IncomingQuestionDTO(task.getQuestion(), task.getIndex(), task.getTimeLimit());
+  }
+
   private BriefTaskDTO modelToBriefDTO(Task task) {
-    return new BriefTaskDTO(task.getId(), task.getIndex(), task.getQuestion(), task.getModifiedAt());
+    return new BriefTaskDTO(task.getId(), task.getIndex(), task.getQuestion());
   }
 
   private List<GameAnswerDTO> convertAnswerListToAnswerDTOList(List<Answer> answerList) {
@@ -154,33 +157,34 @@ public class TaskService {
     }
   }
 
-  public BriefTaskDTO createQuestion(Long quizId, QuestionDTO questionDTO) {
+  private OutgoingQuestionDTO updateQuestionFromDTO(Task task, IncomingQuestionDTO questionDTO) {
+    task.setQuestion(questionDTO.question());
+    task.setIndex(questionDTO.taskIndex());
+    task.setTimeLimit(questionDTO.timeLimit());
+    Long id = taskRepository.save(task).getId();
+    Task savedTask = taskRepository.findById(id)
+                                   .orElseThrow(() -> new NotFoundException("Can't find recently saved task!"));
+    return new OutgoingQuestionDTO(savedTask.getQuestion(),
+                                   savedTask.getId(),
+                                   savedTask.getIndex(),
+                                   savedTask.getTimeLimit(),
+                                   savedTask.getModifiedAt());
+  }
+
+  public OutgoingQuestionDTO createQuestion(Long quizId, IncomingQuestionDTO questionDTO) {
     Task newTask = new Task();
     Quiz quiz = quizRepository.findById(quizId)
                               .orElseThrow(() -> new NotFoundException(String.format("There is no quiz with quizId %d",
                                                                                      quizId)));
     newTask.setQuiz(quiz);
-    newTask.setQuestion(questionDTO.question());
-    newTask.setIndex(questionDTO.taskIndex());
-    Long id = taskRepository.save(newTask).getId();
-    Task savedTask = taskRepository.findById(id).get();
-    return new BriefTaskDTO(savedTask.getId(),
-                            savedTask.getIndex(),
-                            savedTask.getQuestion(),
-                            savedTask.getModifiedAt());
+    return updateQuestionFromDTO(newTask, questionDTO);
   }
 
-  public BriefTaskDTO updateQuestion(Long taskId, QuestionDTO questionDTO) {
+  public OutgoingQuestionDTO updateQuestion(Long taskId, IncomingQuestionDTO questionDTO) {
     Task task = taskRepository.findById(taskId)
                               .orElseThrow(() -> new NotFoundException(String.format("There is no task with taskId %d",
                                                                                      taskId)));
-    task.setQuestion(questionDTO.question());
-    task.setIndex(questionDTO.taskIndex());
-    Long id = taskRepository.save(task).getId();
-    Task updatedTask = taskRepository.findById(id).get();
-    return new BriefTaskDTO(updatedTask.getId(),
-                            updatedTask.getIndex(),
-                            updatedTask.getQuestion(),
-                            updatedTask.getModifiedAt());
+    return updateQuestionFromDTO(task, questionDTO);
   }
+
 }
