@@ -501,13 +501,13 @@ const QuizEditor = () => {
             className="h-fit text-white font-bold mb-4 p-4 bg-green-800 hover:bg-green-700 hover:cursor-pointer"
             onClick={() => handleTaskAddition()}>Add Question
           </button>
-          <div className="max-h-[65vh] overflow-auto pt-1 pb-1 grid grid-cols-1 gap-1">
+          <div className="max-h-[65vh] overflow-auto p-2 bg-zinc-900 grid grid-cols-1 gap-1 border-2 border-zinc-500">
 
             {taskList.map((task, i) => {
               return <button key={"task" + task.taskId}
                              className={`text-white font-bold p-4 text-left
-                               ${selectedTask === null ? "bg-neon-blue hover:bg-neon2-blue" : task.taskId === selectedTask.taskId
-                               ? "bg-neon-orange hover:bg-neon2-orange" : "bg-neon-blue hover:bg-neon2-blue"} hover:cursor-pointer`}
+                               ${task.taskId === selectedTask.taskId
+                               ? "bg-neon-blue hover:bg-neon2-blue" : "bg-zinc-800 hover:bg-zinc-700"} hover:cursor-pointer`}
                              onClick={() => handleTaskSelection(task.taskId)}>{i + 1}. {createQuestionLabel(task.question)}
               </button>
             })}

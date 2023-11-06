@@ -64,8 +64,8 @@ const TaskForm = ({
           {answers.length < MAXIMUM_NUMBER_OF_ANSWERS
             ? <div className="ml-4">
               <button
-                className="text-white mt-2 left-1 p-1 px-3 bg-green-950 border-2 border-zinc-700 hover:bg-green-900 hover:cursor-pointer relative"
-                onClick={() => addAnswer()}>Add option
+                className="text-white mt-2 left-1 p-1 px-3 bg-zinc-700 border-2 border-zinc-500 hover:bg-zinc-600 hover:cursor-pointer relative"
+                onClick={() => addAnswer()}>+ Add option
               </button>
             </div>
             : null}
