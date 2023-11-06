@@ -507,7 +507,7 @@ const QuizEditor = () => {
               return <button key={"task" + task.taskId}
                              className={`text-white font-bold p-4 text-left
                                ${selectedTask === null ? "bg-neon-blue hover:bg-neon2-blue" : task.taskId === selectedTask.taskId
-                               ? "bg-neon-pink hover:bg-neon2-pink" : "bg-neon-blue hover:bg-neon2-blue"} hover:cursor-pointer`}
+                               ? "bg-neon-orange hover:bg-neon2-orange" : "bg-neon-blue hover:bg-neon2-blue"} hover:cursor-pointer`}
                              onClick={() => handleTaskSelection(task.taskId)}>{i + 1}. {createQuestionLabel(task.question)}
               </button>
             })}
