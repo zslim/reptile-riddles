@@ -1,65 +1,74 @@
 package com.codecool.quizzzz.service;
 
-import com.codecool.quizzzz.dto.quiz.NewQuizDTO;
-import com.codecool.quizzzz.dto.quiz.QuizDTO;
+import com.codecool.quizzzz.dto.quiz.IncomingEditorQuizDTO;
+import com.codecool.quizzzz.dto.quiz.OutgoingEditorQuizDTO;
+import com.codecool.quizzzz.dto.task.BriefTaskDTO;
 import com.codecool.quizzzz.exception.NotFoundException;
 import com.codecool.quizzzz.model.Quiz;
 import com.codecool.quizzzz.model.Task;
-import com.codecool.quizzzz.service.dao.quiz.QuizDAO;
-import com.codecool.quizzzz.service.dao.task.TaskDAO;
+import com.codecool.quizzzz.service.repository.QuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class QuizService {
-  private final QuizDAO quizDAO;
-  private final TaskDAO taskDAO;
+  private final QuizRepository quizRepository;
 
   @Autowired
-  public QuizService(QuizDAO quizDAO, TaskDAO taskDAO) {
-    this.quizDAO = quizDAO;
-    this.taskDAO = taskDAO;
+  public QuizService(QuizRepository quizRepository) {
+    this.quizRepository = quizRepository;
   }
 
-  public List<QuizDTO> getAll() {
-    return quizDAO.getAll().stream().map(this::convertQuizModelToDTO).toList();
+  public List<OutgoingEditorQuizDTO> getAll() {
+    return quizRepository.findAll().stream().map(this::modelToDTO).toList();
   }
 
-  private QuizDTO convertQuizModelToDTO(Quiz quiz) {
-    List<Integer> taskIdList = taskDAO.getAllTasksByQuiz(quiz.id()).stream().map(Task::taskId).toList();
-    return new QuizDTO(quiz.id(), quiz.title(), taskIdList);
+  public OutgoingEditorQuizDTO getById(Long quizId) {
+    Quiz foundQuiz = quizRepository.findById(quizId)
+                                   .orElseThrow(() -> new NotFoundException(String.format(
+                                           "The quiz with id %d doesn't exist!",
+                                           quizId)));
+    return modelToDTO(foundQuiz);
   }
 
-  public QuizDTO getById(int quizId) {
-    Optional<Quiz> result = quizDAO.getById(quizId);
-    if (result.isEmpty()) {
-      throw new NotFoundException(String.format("The quiz with id %d doesn't exist!", quizId));
-    }
-    return convertQuizModelToDTO(result.get());
+  public LocalDateTime getQuizLastModifiedAt(Long quizId) {
+    return quizRepository.findById(quizId)
+                         .orElseThrow(() -> new NotFoundException(String.format("The quiz with id %d doesn't exist!",
+                                                                                quizId)))
+                         .getLastModifiedTimestamp();
   }
 
-  public int create(NewQuizDTO newQuizDTO) {
-    return quizDAO.create(newQuizDTO);
+  public Long create() {
+    return quizRepository.save(new Quiz()).getId();
   }
 
-  public int create() {
-    return quizDAO.create(new NewQuizDTO(""));
+  public Long update(Long quizId, IncomingEditorQuizDTO incomingEditorQuizDTO) {
+    Quiz foundQuiz = quizRepository.findById(quizId)
+                                   .orElseThrow(() -> new NotFoundException(String.format(
+                                           "The quiz with id %d doesn't exist!",
+                                           quizId)));
+    foundQuiz.setTitle(incomingEditorQuizDTO.title());
+    foundQuiz.setPublic(incomingEditorQuizDTO.isPublic());
+    return quizRepository.save(foundQuiz).getId();
   }
 
-  public int rename(NewQuizDTO newQuizDTO, int quizId) {
-    Optional<Integer> id = quizDAO.rename(newQuizDTO, quizId);
-    return id.orElseThrow(() -> new NotFoundException(String.format("The quiz with id %d doesn't exist!", quizId)));
+  public void deleteById(Long quizId) {
+    quizRepository.deleteById(quizId);
   }
 
-  public int deleteById(int quizId) {
-    Optional<Integer> optionalId = quizDAO.deleteById(quizId);
-    // TODO: delete tasks and answers as well
-    if (optionalId.isPresent()) {
-      return optionalId.get();
-    }
-    throw new NotFoundException(String.format("The quiz with id %d doesn't exist!", quizId));
+  private OutgoingEditorQuizDTO modelToDTO(Quiz quiz) {
+    List<BriefTaskDTO> taskList = quiz.getTasks().stream().map(this::convertTaskModelToBriefTaskDTO).toList();
+    return new OutgoingEditorQuizDTO(quiz.getId(),
+                                     quiz.getTitle(),
+                                     taskList,
+                                     quiz.getCreatedAt(),
+                                     quiz.getLastModifiedTimestamp());
+  }
+
+  private BriefTaskDTO convertTaskModelToBriefTaskDTO(Task task) {
+    return new BriefTaskDTO(task.getId(), task.getIndex(), task.getQuestion());
   }
 }

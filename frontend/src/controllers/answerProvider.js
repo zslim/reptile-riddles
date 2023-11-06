@@ -3,32 +3,63 @@ async function validateAnswer(answerId) {
   return await httpRawRes.json();
 }
 
-async function updateAnswer(answer) {
-  const res = await fetch("/answer/update", {
-    method: "PUT",
+async function saveAnswer(taskId, answer) {
+  return await fetch(`/answer/task/${taskId}`, {
+    method: "POST",
+    body: JSON.stringify(answer),
     headers: {
       "Content-Type": "application/json"
-    },
-    body: JSON.stringify(answer)
+    }
   });
-  return await res.json();
 }
 
-async function saveEmptyAnswer(taskId) {
-  const res = await fetch(`/answer/task/${taskId}/empty`, {
-    method: "POST"
+async function saveAnswerList(taskId, answerList) {
+  const promises = answerList.map(async (answer) => {
+    return (await saveAnswer(taskId, answer))
   });
-  return await res.json();
+  const resAll = await Promise.all(promises);
+  return resAll.map((res) => res.json());
 }
 
-async function fetchAnswer(answerId) {
-  const res = await fetch(`/answer/${answerId}`);
-  return await res.json();
+async function deleteAnswerById(answerId) {
+  return await fetch(`/answer/${answerId}`, {
+    method: "DELETE", headers: {
+      "Content-Type": "application/json"
+    }
+  });
+}
+
+async function deleteAnswerList(answerList) {
+  const promises = answerList.map(async (answer) => {
+    return (await deleteAnswerById(answer.answerId))
+  });
+  const resAll = await Promise.all(promises);
+  return resAll.map((res) => res.json());
+}
+
+async function updateAnswer(answer) {
+  return await fetch(`/answer/update/${answer.answerId}`, {
+    method: "PATCH",
+    body: JSON.stringify(answer),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
+}
+
+async function magicalAnswerUpdate(answersToDelete, answersToUpdate, answersToSave, taskId) {
+  const promises = [];
+  answersToDelete.map(async (answer) => promises.push(await deleteAnswerById(answer.answerId)));
+  answersToUpdate.map(async (answer) => promises.push(await updateAnswer(answer)));
+  answersToSave.map(async (answer) => promises.push(await saveAnswer(taskId, answer)));
+
+  const resAll = await Promise.all(promises);
+  return resAll.map((res) => res.json());
 }
 
 module.exports = {
   validateAnswer,
-  updateAnswer,
-  saveEmptyAnswer,
-  fetchAnswer
+  saveAnswerList,
+  deleteAnswerList,
+  magicalAnswerUpdate
 };

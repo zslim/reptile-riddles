@@ -19,13 +19,15 @@ module.exports = {
           pink: '#B7016E',
           purple: '#6A0F5B',
           blue: '#48127A',
-          green: '#095D40'
+          green: '#095D40',
+          orange: '#CA7D02'
         },
         neon2: {
           pink: '#CB017A',
           purple: '#7D126B',
           blue: '#54158E',
-          green: '#0B6F4C'
+          green: '#0B6F4C',
+          orange: '#DE8A02'
         },
         'hover': {
           red: '#DA1233',

@@ -1,49 +1,58 @@
 package com.codecool.quizzzz.service;
 
-import com.codecool.quizzzz.dto.answer.DetailedAnswerDTO;
-import com.codecool.quizzzz.dto.answer.NewAnswerDTO;
+import com.codecool.quizzzz.dto.answer.EditorAnswerDTO;
 import com.codecool.quizzzz.exception.NotFoundException;
 import com.codecool.quizzzz.model.Answer;
-import com.codecool.quizzzz.service.dao.task.AnswerDAO;
+import com.codecool.quizzzz.model.Task;
+import com.codecool.quizzzz.service.repository.AnswerRepository;
+import com.codecool.quizzzz.service.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.time.LocalDateTime;
 
 @Service
 public class AnswerService {
-  private final AnswerDAO answerDAO;
+  private final AnswerRepository answerRepository;
+  private final TaskRepository taskRepository;
 
   @Autowired
-  public AnswerService(AnswerDAO answerDAO) {
-    this.answerDAO = answerDAO;
+  public AnswerService(AnswerRepository answerRepository, TaskRepository taskRepository) {
+    this.answerRepository = answerRepository;
+    this.taskRepository = taskRepository;
   }
 
-  public int create(int taskId, NewAnswerDTO newAnswerDTO) {
-    return answerDAO.addAnswerToTask(taskId, newAnswerDTO);
+  public LocalDateTime create(Long taskId, EditorAnswerDTO editorAnswerDTO) {
+    Task task = taskRepository.findById(taskId)
+                              .orElseThrow(() -> new NotFoundException(String.format("There is no task with taskId %d",
+                                                                                     taskId)));
+    Answer newAnswer = new Answer();
+    newAnswer.setText(editorAnswerDTO.text());
+    newAnswer.setCorrect(editorAnswerDTO.isCorrect());
+    newAnswer.setTask(task);
+    Long id = answerRepository.save(newAnswer).getId();
+    return answerRepository.findById(id).get().getModifiedAt();
   }
 
-  public int create(int taskId) {
-    return answerDAO.addAnswerToTask(taskId, new NewAnswerDTO("", false));
+  public LocalDateTime update(Long answerId, EditorAnswerDTO editorAnswerDTO) {
+    Answer answer = answerRepository.findById(answerId)
+                                    .orElseThrow(() -> new NotFoundException(String.format(
+                                            "There is no answer with answerId: %d",
+                                            editorAnswerDTO.answerId())));
+    answer.setText(editorAnswerDTO.text());
+    answer.setCorrect(editorAnswerDTO.isCorrect());
+    Long id = answerRepository.save(answer).getId();
+    return answerRepository.findById(id).get().getModifiedAt();
   }
 
-  public int update(DetailedAnswerDTO detailedAnswerDTO) {
-    Optional<Integer> id = answerDAO.updateAnswer(detailedAnswerDTO);
-    if (id.isPresent()) {
-      return id.get();
-    }
-    throw new NotFoundException(String.format("There is no answer with answerId: %d", detailedAnswerDTO.answerId()));
+  public boolean checkIfCorrect(Long answerId) {
+    return answerRepository.findById(answerId)
+                           .orElseThrow(() -> new NotFoundException(String.format("There is no answer with answerId: %d",
+                                                                                  answerId)))
+                           .isCorrect();
   }
 
-  public boolean checkIfCorrect(int answerId) {
-    return answerDAO.checkIfAnswerIsCorrect(answerId);
-  }
-
-  public DetailedAnswerDTO getById(int answerId) {
-    Optional<Answer> answer = answerDAO.getAnswer(answerId);
-    if (answer.isEmpty()) {
-      throw new NotFoundException(String.format("There is no answer with answerId: %d", answerId));
-    }
-    return new DetailedAnswerDTO(answer.get().answerId(), answer.get().text(), answer.get().isCorrect());
+  public void delete(Long answerId) {
+    answerRepository.deleteById(answerId);
   }
 }
