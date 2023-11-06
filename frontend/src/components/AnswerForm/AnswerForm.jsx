@@ -1,6 +1,6 @@
 import React from 'react';
 
-const AnswerForm = ({index, answer, changeCorrect, changeAnswer, deleteAnswer, isDeletable}) => {
+const AnswerForm = ({index, answer, changeCorrect, changeAnswer, deleteAnswer, isDeletable, loading}) => {
   return (
     <div className="p-2 grid grid-cols-12 items-center">
       <div className="col-span-11">
@@ -16,7 +16,9 @@ const AnswerForm = ({index, answer, changeCorrect, changeAnswer, deleteAnswer, i
                })}
         />
         {isDeletable ?
-          <button className="text-stone-300 p-1 px-3 bg-[#050409] border border-zinc-700 hover:bg-zinc-800 hover:cursor-pointer"
+          <button disabled={loading}
+                  className={`text-stone-300 p-1 px-3 bg-[#050409] border border-zinc-700 
+                  ${loading ? null : `hover:bg-zinc-800 hover:cursor-pointer`}`}
                   onClick={() => deleteAnswer(answer.index)}
           >
             x

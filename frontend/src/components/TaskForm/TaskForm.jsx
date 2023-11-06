@@ -9,7 +9,8 @@ const TaskForm = ({
                     handleAnswersChange,
                     MAXIMUM_NUMBER_OF_ANSWERS,
                     MINIMUM_NUMBER_OF_ANSWERS,
-                    indexAnswers
+                    indexAnswers,
+                    loading
                   }) => {
 
   function changeCorrect(isCorrect, index) {
@@ -52,19 +53,23 @@ const TaskForm = ({
         <div>
           <div className="text-white text-sm m-4 mb-0 mt-0">
             <p className="text-left">Answer options
-            <span className="float-right">Correct</span>
+              <span className="float-right">Correct</span>
             </p>
           </div>
           {answers.map((answer, i) => (
             <div key={"answer" + answer.index}>
               <AnswerForm index={i} answer={answer} changeCorrect={changeCorrect} changeAnswer={changeAnswer}
-                          deleteAnswer={deleteAnswer} isDeletable={answers.length > MINIMUM_NUMBER_OF_ANSWERS}/>
+                          deleteAnswer={deleteAnswer} isDeletable={answers.length > MINIMUM_NUMBER_OF_ANSWERS}
+                          loading={loading}
+              />
             </div>
           ))}
           {answers.length < MAXIMUM_NUMBER_OF_ANSWERS
             ? <div className="ml-4">
               <button
-                className="text-white mt-2 left-1 p-1 px-3 bg-zinc-700 border-2 border-zinc-500 hover:bg-zinc-600 hover:cursor-pointer relative"
+                disabled={loading}
+                className={`text-white mt-2 left-1 p-1 px-3 bg-zinc-700 border-2 border-zinc-500 relative 
+                ${loading ? null : `hover:bg-zinc-600 hover:cursor-pointer`}`}
                 onClick={() => addAnswer()}>+ Add option
               </button>
             </div>
@@ -72,11 +77,14 @@ const TaskForm = ({
         </div>
         <div className="mt-4">
           <button
-            className="m-4 mb-2 text-white w-24 font-bold p-2 bg-green-800 hover:bg-green-700 hover:cursor-pointer"
+            disabled={loading}
+            className={`m-4 mb-2 text-white w-24 font-bold p-2 bg-green-800 
+            ${loading ? null : `hover:bg-green-700 hover:cursor-pointer`}`}
             onClick={() => handleTaskSave()}>Save
           </button>
           <button
-            className="m-4 mb-2 text-stone-300 w-24 font-bold p-2 bg-zinc-950 hover:bg-zinc-900 border-2 border-zinc-700 hover:cursor-pointer"
+            className={`m-4 mb-2 text-stone-300 w-24 font-bold p-2 bg-zinc-950 border-2 border-zinc-700 
+            ${loading ? null : `hover:bg-zinc-900 hover:cursor-pointer`}`}
             onClick={() => handleTaskDelete()}>Delete
           </button>
         </div>
