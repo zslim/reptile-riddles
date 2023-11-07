@@ -165,21 +165,25 @@ const QuizEditor = () => {
   }
 
   async function handleTaskSave() {
+    let modifiedAt = quiz.modifiedAt;
     if (await isModified()) {
       if (window.confirm("This quiz has been updated! Do you want to get the latest version?")) {
         await getLatestQuizVersion();
       }
       else {
         await saveTask();
-        const modifiedAt = await fetchModifiedAtById(quizId);
+        modifiedAt = await fetchModifiedAtById(quizId);
         setQuiz({...quiz, modifiedAt: modifiedAt});
       }
     }
     else {
       await saveTask();
-      const modifiedAt = await fetchModifiedAtById(quizId);
+      modifiedAt = await fetchModifiedAtById(quizId);
       setQuiz({...quiz, modifiedAt: modifiedAt});
     }
+    //TODO: look into modification time after updating task - it does not update properly
+    modifiedAt = await fetchModifiedAtById(quizId);
+    setQuiz({...quiz, modifiedAt: modifiedAt});
   }
 
   async function saveTask() {
@@ -204,7 +208,6 @@ const QuizEditor = () => {
     try {
       setLoading(true);
       const savedTask = await saveQuestion(quizId, selectedTask);
-      setQuiz({...quiz, modifiedAt: savedTask.modifiedAt});
       await saveAnswerList(savedTask.taskId, answers);
       resetTaskDatabaseStatus();
       setTaskList((taskList) => [...(taskList.filter((task) => !isNewTask(task.taskId))), savedTask]);
@@ -262,7 +265,6 @@ const QuizEditor = () => {
         answersToPost.push(answer);
       }
     }
-
     await magicalAnswerUpdate(answersToDelete, answersToUpdate, answersToPost, selectedTask.taskId);
   }
 
@@ -411,8 +413,8 @@ const QuizEditor = () => {
       taskIndex: newTask.taskIndex,
       timeLimit: newTask.timeLimit
     });
-    setCurrentAnswersInDb(newTask.answers);
-    setAnswers(indexAnswers(newTask.answers));
+    setCurrentAnswersInDb([...newTask.answers.map((answer) => {return {...answer}})]);
+    setAnswers(indexAnswers([...newTask.answers.map((answer) => {return {...answer}})]));
   }
 
   function resetSelectedTaskState() {
