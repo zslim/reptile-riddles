@@ -1,14 +1,24 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { register } from "../../controllers/userProvider";
 
 const RegisterPage = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   async function handleRegister(){
-    await register({email, username, password});
+    try {
+      setLoading(true);
+      await register({email, username, password});
+      navigate("/login");
+    } catch (e){
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -43,14 +53,17 @@ const RegisterPage = () => {
                    onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <button className="mr-4 mt-6 text-white w-full font-bold p-4 bg-green-800 hover:bg-green-700 hover:cursor-pointer"
+          <button className={`mr-4 mt-6 text-white w-full font-bold p-4 bg-green-800  ${!loading && "hover:bg-green-700 hover:cursor-pointer"}`}
+                  disabled={loading}
                   onClick={() => handleRegister()}>
             Register
           </button>
           <div>
             <span className="text-stone-300 text-sm">Already have an account? </span>
             <Link to={"/login"}>
-              <button className="text-white text-sm text-left underline underline-offset-2">
+              <button className={`text-white text-sm text-left underline underline-offset-2 cursor-default 
+              ${!loading && "hover:text-stone-200 hover:cursor-pointer"}`}
+              disabled={loading}>
                 Log in
               </button>
             </Link>

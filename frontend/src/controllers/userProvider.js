@@ -6,7 +6,6 @@ async function register(user) {
       "Content-Type": "application/json"
     }
   });
-  return await res.json();
 }
 
 module.exports = {
