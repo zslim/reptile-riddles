@@ -80,7 +80,7 @@ export function NavBarDefault() {
         <div className="flex items-center gap-x-1">
           <Link to={"/login"}>
             <Button variant="text" size="sm" className="hidden lg:inline-block">
-              <span>Log In</span>
+              <span>Login</span>
             </Button>
           </Link>
           <Link to={"/register"}>
@@ -89,7 +89,7 @@ export function NavBarDefault() {
               size="sm"
               className="hidden lg:inline-block"
             >
-              <span>Sign in</span>
+              <span>Sign up</span>
             </Button>
           </Link>
         </div>

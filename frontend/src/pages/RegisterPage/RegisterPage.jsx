@@ -24,7 +24,7 @@ const RegisterPage = () => {
   return (
     <div className="h-[calc(100%-52px)] fixed flex bg-inherit w-full">
       <div className="w-3/12 h-4/6 m-auto bg-zinc-800 border border-zinc-500">
-        <div className="mt-12 mb-16 text-white text-center font-bold text-2xl">Register</div>
+        <div className="mt-12 mb-16 text-white text-center font-bold text-2xl">Sign Up</div>
         <div className="grid grid-cols-1 gap-4 w-5/6 mx-auto">
           <div>
             <label htmlFor="user-name"
@@ -53,10 +53,11 @@ const RegisterPage = () => {
                    onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <button className={`mr-4 mt-6 text-white w-full font-bold p-4 bg-green-800  ${!loading && "hover:bg-green-700 hover:cursor-pointer"}`}
+          <button className={`mr-4 mt-6 text-white w-full font-bold p-4 bg-green-800  
+                  ${!loading && "hover:bg-green-700 hover:cursor-pointer"}`}
                   disabled={loading}
                   onClick={() => handleRegister()}>
-            Register
+            SIGN UP
           </button>
           <div>
             <span className="text-stone-300 text-sm">Already have an account? </span>
