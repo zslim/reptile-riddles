@@ -1,4 +1,4 @@
 package com.codecool.quizzzz.dto.user;
 
-public record UserDTO (long id, String name, String email, String password){
+public record UserDTO (long id, String username, String password, String email){
 }
