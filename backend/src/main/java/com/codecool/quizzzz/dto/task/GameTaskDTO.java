@@ -4,5 +4,6 @@ import com.codecool.quizzzz.dto.answer.GameAnswerDTO;
 
 import java.util.List;
 
-public record GameTaskDTO(Long taskId, Long quizId, int taskIndex, String question, List<GameAnswerDTO> answers) {
+public record GameTaskDTO(Long taskId, Long quizId, int taskIndex, String question, List<GameAnswerDTO> answers,
+                          int timeLimit) {
 }

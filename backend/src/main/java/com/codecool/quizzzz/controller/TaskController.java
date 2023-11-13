@@ -1,7 +1,6 @@
 package com.codecool.quizzzz.controller;
 
-import com.codecool.quizzzz.dto.task.EditorTaskDTO;
-import com.codecool.quizzzz.dto.task.GameTaskDTO;
+import com.codecool.quizzzz.dto.task.*;
 import com.codecool.quizzzz.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +23,18 @@ public class TaskController {
   }
 
   @GetMapping("/{taskId}")
-  public ResponseEntity<GameTaskDTO> getTask(@PathVariable Long taskId) {
-    return ResponseEntity.ok().body(taskService.getTask(taskId));
+  public ResponseEntity<EditorTaskDTO> getTask(@PathVariable Long taskId) {
+    return ResponseEntity.ok().body(taskService.getTaskToEdit(taskId));
   }
 
   @GetMapping("/quiz/detailed/{quizId}")
   public ResponseEntity<List<EditorTaskDTO>> getAllDetailedTasksByQuiz(@PathVariable Long quizId) {
     return ResponseEntity.ok().body(taskService.getAllDetailedByQuiz(quizId));
+  }
+
+  @GetMapping("/quiz/brief/{quizId}")
+  public ResponseEntity<List<BriefTaskDTO>> getAllBriefTasksByQuiz(@PathVariable Long quizId) {
+    return ResponseEntity.ok().body(taskService.getAllBriefByQuiz(quizId));
   }
 
   @GetMapping("/quiz/{quizId}")
@@ -41,6 +45,16 @@ public class TaskController {
   @PostMapping("/quiz/{quizId}")
   public ResponseEntity<Long> createNewTask(@PathVariable Long quizId, @RequestBody EditorTaskDTO editorTaskDTO) {
     return ResponseEntity.ok().body(taskService.create(quizId, editorTaskDTO));
+  }
+
+  @PostMapping("/question/{quizId}")
+  public ResponseEntity<OutgoingQuestionDTO> createNewQuestion(@PathVariable Long quizId, @RequestBody IncomingQuestionDTO questionDTO) {
+    return ResponseEntity.ok().body(taskService.createQuestion(quizId, questionDTO));
+  }
+
+  @PatchMapping("/question/{taskId}")
+  public ResponseEntity<OutgoingQuestionDTO> updateQuestion(@PathVariable Long taskId, @RequestBody IncomingQuestionDTO questionDTO) {
+    return ResponseEntity.ok().body(taskService.updateQuestion(taskId, questionDTO));
   }
 
   @PatchMapping("/{taskId}")

@@ -1,89 +1,86 @@
-import React, { useState } from 'react';
 import AnswerForm from "../AnswerForm";
 
-const TaskForm = ({task, setTask, updateQuizState, handleTaskSave, handleTaskDelete, MAXIMUM_NUMBER_OF_ANSWERS, MINIMUM_NUMBER_OF_ANSWERS}) => {
-  const [answers, setAnswers] = useState(() => indexAnswers(task?.answers) ?? []);
-
-  function indexAnswers(answerList) {
-    let indexedAnswers = [];
-    answerList.map((answer, i) => {
-      answer.index = i;
-      indexedAnswers.push(answer);
-    });
-    return indexedAnswers;
-  }
-
-  function changeQuestion(questionText) {
-    const updatedTask = task;
-    updatedTask.question = questionText;
-    setTask(() => updatedTask);
-    updateQuizState();
-  }
+const TaskForm = ({
+                    selectedTask,
+                    handleTaskChange,
+                    handleTaskSave,
+                    handleTaskDelete,
+                    answers,
+                    handleAnswersChange,
+                    MAXIMUM_NUMBER_OF_ANSWERS,
+                    MINIMUM_NUMBER_OF_ANSWERS,
+                    indexAnswers
+                  }) => {
 
   function changeCorrect(isCorrect, index) {
     const currentAnswer = answers.find((answer) => answer.index === index);
     currentAnswer.isCorrect = isCorrect;
-    setAnswers(() => answers);
-    updateTaskState();
+    handleAnswersChange(answers);
   }
 
   async function addAnswer() {
-    setAnswers(() => [...answers, {text: "", isCorrect: false, answerId: -1, index: answers.length}]);
-    updateTaskState();
+    const indexedAnswer = indexAnswers([{text: "", isCorrect: false, answerId: -1,}])[0];
+    handleAnswersChange([...answers, indexedAnswer]);
   }
 
   function changeAnswer(answer) {
     const updatedAnswers = answers.map(currAnswer => currAnswer.index === answer.index ? answer : currAnswer);
-    setAnswers(() => updatedAnswers);
-    updateTaskState();
+    handleAnswersChange(updatedAnswers);
   }
 
-  function deleteAnswer(answerIndex){
-    const updatedAnswers = answers.filter((answer) => answer.index !== answerIndex);
-    const updatedIndexedAnswers = indexAnswers(updatedAnswers);
-    setAnswers(() => updatedIndexedAnswers);
-  }
-
-  function updateTaskState() {
-    const updatedTask = task;
-    updatedTask.answers = answers;
-    setTask(() => updatedTask);
-    updateQuizState();
+  function deleteAnswer(answerIndex) {
+    handleAnswersChange((answers) => [...answers.filter((answer) => answer.index !== answerIndex)]);
   }
 
   return (
     <>
-
-      <div className="ml-4 p-4 border-t-2 border-x-2 border-zinc-500 w-5/6">
-        <div className="m-4 mb-8">
-          <label htmlFor={task.taskId + "question"} className="text-white">Question name: </label>
-          <input className="bg-[#050409] text-white p-1 w-4/6 border border-zinc-700" id={task.taskId + "question"}
-                 type="text" defaultValue={task?.question}
-                 onChange={(e) => changeQuestion(e.target.value)}/>
+      <div className="p-4 border-2 border-zinc-500 w-5/6 bg-zinc-800">
+        <div className="m-4 mb-6">
+          <label htmlFor={selectedTask.taskId + "question"} className="text-white text-xl">Question </label>
+          <input className="bg-[#050409] text-white text-xl p-1 w-5/6 border border-zinc-700"
+                 id={selectedTask.taskId + "question"}
+                 type="text" value={selectedTask.question}
+                 onChange={(e) => handleTaskChange({...selectedTask, question: e.target.value})}/>
         </div>
-        <div className="mb-4">
-          {answers.map((answer) => (
-              <AnswerForm answer={answer} changeCorrect={changeCorrect} changeAnswer={changeAnswer} deleteAnswer={deleteAnswer}/>
+        <div className="m-4 mb-2">
+          <label htmlFor={selectedTask.taskId + "time"} className="text-white">Time limit (seconds) </label>
+          <input className="bg-[#050409] text-white p-1 w-16 border border-zinc-700"
+                 id={selectedTask.taskId + "time"}
+                 type="number" value={selectedTask.timeLimit}
+                 onChange={(e) => handleTaskChange({...selectedTask, timeLimit: e.target.value})}/>
+        </div>
+        <div>
+          <div className="text-white text-sm m-4 mb-0 mt-0">
+            <p className="text-left">Answer options
+            <span className="float-right">Correct</span>
+            </p>
+          </div>
+          {answers.map((answer, i) => (
+            <div key={"answer" + answer.index}>
+              <AnswerForm index={i} answer={answer} changeCorrect={changeCorrect} changeAnswer={changeAnswer}
+                          deleteAnswer={deleteAnswer} isDeletable={answers.length > MINIMUM_NUMBER_OF_ANSWERS}/>
+            </div>
           ))}
           {answers.length < MAXIMUM_NUMBER_OF_ANSWERS
-            ? <div>
+            ? <div className="ml-4">
               <button
-                className="text-white mt-4 font-bold left-1 p-2 bg-green-800 hover:bg-green-700 hover:cursor-pointer relative"
-                onClick={() => addAnswer()}>Add Answer
+                className="text-white mt-2 left-1 p-1 px-3 bg-zinc-700 border-2 border-zinc-500 hover:bg-zinc-600 hover:cursor-pointer relative"
+                onClick={() => addAnswer()}>+ Add option
               </button>
             </div>
             : null}
         </div>
+        <div className="mt-4">
+          <button
+            className="m-4 mb-2 text-white w-24 font-bold p-2 bg-green-800 hover:bg-green-700 hover:cursor-pointer"
+            onClick={() => handleTaskSave()}>Save
+          </button>
+          <button
+            className="m-4 mb-2 text-stone-300 w-24 font-bold p-2 bg-zinc-950 hover:bg-zinc-900 border-2 border-zinc-700 hover:cursor-pointer"
+            onClick={() => handleTaskDelete()}>Delete
+          </button>
+        </div>
       </div>
-      <button
-        className="m-4 text-white w-24 font-bold p-4 bg-green-800 hover:bg-green-700 hover:cursor-pointer"
-        onClick={() => handleTaskSave()}>Save
-      </button>
-      <button
-        className="m-4 text-white w-24 font-bold p-4 bg-red-800 hover:bg-red-700 hover:cursor-pointer"
-        onClick={() => handleTaskDelete()}>Delete
-      </button>
-
     </>
   );
 };

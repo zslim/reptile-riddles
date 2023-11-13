@@ -1,13 +1,13 @@
 package com.codecool.quizzzz.controller;
 
 import com.codecool.quizzzz.dto.answer.EditorAnswerDTO;
-import com.codecool.quizzzz.dto.answer.NewAnswerDTO;
 import com.codecool.quizzzz.service.AnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/answer")
@@ -19,29 +19,24 @@ public class AnswerController {
   }
 
   @PostMapping("/task/{taskId}")
-  public ResponseEntity<Long> createAnswer(@PathVariable Long taskId, @RequestBody NewAnswerDTO newAnswerDTO) {
-    Long answerId = answerService.create(taskId, newAnswerDTO);
-    return ResponseEntity.created(URI.create("/answer/" + answerId)).body(answerId);
+  public ResponseEntity<LocalDateTime> createAnswer(@PathVariable Long taskId, @RequestBody EditorAnswerDTO editorAnswerDTO) {
+    LocalDateTime modifiedAt = answerService.create(taskId, editorAnswerDTO);
+    return ResponseEntity.created(URI.create("/answer")).body(modifiedAt);
   }
 
-  @PostMapping("/task/{taskId}/empty")
-  public ResponseEntity<Long> createAnswer(@PathVariable Long taskId) {
-    Long answerId = answerService.create(taskId);
-    return ResponseEntity.created(URI.create("/answer/" + answerId)).body(answerId);
+  @PatchMapping("/update/{answerId}")
+  public ResponseEntity<LocalDateTime> updateAnswer(@PathVariable Long answerId, @RequestBody EditorAnswerDTO editorAnswerDTO) {
+    return ResponseEntity.ok().body(answerService.update(answerId, editorAnswerDTO));
   }
 
-  @PutMapping("/update")
-  public ResponseEntity<Long> updateAnswer(@RequestBody EditorAnswerDTO editorAnswerDTO) {
-    return ResponseEntity.ok().body(answerService.update(editorAnswerDTO));
+  @DeleteMapping("/{answerId}")
+  public ResponseEntity<Long> deleteAnswer(@PathVariable Long answerId) {
+    answerService.delete(answerId);
+    return ResponseEntity.ok(answerId);
   }
 
   @GetMapping("/validate/{answerId}")
   public ResponseEntity<Boolean> checkIfAnswerIsCorrect(@PathVariable Long answerId) {
     return ResponseEntity.ok().body(answerService.checkIfCorrect(answerId));
-  }
-
-  @GetMapping("/{answerId}")
-  public ResponseEntity<EditorAnswerDTO> getAnswer(@PathVariable Long answerId) {
-    return ResponseEntity.ok().body(answerService.getById(answerId));
   }
 }
