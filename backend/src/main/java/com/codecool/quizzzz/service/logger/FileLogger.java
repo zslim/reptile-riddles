@@ -20,6 +20,16 @@ public class FileLogger implements Logger {
     log(content, "INFO");
   }
 
+  @Override
+  public void logError(String content, String type) {
+    log(content, "ERROR: " + type);
+  }
+
+  @Override
+  public void logInfo(String content, String type) {
+    log(content, "INFO: " + type);
+  }
+
   private void log(String content, String type){
     try {
       PrintWriter writer = new PrintWriter(new FileWriter(FILE_PATH, true));
