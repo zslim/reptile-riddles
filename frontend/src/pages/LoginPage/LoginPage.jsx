@@ -6,8 +6,8 @@ const LoginPage = () => {
   const [loading, setLoading] = useState();
 
   return (
-    <div className="h-[calc(100%-52px)] fixed flex bg-inherit w-full">
-      <div className="w-3/12 h-4/6 m-auto bg-zinc-800 border border-zinc-500">
+    <div className="h-[calc(100%-52px)] fixed flex bg-inherit w-full align-items">
+      <div className="w-3/12 m-auto pb-2 bg-zinc-800 border border-zinc-500">
         <div className="mt-12 mb-16 text-white text-center font-bold text-2xl">Login</div>
         <div className="grid grid-cols-1 gap-4 w-5/6 mx-auto">
           <AccessFormInput id={"email"} type={"email"} labelText={"E-mail"}/>
