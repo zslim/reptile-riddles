@@ -35,8 +35,8 @@ public class GameController {
   }
 
   @GetMapping("/validate/{gameId}/{playerId}/{answerId}")
-  public ResponseEntity<Boolean> checkIfAnswerIsCorrect(@PathVariable Long gameId, @PathVariable Long playerId,
-                                                        @PathVariable Long answerId) {
+  public ResponseEntity<Boolean> handleAnswerSubmit(@PathVariable Long gameId, @PathVariable Long playerId,
+                                                    @PathVariable Long answerId) {
     return ResponseEntity.ok().body(gameService.handleAnswerSubmit(gameId, playerId, answerId));
   }
 
