@@ -30,7 +30,7 @@ const TaskForm = ({
   }
 
   function deleteAnswer(answerIndex) {
-    handleAnswersChange((answers) => [...answers.filter((answer) => answer.index !== answerIndex)]);
+    handleAnswersChange([...answers.filter((answer) => answer.index !== answerIndex)]);
   }
 
   return (
