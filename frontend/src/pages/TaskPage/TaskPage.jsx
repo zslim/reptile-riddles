@@ -21,7 +21,7 @@ const TaskPage = ({quizId, firstTask, taskCount, setTaskIndex, taskIndex}) => {
   async function handleTaskChange() {
     if (taskCount > taskIndex + 1) {
       try {
-        setLoading(true);
+        setLoading(() => true);
         const newTask = await fetchTask(quizId, taskIndex + 1);
         setTask(() => newTask);
         setTaskIndex((taskIndex) => taskIndex + 1);
@@ -56,40 +56,41 @@ const TaskPage = ({quizId, firstTask, taskCount, setTaskIndex, taskIndex}) => {
 
   return (
     <>
-      {loading ? <Loading/>
-        : <div className="bg-[#1D2226] h-screen text-white font-bold">
-          <div className="text-3xl text-center text-white bg-black h-fit w-screen p-5 border-b-2 border-zinc-700">
-            <div className="mx-auto w-5/6">
-              {task?.question}
-            </div>
-            {!isAnswered && !isTimedOut ?
-              <TimeCounter deadline={timeStamp} timeLeft={timeLeft} setTimeLeft={setTimeLeft}
-                           handleDeadline={handleDeadline} isAnswered={isAnswered}/>
-              : null
-            }
+      <div className="bg-[#1D2226] h-screen text-white font-bold">
+        <div className="text-3xl text-center text-white bg-black h-fit w-screen p-5 border-b-2 border-zinc-700">
+          <div className="mx-auto w-5/6">
+            {task?.question}
           </div>
-          <div className="m-auto mt-20 w-3/6 h-2/6 bg-zinc-500 p-3 grid">
-            Don't be fooled! This is an image!
-          </div>
-          {isAnswered || isTimedOut
-            ? <ResultContainer
-              handleTaskChange={handleTaskChange}
-              selectedAnswer={selectedAnswer}
-              isCorrect={isCorrect}
-              color={color}
-              isAnswered={isAnswered}
-            />
-            : <AnswerListContainer
-              setSelectedAnswer={setSelectedAnswer}
-              task={task}
-              setIsAnswered={setIsAnswered}
-              setIsCorrect={setIsCorrect}
-              setColor={setColor}
-              resetTimer={resetTimer}
-            />
+          {!isAnswered && !isTimedOut ?
+            <TimeCounter deadline={timeStamp} timeLeft={timeLeft} setTimeLeft={setTimeLeft}
+                         handleDeadline={handleDeadline} isAnswered={isAnswered}/>
+            : null
           }
         </div>
-      }
+        <div className="m-auto mt-20 w-3/6 h-2/6 bg-zinc-500 p-3 grid">
+          Don't be fooled! This is an image!
+        </div>
+        {isAnswered || isTimedOut
+          ? <ResultContainer
+            handleTaskChange={handleTaskChange}
+            selectedAnswer={selectedAnswer}
+            isCorrect={isCorrect}
+            color={color}
+            isAnswered={isAnswered}
+            loading={loading}
+          />
+          : <AnswerListContainer
+            setSelectedAnswer={setSelectedAnswer}
+            task={task}
+            setIsAnswered={setIsAnswered}
+            setIsCorrect={setIsCorrect}
+            setColor={setColor}
+            resetTimer={resetTimer}
+            loading={loading}
+            setLoading={setLoading}
+          />
+        }
+      </div>
     </>
   );
 };

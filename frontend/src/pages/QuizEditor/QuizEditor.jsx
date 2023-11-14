@@ -500,16 +500,20 @@ const QuizEditor = () => {
       <div className="h-[calc(100%-52px)] fixed bg-inherit w-full grid grid-cols-12">
         <div className="max-h-4/6 p-2 pl-6 mt-10 grid grid-cols-1 col-span-2 auto-rows-min">
           <button
-            className="h-fit text-white font-bold mb-4 p-4 bg-green-800 hover:bg-green-700 hover:cursor-pointer"
+            disabled={loading}
+            className={`h-fit text-white font-bold mb-4 p-4 bg-green-800 
+                      ${loading ? null : `hover:bg-green-700 hover:cursor-pointer`}`}
             onClick={() => handleTaskAddition()}>Add Question
           </button>
           <div className="max-h-[65vh] overflow-auto p-2 bg-zinc-900 grid grid-cols-1 gap-1 border-2 border-zinc-500">
-
             {taskList.map((task, i) => {
               return <button key={"task" + task.taskId}
+                             disabled={loading}
                              className={`text-white font-bold p-4 text-left
                                ${task.taskId === selectedTask.taskId
-                               ? "bg-neon-blue hover:bg-neon2-blue" : "bg-zinc-800 hover:bg-zinc-700"} hover:cursor-pointer`}
+                               ? `bg-neon-blue ${loading ? null : `hover:bg-neon2-blue`}`
+                               : `bg-zinc-800 ${loading ? null : `hover:bg-zinc-700`}`} 
+                               ${loading ? null : `hover:cursor-pointer`}`}
                              onClick={() => handleTaskSelection(task.taskId)}>{i + 1}. {createQuestionLabel(task.question)}
               </button>
             })}
@@ -537,17 +541,22 @@ const QuizEditor = () => {
                           indexAnswers={indexAnswers}
                           MAXIMUM_NUMBER_OF_ANSWERS={MAXIMUM_NUMBER_OF_ANSWERS}
                           MINIMUM_NUMBER_OF_ANSWERS={MINIMUM_NUMBER_OF_ANSWERS}
+                          loading={loading}
                 />
               </>
               : null
             }
           </div>
           <button
-            className="mr-4 mt-2 text-white w-40 font-bold p-4 bg-green-800 hover:bg-green-700 hover:cursor-pointer"
+            disabled={loading}
+            className={`mr-4 mt-2 text-white w-40 font-bold p-4 bg-green-800 
+                      ${loading ? null : `hover:bg-green-700 hover:cursor-pointer`}`}
             onClick={() => handleQuizSave()}>Save quiz
           </button>
           <button
-            className="mt-2 text-white w-40 font-bold p-4 bg-zinc-950 hover:bg-zinc-900 border-2 border-zinc-700 hover:cursor-pointer"
+            disabled={loading}
+            className={`mt-2 text-white w-40 font-bold p-4 bg-zinc-950 border-2 border-zinc-700 
+            ${loading ? null : `hover:bg-zinc-900 hover:cursor-pointer`}`}
             onClick={() => handleQuizDelete()}>Delete quiz
           </button>
         </div>
