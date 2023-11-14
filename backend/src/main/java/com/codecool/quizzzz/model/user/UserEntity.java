@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @Entity
@@ -28,4 +29,9 @@ public class UserEntity {
           inverseJoinColumns = {@JoinColumn(name = "user_id")}
   )
   private Set<Role> roles;
+
+  public Set<RoleEnum> getRoles(){
+    System.out.println(roles.size());
+    return roles.stream().map(Role::getName).collect(Collectors.toSet());
+  }
 }
