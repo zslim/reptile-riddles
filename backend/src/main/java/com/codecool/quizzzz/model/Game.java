@@ -46,14 +46,14 @@ public class Game {
 
   public GameTaskDTO getNextTask() {
     Task nextTask = quiz.getTasks().get(currentTaskIndex);
-    currentTaskIndex++;
     deadline = LocalDateTime.now().plusSeconds((long) nextTask.getTimeLimit() + DEADLINE_OFFSET);
+    currentTaskIndex++;
     return taskToGameTaskDTO(nextTask);
   }
 
   private GameTaskDTO taskToGameTaskDTO(Task nextTask) {
     List<GameAnswerDTO> gameAnswerDTOList = getGameAnswerDTOList(nextTask.getAnswers());
-    return new GameTaskDTO(nextTask.getQuestion(), gameAnswerDTOList, nextTask.getTimeLimit());
+    return new GameTaskDTO(nextTask.getQuestion(), gameAnswerDTOList, deadline, currentTaskIndex);
   }
 
   private List<GameAnswerDTO> getGameAnswerDTOList(List<Answer> answers) {
