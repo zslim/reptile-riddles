@@ -5,6 +5,7 @@ import QuizzesIcon from "../../assets/icons/QuizzesIcon";
 import MyQuizIcon from "../../assets/icons/MyQuizIcon";
 import UserIcon from "../../assets/icons/UserIcon";
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 export function NavBarDefault() {
   const [openNav, setOpenNav] = React.useState(false);
@@ -77,16 +78,20 @@ export function NavBarDefault() {
         </Typography>
         <div className="hidden lg:block">{navList}</div>
         <div className="flex items-center gap-x-1">
-          <Button variant="text" size="sm" className="hidden lg:inline-block">
-            <span>Log In</span>
-          </Button>
-          <Button
-            variant="gradient"
-            size="sm"
-            className="hidden lg:inline-block"
-          >
-            <span>Sign in</span>
-          </Button>
+          <Link to={"/login"}>
+            <Button variant="text" size="sm" className="hidden lg:inline-block">
+              <span>Login</span>
+            </Button>
+          </Link>
+          <Link to={"/register"}>
+            <Button
+              variant="gradient"
+              size="sm"
+              className="hidden lg:inline-block"
+            >
+              <span>Sign up</span>
+            </Button>
+          </Link>
         </div>
         <IconButton
           variant="text"
