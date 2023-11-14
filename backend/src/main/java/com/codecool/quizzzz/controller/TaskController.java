@@ -17,16 +17,19 @@ public class TaskController {
     this.taskService = taskService;
   }
 
+  //TODO move to game controller
   @GetMapping("/quiz/{quizId}/{taskIndex}")
   public ResponseEntity<GameTaskDTO> getTask(@PathVariable Long quizId, @PathVariable int taskIndex) {
     return ResponseEntity.ok().body(taskService.getTask(quizId, taskIndex));
   }
 
+  //TODO not used
   @GetMapping("/{taskId}")
   public ResponseEntity<EditorTaskDTO> getTask(@PathVariable Long taskId) {
     return ResponseEntity.ok().body(taskService.getTaskToEdit(taskId));
   }
 
+  //TODO not used
   @GetMapping("/quiz/detailed/{quizId}")
   public ResponseEntity<List<EditorTaskDTO>> getAllDetailedTasksByQuiz(@PathVariable Long quizId) {
     return ResponseEntity.ok().body(taskService.getAllDetailedByQuiz(quizId));
@@ -37,6 +40,7 @@ public class TaskController {
     return ResponseEntity.ok().body(taskService.getAllBriefByQuiz(quizId));
   }
 
+  //TODO not used
   @GetMapping("/quiz/{quizId}")
   public ResponseEntity<List<GameTaskDTO>> getAllTasksByQuiz(@PathVariable Long quizId) {
     return ResponseEntity.ok().body(taskService.getAllByQuiz(quizId));
@@ -57,6 +61,7 @@ public class TaskController {
     return ResponseEntity.ok().body(taskService.updateQuestion(taskId, questionDTO));
   }
 
+  //TODO not used
   @PatchMapping("/{taskId}")
   public ResponseEntity<Long> updateTask(@PathVariable Long taskId, @RequestBody EditorTaskDTO editorTaskDTO) {
     return ResponseEntity.ok().body(taskService.update(taskId, editorTaskDTO));
