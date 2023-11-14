@@ -1,5 +1,5 @@
 const AnswerButton = ({color, answer, handleSubmit, setColor, loading}) => {
-  function handleSelection(e) {
+  function handleSelection() {
     handleSubmit(answer);
     setColor("bg-neon-" + color);
   }
@@ -7,7 +7,7 @@ const AnswerButton = ({color, answer, handleSubmit, setColor, loading}) => {
   return (
     <button id={answer.answerId}
             disabled={loading}
-            onClick={(e) => handleSelection(e)}
+            onClick={() => handleSelection()}
             className={`h-20 w-full bg-neon-${color} place-self-center ${!loading ? `hover:cursor-pointer hover:bg-neon2-${color}` : null}`}>
       <p className="m-6 text-white">{answer.text}</p>
     </button>

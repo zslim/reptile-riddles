@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const TimeCounter = ({deadline, timeLeft, setTimeLeft, handleDeadline, isAnswered}) => {
+const TimeCounter = ({deadline, timeLeft, handleDisplayTimeChange, handleDeadline, isAnswered}) => {
 
   useEffect(() => {
     const interval = 1000;
@@ -11,7 +11,7 @@ const TimeCounter = ({deadline, timeLeft, setTimeLeft, handleDeadline, isAnswere
       const newTimeLeft = deadline - new Date().getTime();
       const toDisplay = Math.max(Math.floor(newTimeLeft / 1000), 0);
       if (toDisplay !== timeLeft) {
-        setTimeLeft(() => toDisplay);
+        handleDisplayTimeChange(toDisplay);
       }
       expected += interval;
       if ((newTimeLeft / 1000) < 0 || isAnswered) {

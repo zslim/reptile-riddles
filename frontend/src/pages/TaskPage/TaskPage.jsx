@@ -1,32 +1,29 @@
 import AnswerListContainer from "../../components/AnswerListContainer";
 import ResultContainer from '../../components/ResultContainer';
 import { useNavigate } from "react-router-dom";
-import { fetchTask } from "../../controllers/taskProvider";
 import { useState } from 'react';
-import Loading from "../../components/Loading";
 import TimeCounter from "../../components/TimeCounter";
+import { getNextTask, handleAnswerSubmit } from "../../controllers/gameProvider";
 
-const TaskPage = ({quizId, firstTask, taskCount, setTaskIndex, taskIndex}) => {
+const TaskPage = ({firstTask, quiz, player}) => {
   const [isAnswered, setIsAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [task, setTask] = useState(firstTask);
   const [color, setColor] = useState("zinc-500");
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [timeStamp, setTimeStamp] = useState(() => calculateTimeStamp());
-  const [timeLeft, setTimeLeft] = useState();
+  const [timeLeft, setTimeLeft] = useState(30);
   const [isTimedOut, setIsTimedOut] = useState(false);
   const navigate = useNavigate();
 
   async function handleTaskChange() {
-    if (taskCount > taskIndex + 1) {
+    if (quiz.taskCount > task.taskIndex) {
       try {
         setLoading(() => true);
-        const newTask = await fetchTask(quizId, taskIndex + 1);
-        setTask(() => newTask);
-        setTaskIndex((taskIndex) => taskIndex + 1);
+        const newTask = await getNextTask(quiz.gameId);
+        setTask({...newTask, deadline: new Date(newTask.deadline)});
+        resetGameState();
         setIsAnswered(false);
-        resetTimer();
       }
       catch (e) {
         console.error(e);
@@ -40,17 +37,42 @@ const TaskPage = ({quizId, firstTask, taskCount, setTaskIndex, taskIndex}) => {
     }
   }
 
-  function resetTimer() {
-    setTimeStamp(() => calculateTimeStamp());
-    setTimeLeft(30);
+  async function handleSubmit(answer) {
+    try {
+      setLoading(() => true);
+      const isCorrectAnswer = await handleAnswerSubmit(quiz.gameId, player.playerId, answer.answerId);
+      console.log("gameId: "  + quiz.gameId);
+      console.log("playerId: "  + player.playerId);
+      console.log("answerId: "  + answer.answerId);
+      console.log(isCorrectAnswer);
+      setSelectedAnswer(answer);
+      setIsCorrect(isCorrectAnswer);
+      resetGameState();
+      setIsAnswered(true);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+
+  function resetGameState() {
+    console.log("deadline: " + task.deadline);
+
+    const newTimeLeft = task.deadline - new Date().getTime();
+    const toDisplay = Math.max(Math.floor(newTimeLeft / 1000), 0);
+    console.log("timeLeft: " + newTimeLeft);
+    setTimeLeft(toDisplay);
     setIsTimedOut(false);
   }
 
-  function calculateTimeStamp() {
-    return new Date(new Date().getTime() + 32000);
+  function handleDisplayTimeChange(secondsLeft) {
+    setTimeLeft(secondsLeft);
   }
 
   function handleDeadline() {
+    setIsCorrect(false);
     setIsTimedOut(true);
   }
 
@@ -62,7 +84,7 @@ const TaskPage = ({quizId, firstTask, taskCount, setTaskIndex, taskIndex}) => {
             {task?.question}
           </div>
           {!isAnswered && !isTimedOut ?
-            <TimeCounter deadline={timeStamp} timeLeft={timeLeft} setTimeLeft={setTimeLeft}
+            <TimeCounter deadline={task.deadline} timeLeft={timeLeft} handleDisplayTimeChange={handleDisplayTimeChange}
                          handleDeadline={handleDeadline} isAnswered={isAnswered}/>
             : null
           }
@@ -80,14 +102,10 @@ const TaskPage = ({quizId, firstTask, taskCount, setTaskIndex, taskIndex}) => {
             loading={loading}
           />
           : <AnswerListContainer
-            setSelectedAnswer={setSelectedAnswer}
+            handleSubmit={handleSubmit}
             task={task}
-            setIsAnswered={setIsAnswered}
-            setIsCorrect={setIsCorrect}
             setColor={setColor}
-            resetTimer={resetTimer}
             loading={loading}
-            setLoading={setLoading}
           />
         }
       </div>
