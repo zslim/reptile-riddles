@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { register } from "../../controllers/userProvider";
+import AccessFormInput from "../../components/AccessFormInput";
 
 const RegisterPage = () => {
   const [email, setEmail] = useState("");
@@ -9,14 +10,16 @@ const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  async function handleRegister(){
+  async function handleRegister() {
     try {
       setLoading(true);
       await register({email, username, password});
       navigate("/login");
-    } catch (e){
+    }
+    catch (e) {
       console.error(e);
-    } finally {
+    }
+    finally {
       setLoading(false);
     }
   }
@@ -26,33 +29,18 @@ const RegisterPage = () => {
       <div className="w-3/12 h-4/6 m-auto bg-zinc-800 border border-zinc-500">
         <div className="mt-12 mb-16 text-white text-center font-bold text-2xl">Sign Up</div>
         <div className="grid grid-cols-1 gap-4 w-5/6 mx-auto">
-          <div>
-            <label htmlFor="user-name"
-                   className="text-white block mb-1">Username</label>
-            <input className="w-full bg-[#050409] text-white p-1 border border-zinc-700"
-                   value={username}
-                   type="text" id="user-name"
-                   onChange={(e) => setUsername(e.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor="email"
-                   className="text-white block mb-1">E-mail</label>
-            <input className="w-full bg-[#050409] text-white p-1 border border-zinc-700"
-                   value={email}
-                   type="email" id="email"
-                   onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor="password"
-                   className="text-white block mb-1">Password</label>
-            <input className="w-full bg-[#050409] text-white p-1 border border-zinc-700"
-                   value={password}
-                   type="password" id="password"
-                   onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
+          <AccessFormInput value={username}
+                           onChange={(e) => setUsername(e.target.value)}
+                           type={"text"} id={"user-name"}
+                           labelText={"Username"}/>
+          <AccessFormInput value={email}
+                           onChange={(e) => setEmail(e.target.value)}
+                           type={"email"} id={"email"}
+                           labelText={"E-mail"}/>
+          <AccessFormInput value={password}
+                           onChange={(e) => setPassword(e.target.value)}
+                           type={"password"} id={"password"}
+                           labelText={"Password"}/>
           <button className={`mr-4 mt-6 text-white w-full font-bold p-4 bg-green-800  
                   ${!loading && "hover:bg-green-700 hover:cursor-pointer"}`}
                   disabled={loading}
@@ -64,7 +52,7 @@ const RegisterPage = () => {
             <Link to={"/login"}>
               <button className={`text-white text-sm text-left underline underline-offset-2 cursor-default 
               ${!loading && "hover:text-stone-200 hover:cursor-pointer"}`}
-              disabled={loading}>
+                      disabled={loading}>
                 Log in
               </button>
             </Link>
@@ -73,6 +61,6 @@ const RegisterPage = () => {
       </div>
     </div>
   );
-}
+};
 
 export default RegisterPage;
