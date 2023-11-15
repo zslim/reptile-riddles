@@ -26,7 +26,8 @@ public class UserService {
 
   public void create(NewUserDTO newUserDTO) {
     UserEntity user = newUserDTOtoModel(newUserDTO);
-    user.setRoles(Set.of(repository.findByName(RoleEnum.ROLE_USER).orElseThrow(() -> new NotFoundException("user")))); // TODO: better exception
+    user.setRoles(Set.of(repository.findByName(RoleEnum.ROLE_USER)
+                                   .orElseThrow(() -> new NotFoundException("user")))); // TODO: better exception
     userRepository.save(user);
   }
 
