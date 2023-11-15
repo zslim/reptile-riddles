@@ -1,4 +1,8 @@
 package com.codecool.quizzzz.dto.user;
 
-public record UserDTO (long id, String username, String password, String email){
+import com.codecool.quizzzz.model.user.RoleEnum;
+
+import java.util.Set;
+
+public record UserDTO(long id, String username, String email, Set<RoleEnum> roles) {
 }
