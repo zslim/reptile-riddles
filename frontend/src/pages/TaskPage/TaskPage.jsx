@@ -122,7 +122,8 @@ const TaskPage = ({firstTask, quiz, player}) => {
         return <>
           <ScoreBoard scores={scores}
                       loading={loading}
-                      handleTaskChange={handleTaskChange}/>
+                      handleTaskChange={handleTaskChange}
+                      taskCount={task.taskIndex + 1}/>
         </>
     }
   }, [gameState])

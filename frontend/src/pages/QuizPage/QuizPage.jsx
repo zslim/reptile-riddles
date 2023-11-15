@@ -57,10 +57,12 @@ const QuizPage = () => {
   const renderLobbyState = useCallback(() => {
     switch (lobbyState) {
       case "creating":
-        return <button
-          className="mx-auto pb-16 text-white font-bold text-3xl bg-pink-500 hover:bg-pink-600 p-6 w-40 h-20 relative m-bottom-4 rounded-md"
-          onClick={() => createLobby()}>Create game lobby
-        </button>
+        return <div className="bg-[#1D2226] h-screen w-screen grid">
+          <button
+            className="w-fit h-fit p-16 place-self-center text-white font-bold text-3xl bg-pink-500 hover:bg-pink-600 rounded-md"
+            onClick={() => createLobby()}>Create game lobby
+          </button>
+        </div>
       case "ready":
         return <GameLobby quiz={quiz} navigateHome={navigateHome} handleGameStart={handleGameStart}/>
       case "running":
