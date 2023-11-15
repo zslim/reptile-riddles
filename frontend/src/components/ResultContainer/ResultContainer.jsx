@@ -7,6 +7,7 @@ const ResultContainer = ({
                            isCorrect,
                            color,
                            isAnswered,
+                           isTimedOut,
                            loading,
                            isDisplayingResult,
                            handleResultDisplay
