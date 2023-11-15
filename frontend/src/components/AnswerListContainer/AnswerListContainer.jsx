@@ -1,7 +1,6 @@
 import AnswerButton from "../AnswerButton/AnswerButton";
-import { validateAnswer } from "../../controllers/answerProvider";
 
-const AnswerListContainer = ({handleSubmit, setColor, task, loading}) => {
+const AnswerListContainer = ({handleSubmit, handleColorChange, task, loading}) => {
   const BUTTON_COLORS = ['purple', 'pink', 'green', 'blue'];
 
   return (
@@ -10,7 +9,7 @@ const AnswerListContainer = ({handleSubmit, setColor, task, loading}) => {
         <div key={answer.answerId}>
           <AnswerButton answer={answer}
                         color={BUTTON_COLORS[i % BUTTON_COLORS.length]}
-                        setColor={setColor}
+                        handleColorChange={handleColorChange}
                         handleSubmit={handleSubmit}
                         loading={loading}
           />

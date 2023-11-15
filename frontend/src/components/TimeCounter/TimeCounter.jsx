@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const TimeCounter = ({deadline, timeLeft, handleDisplayTimeChange, handleDeadline, isAnswered}) => {
+const TimeCounter = ({deadline, timeLeft, handleDisplayTimeChange, handleDeadline, isAnswered, loading}) => {
 
   useEffect(() => {
     const interval = 1000;
@@ -28,9 +28,12 @@ const TimeCounter = ({deadline, timeLeft, handleDisplayTimeChange, handleDeadlin
   }, []);
 
   return (
+    <>
+    {!loading ?
     <div className="absolute right-10 top-5">
       {timeLeft}
-    </div>
+    </div> : null}
+    </>
   )
 }
 

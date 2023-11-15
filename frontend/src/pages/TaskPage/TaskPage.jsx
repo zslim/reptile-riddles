@@ -3,7 +3,7 @@ import ResultContainer from '../../components/ResultContainer';
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
 import TimeCounter from "../../components/TimeCounter";
-import { getNextTask, handleAnswerSubmit } from "../../controllers/gameProvider";
+import { getGameResult, getNextTask, handleAnswerSubmit } from "../../controllers/gameProvider";
 
 const TaskPage = ({firstTask, quiz, player}) => {
   const [isAnswered, setIsAnswered] = useState(false);
@@ -14,15 +14,17 @@ const TaskPage = ({firstTask, quiz, player}) => {
   const [loading, setLoading] = useState(false);
   const [timeLeft, setTimeLeft] = useState(30);
   const [isTimedOut, setIsTimedOut] = useState(false);
+  const [result, setResult] = useState([]);
+  const [isDisplayingResult, setIsDisplayingResult] = useState(false);
   const navigate = useNavigate();
 
   async function handleTaskChange() {
     if (quiz.taskCount > task.taskIndex) {
       try {
-        setLoading(() => true);
+        setLoading(true);
         const newTask = await getNextTask(quiz.gameId);
+        resetGameState(new Date(newTask.deadline));
         setTask({...newTask, deadline: new Date(newTask.deadline)});
-        resetGameState();
         setIsAnswered(false);
       }
       catch (e) {
@@ -39,16 +41,33 @@ const TaskPage = ({firstTask, quiz, player}) => {
 
   async function handleSubmit(answer) {
     try {
-      setLoading(() => true);
+      setLoading(true);
+      setIsDisplayingResult(false);
       const isCorrectAnswer = await handleAnswerSubmit(quiz.gameId, player.playerId, answer.answerId);
-      console.log("gameId: "  + quiz.gameId);
-      console.log("playerId: "  + player.playerId);
-      console.log("answerId: "  + answer.answerId);
+      console.log("gameId: " + quiz.gameId);
+      console.log("playerId: " + player.playerId);
+      console.log("answerId: " + answer.answerId);
       console.log(isCorrectAnswer);
       setSelectedAnswer(answer);
       setIsCorrect(isCorrectAnswer);
       resetGameState();
       setIsAnswered(true);
+    }
+    catch (e) {
+      console.error(e);
+    }
+    finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleResultDisplay() {
+    try {
+      setLoading(true);
+      const updatedResult = await getGameResult(quiz.gameId);
+      console.log(updatedResult);
+      setResult(updatedResult);
+      setIsDisplayingResult(true);
     } catch (e) {
       console.error(e);
     } finally {
@@ -56,11 +75,10 @@ const TaskPage = ({firstTask, quiz, player}) => {
     }
   }
 
+  function resetGameState(deadline) {
+    console.log("deadline: " + deadline);
 
-  function resetGameState() {
-    console.log("deadline: " + task.deadline);
-
-    const newTimeLeft = task.deadline - new Date().getTime();
+    const newTimeLeft = deadline - new Date().getTime();
     const toDisplay = Math.max(Math.floor(newTimeLeft / 1000), 0);
     console.log("timeLeft: " + newTimeLeft);
     setTimeLeft(toDisplay);
@@ -76,6 +94,10 @@ const TaskPage = ({firstTask, quiz, player}) => {
     setIsTimedOut(true);
   }
 
+  function handleColorChange(selectedButtonColor) {
+    setColor(selectedButtonColor);
+  }
+
   return (
     <>
       <div className="bg-[#1D2226] h-screen text-white font-bold">
@@ -85,13 +107,23 @@ const TaskPage = ({firstTask, quiz, player}) => {
           </div>
           {!isAnswered && !isTimedOut ?
             <TimeCounter deadline={task.deadline} timeLeft={timeLeft} handleDisplayTimeChange={handleDisplayTimeChange}
-                         handleDeadline={handleDeadline} isAnswered={isAnswered}/>
+                         handleDeadline={handleDeadline} isAnswered={isAnswered} loading={loading}/>
             : null
           }
         </div>
-        <div className="m-auto mt-20 w-3/6 h-2/6 bg-zinc-500 p-3 grid">
+        {isDisplayingResult ?
+          <div className="m-auto mt-20 w-3/6 h-2/6 bg-zinc-500 p-3 grid grid-cols-1">
+            {result?.map((player) => {
+              return <div key={player.playerId} className="w-max h-max grid grid-cols-2">
+                <div>{player.playerName}</div>
+                <div>{player.score}</div>
+              </div>
+            })}
+          </div>
+        : <div className="m-auto mt-20 w-3/6 h-2/6 bg-zinc-500 p-3 grid">
           Don't be fooled! This is an image!
         </div>
+        }
         {isAnswered || isTimedOut
           ? <ResultContainer
             handleTaskChange={handleTaskChange}
@@ -100,11 +132,13 @@ const TaskPage = ({firstTask, quiz, player}) => {
             color={color}
             isAnswered={isAnswered}
             loading={loading}
+            isDisplayingResult={isDisplayingResult}
+            handleResultDisplay={handleResultDisplay}
           />
           : <AnswerListContainer
             handleSubmit={handleSubmit}
             task={task}
-            setColor={setColor}
+            handleColorChange={handleColorChange}
             loading={loading}
           />
         }
