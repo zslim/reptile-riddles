@@ -18,7 +18,7 @@ const TaskPage = ({firstTask, quiz, player}) => {
   const navigate = useNavigate();
 
   async function handleTaskChange() {
-    if (quiz.taskCount > task.taskIndex) {
+    if (quiz.taskCount - 1 > task.taskIndex) {
       try {
         setLoading(true);
         const newTask = await getNextTask(quiz.gameId);
@@ -103,7 +103,7 @@ const TaskPage = ({firstTask, quiz, player}) => {
             task={task}
             handleColorChange={handleColorChange}
             loading={loading}/>
-        </>
+        </>;
       case "result":
         return <>
           <div className="m-auto mt-20 w-3/6 h-2/6 bg-zinc-500 p-3 grid">
@@ -120,7 +120,7 @@ const TaskPage = ({firstTask, quiz, player}) => {
             isDisplayingResult={false}
             handleResultDisplay={handleScoreDisplay}
           />
-        </>
+        </>;
       // case "timedOut":
       //   return <>
       //     <ResultContainer
@@ -141,7 +141,7 @@ const TaskPage = ({firstTask, quiz, player}) => {
               return <div key={player.playerId} className="w-max h-max grid grid-cols-2">
                 <div>{player.playerName}</div>
                 <div>{player.score}</div>
-              </div>
+              </div>;
             })}
           </div>
           <ResultContainer
@@ -154,9 +154,9 @@ const TaskPage = ({firstTask, quiz, player}) => {
             isDisplayingResult={true}
             handleResultDisplay={handleScoreDisplay}
           />
-        </>
+        </>;
     }
-  }, [gameState])
+  }, [gameState]);
 
   return (
     <>

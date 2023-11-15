@@ -55,4 +55,8 @@ public class Quiz {
     }
     return result;
   }
+
+  public int getTaskCount() {
+    return tasks.size();
+  }
 }
