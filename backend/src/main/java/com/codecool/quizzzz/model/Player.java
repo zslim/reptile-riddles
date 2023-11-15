@@ -1,25 +1,21 @@
 package com.codecool.quizzzz.model;
+
 import lombok.Getter;
-import java.util.Set;
-import java.util.HashSet;
 
 @Getter
 public class Player {
+  private static Long nextId = 1L;
   private final Long playerId;
   private final String playerName;
   private int score = 0;
-  private final Set<Integer> answeredTaskIndexes = new HashSet<>();
 
-  public Player(Long playerId, String playerName) {
-    this.playerId = playerId;
+  public Player(String playerName) {
+    this.playerId = nextId++;
     this.playerName = playerName;
   }
 
-  public void updateScore(int gainedScore, int taskIndex){
-    if (!answeredTaskIndexes.contains(taskIndex)){
-      score += gainedScore;
-      answeredTaskIndexes.add(taskIndex);
-    }
+  public void updateScore(int gainedScore) {
+    score += gainedScore;
   }
 }
 

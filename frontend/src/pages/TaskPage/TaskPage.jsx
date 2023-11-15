@@ -20,7 +20,7 @@ const TaskPage = ({firstTask, quiz, player}) => {
   const navigate = useNavigate();
 
   async function handleTaskChange() {
-    if (quiz.taskCount > task.taskIndex) {
+    if (quiz.taskCount - 1 > task.taskIndex) {
       try {
         setLoading(true);
         const newTask = await getNextTask(quiz.gameId);

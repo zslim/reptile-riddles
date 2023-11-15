@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -37,6 +38,10 @@ public class Task {
   public void addAnswer(Answer answer) {
     this.answers.add(answer);
     answer.setTask(this);
+  }
+
+  public Optional<Answer> getAnswerById(Long answerId) {
+    return answers.stream().filter(answer -> answer.getId().equals(answerId)).findFirst();
   }
 
   public void addAllAnswers(Collection<? extends Answer> c) {
