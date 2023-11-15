@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import React, { useCallback, useState } from 'react';
 import TimeCounter from "../../components/TimeCounter";
 import { getGameResult, getNextTask, handleAnswerSubmit } from "../../controllers/gameProvider";
+import TaskDisplayContainer from "../../components/TaskDisplayContainer";
+import ScoreBoard from "../../components/ScoreBoard";
 
 const TaskPage = ({firstTask, quiz, player}) => {
   const [isCorrect, setIsCorrect] = useState(false);
@@ -13,7 +15,7 @@ const TaskPage = ({firstTask, quiz, player}) => {
   const [loading, setLoading] = useState(false);
   const [timeLeft, setTimeLeft] = useState(30);
   const [isTimedOut, setIsTimedOut] = useState(false);
-  const [result, setResult] = useState([]);
+  const [scores, setScores] = useState([]);
   const [gameState, setGameState] = useState("playingField");
   const navigate = useNavigate();
 
@@ -55,11 +57,11 @@ const TaskPage = ({firstTask, quiz, player}) => {
     }
   }
 
-  async function handleScoreDisplay() {
+  async function navigateToScoreBoard() {
     try {
       setLoading(true);
       const updatedResult = await getGameResult(quiz.gameId);
-      setResult(updatedResult);
+      setScores(updatedResult);
       setGameState("scoreBoard");
     }
     catch (e) {
@@ -95,9 +97,7 @@ const TaskPage = ({firstTask, quiz, player}) => {
     switch (gameState) {
       case "playingField":
         return <>
-          <div className="m-auto mt-20 w-3/6 h-2/6 bg-zinc-500 p-3 grid">
-            Don't be fooled! This is an image!
-          </div>
+          <TaskDisplayContainer/>
           <AnswerListContainer
             handleSubmit={handleSubmit}
             task={task}
@@ -106,9 +106,7 @@ const TaskPage = ({firstTask, quiz, player}) => {
         </>
       case "result":
         return <>
-          <div className="m-auto mt-20 w-3/6 h-2/6 bg-zinc-500 p-3 grid">
-            Don't be fooled! This is an image!
-          </div>
+          <TaskDisplayContainer/>
           <ResultContainer
             handleTaskChange={handleTaskChange}
             selectedAnswer={selectedAnswer}
@@ -117,43 +115,14 @@ const TaskPage = ({firstTask, quiz, player}) => {
             isTimedOut={isTimedOut}
             isAnswered={true}
             loading={loading}
-            isDisplayingResult={false}
-            handleResultDisplay={handleScoreDisplay}
+            navigateToScoreBoard={navigateToScoreBoard}
           />
         </>
-      // case "timedOut":
-      //   return <>
-      //     <ResultContainer
-      //       handleTaskChange={handleTaskChange}
-      //       selectedAnswer={selectedAnswer}
-      //       isCorrect={isCorrect}
-      //       color={color}
-      //       isAnswered={false}
-      //       loading={loading}
-      //       isDisplayingResult={false}
-      //       handleResultDisplay={handleScoreDisplay}
-      //     />
-      //   </>
       case "scoreBoard":
         return <>
-          <div className="m-auto mt-20 w-3/6 h-2/6 bg-zinc-500 p-3 grid grid-cols-1">
-            {result?.map((player) => {
-              return <div key={player.playerId} className="w-max h-max grid grid-cols-2">
-                <div>{player.playerName}</div>
-                <div>{player.score}</div>
-              </div>
-            })}
-          </div>
-          <ResultContainer
-            handleTaskChange={handleTaskChange}
-            selectedAnswer={selectedAnswer}
-            isCorrect={isCorrect}
-            color={color}
-            isAnswered={false}
-            loading={loading}
-            isDisplayingResult={true}
-            handleResultDisplay={handleScoreDisplay}
-          />
+          <ScoreBoard scores={scores}
+                      loading={loading}
+                      handleTaskChange={handleTaskChange}/>
         </>
     }
   }, [gameState])
@@ -163,9 +132,9 @@ const TaskPage = ({firstTask, quiz, player}) => {
       <div className="bg-[#1D2226] h-screen text-white font-bold">
         <div className="text-3xl text-center text-white bg-black h-fit w-screen p-5 border-b-2 border-zinc-700">
           <div className="mx-auto w-5/6">
-            {task?.question}
+            {gameState === "scoreBoard" ? "SCOREBOARD" : task?.question}
           </div>
-          {gameState === "playing" ?
+          {gameState === "playingField" ?
             <TimeCounter deadline={task.deadline} timeLeft={timeLeft} handleDisplayTimeChange={handleDisplayTimeChange}
                          handleDeadline={handleDeadline} isAnswered={gameState === "answered"} loading={loading}/>
             : null}
