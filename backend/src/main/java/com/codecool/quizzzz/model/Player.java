@@ -8,7 +8,7 @@ public class Player {
   private final Long playerId;
   private final String playerName;
   private int score = 0;
-  private Set<Integer> answeredTaskIndexes = new HashSet<>();
+  private final Set<Integer> answeredTaskIndexes = new HashSet<>();
 
   public Player(Long playerId, String playerName) {
     this.playerId = playerId;
