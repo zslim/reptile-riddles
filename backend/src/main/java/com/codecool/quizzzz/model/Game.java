@@ -30,8 +30,14 @@ public class Game {
     playerSet.add(player);
   }
 
+  public void removePlayer(Player player){
+    playerSet.remove(player);
+  }
+
   public Player getPlayerById(Long playerId) {
-    return playerSet.stream().filter(player -> player.getPlayerId().equals(playerId)).findFirst().orElse(null);
+    return playerSet.stream().filter(player -> player.getPlayerId().equals(playerId))
+                                                     .findFirst().orElseThrow(() -> new NotFoundException(String.format(
+                                                      "The player with id %d doesn't exist!", playerId)));
   }
 
   public Task getCurrentTask() {
@@ -44,16 +50,17 @@ public class Game {
   }
 
   public List<Player> getTopPlayers(int limit) {
-    return playerSet.stream().sorted(Comparator.comparingInt(Player::getScore)).limit(limit).toList();
+    return playerSet.stream().sorted(Comparator.comparingInt(Player::getScore).reversed()).limit(limit).toList();
   }
 
   public int calculateScoreGain(LocalDateTime timeOfSubmit) {
+    int secondsToMilliSeconds = 1000;
     int score = 0;
     if (timeOfSubmit.isBefore(deadline)) {
-      int secondsDifference = (int) ChronoUnit.SECONDS.between(timeOfSubmit, deadline);
-      int timeLimit = quiz.getTasks().get(currentTaskIndex).getTimeLimit();
+      int milliSecondsDifference = (int) ChronoUnit.MILLIS.between(timeOfSubmit, deadline);
+      int timeLimit = quiz.getTasks().get(currentTaskIndex).getTimeLimit() * secondsToMilliSeconds;
       int scoreInterval = (MAX_SCORE_PER_TASK - MIN_SCORE_PER_TASK);
-      double timeFactor = 1 - (double) (timeLimit - secondsDifference) / timeLimit;
+      double timeFactor = 1 - (double) (timeLimit - milliSecondsDifference) / timeLimit;
       score = (int) (MIN_SCORE_PER_TASK + (scoreInterval * timeFactor));
     }
     return score;
