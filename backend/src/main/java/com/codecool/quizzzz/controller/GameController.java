@@ -2,6 +2,7 @@ package com.codecool.quizzzz.controller;
 
 import com.codecool.quizzzz.dto.quiz.GameQuizDTO;
 import com.codecool.quizzzz.dto.task.GameTaskDTO;
+import com.codecool.quizzzz.dto.user.NewPlayerDTO;
 import com.codecool.quizzzz.dto.user.PlayerDTO;
 import com.codecool.quizzzz.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,8 @@ public class GameController {
   }
 
   @PostMapping("/join/{gameId}")
-  ResponseEntity<Long> joinToGame(@PathVariable Long gameId, @RequestBody String name) {
-    return ResponseEntity.ok().body(gameService.joinToGame(gameId, name));
+  ResponseEntity<Long> joinToGame(@PathVariable Long gameId, @RequestBody NewPlayerDTO newPlayerDTO) {
+    return ResponseEntity.ok().body(gameService.joinToGame(gameId, newPlayerDTO));
   }
 
   @GetMapping("/nextTask/{gameId}")

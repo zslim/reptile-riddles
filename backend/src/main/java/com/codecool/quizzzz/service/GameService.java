@@ -2,6 +2,7 @@ package com.codecool.quizzzz.service;
 
 import com.codecool.quizzzz.dto.quiz.GameQuizDTO;
 import com.codecool.quizzzz.dto.task.GameTaskDTO;
+import com.codecool.quizzzz.dto.user.NewPlayerDTO;
 import com.codecool.quizzzz.dto.user.PlayerDTO;
 import com.codecool.quizzzz.model.Quiz;
 import com.codecool.quizzzz.service.repository.GameRepository;
@@ -26,8 +27,8 @@ public class GameService {
     return gameRepository.addGame(quiz);
   }
 
-  public Long joinToGame(Long gameId, String name){
-    return gameRepository.addPlayerToGameWithId(gameId, name);
+  public Long joinToGame(Long gameId, NewPlayerDTO newPlayerDTO){
+    return gameRepository.addPlayerToGameWithId(gameId, newPlayerDTO.playerName());
   }
 
   public GameTaskDTO getNextTaskFromGame(Long gameId){

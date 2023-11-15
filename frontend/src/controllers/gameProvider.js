@@ -6,7 +6,7 @@ async function createGameLobby(quizId) {
 async function joinToGameLobby(gameId, playerName) {
   const httpRes = await fetch(`/game/join/${gameId}`, {
     method: "POST",
-    body: JSON.stringify(playerName),
+    body: JSON.stringify({playerName}),
     headers: {
       "Content-Type": "application/json"
     }

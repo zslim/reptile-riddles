@@ -85,10 +85,10 @@ public class Game {
     int score = 0;
     if (LocalDateTime.now().isBefore(deadline)) {
       int secondsDifference = (int) ChronoUnit.SECONDS.between(LocalDateTime.now(), deadline);
-      int timeLimit = quiz.getTasks().get(currentTaskIndex).getTimeLimit();
+      int timeLimit = quiz.getTasks().get(currentTaskIndex - 1).getTimeLimit();
       int scoreInterval = (MAX_SCORE_PER_TASK - MIN_SCORE_PER_TASK);
-      int timeFactor = ((timeLimit - secondsDifference) / timeLimit);
-      score = (MIN_SCORE_PER_TASK + (scoreInterval * timeFactor));
+      double timeFactor =  1 - (double) (timeLimit - secondsDifference) / timeLimit;
+      score = (int) (MIN_SCORE_PER_TASK + (scoreInterval * timeFactor));
     }
     return score;
   }

@@ -36,8 +36,8 @@ public class AnswerController {
   }
 
   //TODO move to game controller
-  @GetMapping("/validate/{answerId}")
-  public ResponseEntity<Boolean> checkIfAnswerIsCorrect(@PathVariable Long answerId) {
-    return ResponseEntity.ok().body(answerService.checkIfCorrect(answerId));
-  }
+//  @GetMapping("/validate/{answerId}")
+//  public ResponseEntity<Boolean> checkIfAnswerIsCorrect(@PathVariable Long answerId) {
+//    return ResponseEntity.ok().body(answerService.checkIfCorrect(answerId));
+//  }
 }
