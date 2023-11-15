@@ -26,17 +26,8 @@ public class UserService {
 
   public void create(NewUserDTO newUserDTO) {
     UserEntity user = newUserDTOtoModel(newUserDTO);
-    user.setRoles(Set.of(repository.findByName(RoleEnum.ROLE_USER).orElseThrow(()-> new NotFoundException("user"))));
+    user.setRoles(Set.of(repository.findByName(RoleEnum.ROLE_USER).orElseThrow(() -> new NotFoundException("user")))); // TODO: better exception
     userRepository.save(user);
-  }
-
-  public UserDTO getById(long id) {
-    UserEntity user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User", id));
-    return modelToUserDTO(user);
-  }
-
-  public void delete(long id){
-    userRepository.deleteById(id);
   }
 
   private UserEntity newUserDTOtoModel(NewUserDTO newUserDTO) {
@@ -47,7 +38,16 @@ public class UserService {
                      .build();
   }
 
+  public UserDTO getById(long id) {
+    UserEntity user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User", id));
+    return modelToUserDTO(user);
+  }
+
   private UserDTO modelToUserDTO(UserEntity user) {
-    return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getPassword());
+    return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getRoles());
+  }
+
+  public void delete(long id) {
+    userRepository.deleteById(id);
   }
 }
