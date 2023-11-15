@@ -34,15 +34,15 @@ public class Task {
   @UpdateTimestamp
   private LocalDateTime modifiedAt;
 
-  public void addAnswer(Answer answer) {
-    this.answers.add(answer);
-    answer.setTask(this);
-  }
-
   public void addAllAnswers(Collection<? extends Answer> c) {
     for (Answer a : c) {
       this.addAnswer(a);
     }
+  }
+
+  public void addAnswer(Answer answer) {
+    this.answers.add(answer);
+    answer.setTask(this);
   }
 
   public void removeAnswer(Answer a) {

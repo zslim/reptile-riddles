@@ -36,11 +36,6 @@ public class WebSecurityConfig {
   }
 
   @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
-
-  @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
         .cors(AbstractHttpConfigurer::disable)
@@ -61,7 +56,6 @@ public class WebSecurityConfig {
     return http.build();
   }
 
-
   public DaoAuthenticationProvider authenticationProvider() {
     DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
     authenticationProvider.setPasswordEncoder(passwordEncoder());
@@ -69,12 +63,17 @@ public class WebSecurityConfig {
     return authenticationProvider;
   }
 
+  public AuthTokenFilter authenticationJwtTokenFilter() {
+    return new AuthTokenFilter(jwtUtils, userDetailsService, logger);
+  }
+
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
+
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration auth) throws Exception {
     return auth.getAuthenticationManager();
-  }
-
-  public AuthTokenFilter authenticationJwtTokenFilter() {
-    return new AuthTokenFilter(jwtUtils, userDetailsService, logger);
   }
 }

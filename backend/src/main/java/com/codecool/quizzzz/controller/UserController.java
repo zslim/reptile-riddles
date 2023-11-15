@@ -17,7 +17,6 @@ public class UserController {
   private final UserService userService;
   private final AuthenticationService authenticationService;
 
-
   public UserController(UserService userService, AuthenticationManager authenticationManager,
                         AuthenticationService authenticationService) {
     this.userService = userService;
@@ -36,13 +35,13 @@ public class UserController {
   }
 
   @DeleteMapping("/{userId}")
-  public ResponseEntity<Void> deleteUser(@PathVariable long userId){
+  public ResponseEntity<Void> deleteUser(@PathVariable long userId) {
     userService.delete(userId);
     return ResponseEntity.ok().build();
   }
 
   @PostMapping("/login")
-  public ResponseEntity<UserInfoDTO> login(@RequestBody LoginDTO loginDTO){
+  public ResponseEntity<UserInfoDTO> login(@RequestBody LoginDTO loginDTO) {
     return ResponseEntity.ok().body(authenticationService.login(loginDTO));
   }
 }
