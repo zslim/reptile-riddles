@@ -184,7 +184,7 @@ const QuizEditor = () => {
     }
     //TODO: look into modification time after updating task - it does not update properly
     modifiedAt = await fetchModifiedAtById(quizId);
-    setQuiz({...quiz, modifiedAt: modifiedAt});
+    setQuiz({...quiz, modifiedAt});
   }
 
   async function saveTask() {
@@ -286,7 +286,7 @@ const QuizEditor = () => {
       if (!isNewTask(selectedTask.taskId)) {
         await deleteTaskById(selectedTask.taskId);
         const modifiedAt = await fetchModifiedAtById(quizId);
-        setQuiz({...quiz, modifiedAt: modifiedAt});
+        setQuiz({...quiz, modifiedAt});
         resetTaskDatabaseStatus();
       }
       setTaskList((taskList) => [...taskList.filter((task) => task.taskId !== selectedTask.taskId)]);
