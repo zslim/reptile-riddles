@@ -73,6 +73,6 @@ public class GameService {
   private List<GameAnswerDTO> getGameAnswerDTOList(List<Answer> answers) {
     return answers.stream()
                   .map((answer -> new GameAnswerDTO(answer.getId(), answer.getText())))
-                  .collect(Collectors.toList());
+                  .toList();
   }
 }
