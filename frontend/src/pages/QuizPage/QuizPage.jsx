@@ -20,7 +20,7 @@ const QuizPage = () => {
       const quiz = await createGameLobby(quizId);
       setQuiz(() => quiz);
       const playerId = await joinToGameLobby(quiz.gameId, temporaryPlayer.playerName);
-      setTemporaryPlayer({...temporaryPlayer, playerId: playerId});
+      setTemporaryPlayer({...temporaryPlayer, playerId});
       setLobbyState("ready");
     }
     catch (error) {
