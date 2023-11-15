@@ -1,16 +1,19 @@
 package com.codecool.quizzzz.security.jwt;
 
+import com.codecool.quizzzz.model.user.Credential;
 import com.codecool.quizzzz.service.logger.Logger;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Date;
+import java.util.*;
 
 @Component
 public class JwtUtils {
@@ -24,29 +27,52 @@ public class JwtUtils {
     this.logger = logger;
   }
 
-  public String generateJwtToken(Authentication authentication){
+  public String generateJwtToken(Authentication authentication) {
     UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
+
+    Map<String, Collection<String>> claims = new HashMap<>();
+    claims.put("roles", userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList());
+    claims.put("username", Set.of(userPrincipal.getUsername())); // TODO: it should be in the subject, but it doesn't work yet
 
     return Jwts.builder()
                .setSubject(userPrincipal.getUsername())
+               .setClaims(claims)
                .setIssuedAt(new Date())
                .setExpiration(new Date(new Date().getTime() + jwtExpirationMs))
                .signWith(key(), SignatureAlgorithm.HS256)
                .compact();
   }
 
-  public String getUserNameFromJwtToken(String token) {
-    return Jwts.parserBuilder().setSigningKey(key()).build().parseClaimsJws(token).getBody().getSubject();
-  }
-
   private Key key() {
     return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
   }
 
-  public boolean validateJwtToken(String authToken) {
+  public String generateJwtToken(String username) {
+    Map<String, Collection<? extends GrantedAuthority>> claims = new HashMap<>();
+    claims.put("roles", List.of());
+//    String username = String.format("GUEST-%s", UUID.randomUUID());
+
+    return Jwts.builder()
+               .setSubject(username)
+               .setClaims(claims)
+               .setIssuedAt(new Date())
+               .setExpiration(new Date(new Date().getTime() + jwtExpirationMs))
+               .signWith(key(), SignatureAlgorithm.HS256)
+               .compact();
+  }
+
+  public Credential getCredentialFromJwtToken(Jws<Claims> claims) {
+    return new Credential(claims.getBody().getSubject());
+  }
+
+  public Collection<? extends GrantedAuthority> getAuthoritiesFromJwtToken(Jws<Claims> claims) {
+    List<String> roles = (List<String>) claims.getBody().get("roles");
+    return roles.stream().map(SimpleGrantedAuthority::new).toList();
+  }
+
+  public Jws<Claims> validateJwtToken(String authToken) {
     try {
-      Jwts.parserBuilder().setSigningKey(key()).build().parse(authToken);
-      return true;
+      return Jwts.parserBuilder().setSigningKey(key()).build().parseClaimsJws(authToken);
     }
     catch (MalformedJwtException e) {
       logger.logError(e.getMessage(), "Invalid JWT token");
@@ -61,6 +87,6 @@ public class JwtUtils {
       logger.logError("JWT claims string is empty", e.getMessage());
     }
 
-    return false;
+    return null;
   }
 }
