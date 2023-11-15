@@ -19,6 +19,6 @@ public class Role {
   private Long id;
   @Enumerated(value = EnumType.STRING)
   private RoleEnum name;
-  @ManyToMany(mappedBy = "roles")
+  @ManyToMany
   private Set<UserEntity> users;
 }

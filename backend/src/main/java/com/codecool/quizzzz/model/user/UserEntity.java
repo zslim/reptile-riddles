@@ -19,18 +19,15 @@ public class UserEntity {
   @Id
   @GeneratedValue
   private Long id;
+  @Column(unique = true)
   private String username;
+  @Column(unique = true)
   private String email;
   private String password;
-  @ManyToMany(cascade = CascadeType.ALL)
-  @JoinTable(
-          name = "role_user_entity",
-          joinColumns = {@JoinColumn(name = "role_id")},
-          inverseJoinColumns = {@JoinColumn(name = "user_id")}
-  )
+  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER) // TODO: change cascade
   private Set<Role> roles;
 
-  public Set<RoleEnum> getRoles(){
+  public Set<RoleEnum> getRoles() {
     System.out.println(roles.size());
     return roles.stream().map(Role::getName).collect(Collectors.toSet());
   }
