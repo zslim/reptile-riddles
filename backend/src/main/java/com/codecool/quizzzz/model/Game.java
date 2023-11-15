@@ -1,5 +1,6 @@
 package com.codecool.quizzzz.model;
 
+import com.codecool.quizzzz.exception.NotFoundException;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

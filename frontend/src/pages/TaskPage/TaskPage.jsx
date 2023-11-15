@@ -43,7 +43,7 @@ const TaskPage = ({firstTask, quiz, player}) => {
   async function handleSubmit(answer) {
     try {
       setLoading(true);
-      const isCorrectAnswer = await handleAnswerSubmit(quiz.gameId, player.playerId, answer.answerId);
+      const isCorrectAnswer = await handleAnswerSubmit(quiz.gameId, player.playerId, answer);
       setSelectedAnswer(answer);
       setIsCorrect(isCorrectAnswer);
       resetTimer();

@@ -19,8 +19,15 @@ async function getNextTask(gameId) {
   return await httpRes.json();
 }
 
-async function handleAnswerSubmit(gameId, playerId, answerId) {
-  const httpRawRes = await fetch(`/game/validate/${gameId}/${playerId}/${answerId}`);
+async function handleAnswerSubmit(gameId, playerId, answer) {
+  console.log(answer);
+  const httpRawRes = await fetch(`/game/submit/${gameId}/${playerId}`, {
+    method: "POST",
+    body: JSON.stringify(answer),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
   return await httpRawRes.json();
 }
 

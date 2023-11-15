@@ -1,5 +1,6 @@
 package com.codecool.quizzzz.controller;
 
+import com.codecool.quizzzz.dto.answer.GameAnswerDTO;
 import com.codecool.quizzzz.dto.quiz.GameQuizDTO;
 import com.codecool.quizzzz.dto.task.GameTaskDTO;
 import com.codecool.quizzzz.dto.user.NewPlayerDTO;
@@ -35,10 +36,11 @@ public class GameController {
     return ResponseEntity.ok().body(gameService.getNextTaskFromGame(gameId));
   }
 
-  @GetMapping("/validate/{gameId}/{playerId}/{answerId}")
+  @PostMapping("/submit/{gameId}/{playerId}")
   public ResponseEntity<Boolean> handleAnswerSubmit(@PathVariable Long gameId, @PathVariable Long playerId,
-                                                    @PathVariable Long answerId) {
-    return ResponseEntity.ok().body(gameService.handleAnswerSubmit(gameId, playerId, answerId));
+                                                    @RequestBody GameAnswerDTO answer) {
+    System.out.println(answer.answerId());
+    return ResponseEntity.ok().body(gameService.handleAnswerSubmit(gameId, playerId, answer.answerId()));
   }
 
   @GetMapping("/result/{gameId}")
