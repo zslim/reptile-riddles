@@ -13,7 +13,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 @Component
 public class JwtUtils {
@@ -29,16 +31,15 @@ public class JwtUtils {
 
   public String generateJwtToken(Authentication authentication) {
     UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
-
-    Map<String, Collection<String>> claims = new HashMap<>();
-    claims.put("roles", userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList());
-    claims.put("username", Set.of(userPrincipal.getUsername())); // TODO: it should be in the subject, but it doesn't work yet
+    List<String> authorities = userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+    Date issuedAt = new Date();
+    Date expiration = new Date(issuedAt.getTime() + jwtExpirationMs);
 
     return Jwts.builder()
                .setSubject(userPrincipal.getUsername())
-               .setClaims(claims)
-               .setIssuedAt(new Date())
-               .setExpiration(new Date(new Date().getTime() + jwtExpirationMs))
+               .claim("roles", authorities)
+               .setIssuedAt(issuedAt)
+               .setExpiration(expiration)
                .signWith(key(), SignatureAlgorithm.HS256)
                .compact();
   }
@@ -48,13 +49,9 @@ public class JwtUtils {
   }
 
   public String generateJwtToken(String username) {
-    Map<String, Collection<? extends GrantedAuthority>> claims = new HashMap<>();
-    claims.put("roles", List.of());
-//    String username = String.format("GUEST-%s", UUID.randomUUID());
-
     return Jwts.builder()
                .setSubject(username)
-               .setClaims(claims)
+               .claim("roles", List.of())
                .setIssuedAt(new Date())
                .setExpiration(new Date(new Date().getTime() + jwtExpirationMs))
                .signWith(key(), SignatureAlgorithm.HS256)
