@@ -51,7 +51,7 @@ public class Game {
     int score = 0;
     if (timeOfSubmit.isBefore(deadline)) {
       int secondsDifference = (int) ChronoUnit.SECONDS.between(timeOfSubmit, deadline);
-      int timeLimit = quiz.getTasks().get(currentTaskIndex - 1).getTimeLimit();
+      int timeLimit = quiz.getTasks().get(currentTaskIndex).getTimeLimit();
       int scoreInterval = (MAX_SCORE_PER_TASK - MIN_SCORE_PER_TASK);
       double timeFactor = 1 - (double) (timeLimit - secondsDifference) / timeLimit;
       score = (int) (MIN_SCORE_PER_TASK + (scoreInterval * timeFactor));
