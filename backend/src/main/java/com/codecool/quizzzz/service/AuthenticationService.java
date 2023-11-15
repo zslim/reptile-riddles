@@ -33,4 +33,6 @@ public class AuthenticationService {
     List<String> roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
     return new UserInfoDTO(jwt, loginDTO.username(), roles);
   }
+
+  // TODO: guest login
 }
