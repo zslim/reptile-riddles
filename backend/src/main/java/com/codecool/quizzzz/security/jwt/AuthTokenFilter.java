@@ -1,30 +1,31 @@
 package com.codecool.quizzzz.security.jwt;
 
+import com.codecool.quizzzz.model.user.Credential;
+import com.codecool.quizzzz.security.authmodel.AuthenticationModel;
 import com.codecool.quizzzz.service.logger.Logger;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collection;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
   private final JwtUtils jwtUtils;
-  private final UserDetailsService userDetailsService;
   private final Logger logger;
 
-
-  public AuthTokenFilter(JwtUtils jwtUtils, UserDetailsService userDetailsService, Logger logger) {
+  public AuthTokenFilter(JwtUtils jwtUtils, Logger logger) {
     this.jwtUtils = jwtUtils;
-    this.userDetailsService = userDetailsService;
     this.logger = logger;
   }
 
@@ -33,16 +34,16 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                                   FilterChain filterChain) throws ServletException, IOException {
     try {
       String jwt = parseJwt(request);
-      if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-        String username = jwtUtils.getUserNameFromJwtToken(jwt);
+      if (jwt != null) {
+        Jws<Claims> claimsJws = jwtUtils.validateJwtToken(jwt);
+        if (claimsJws != null) {
+          Credential credential = jwtUtils.getCredentialFromJwtToken(claimsJws);
+          Collection<? extends GrantedAuthority> authorities = jwtUtils.getAuthoritiesFromJwtToken(claimsJws);
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails,
-                                                                                                          null,
-                                                                                                          userDetails.getAuthorities());
-        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+          AuthenticationModel authenticationToken = new AuthenticationModel(credential, authorities);
+          authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+          SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        }
       }
     }
     catch (Exception e) {
@@ -52,9 +53,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     filterChain.doFilter(request, response);
   }
 
-  private String parseJwt(HttpServletRequest request){
+  private String parseJwt(HttpServletRequest request) {
     String headerAuth = request.getHeader("Authorization");
-    if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")){
+    if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
       return headerAuth.substring(7);
     }
     return null;
