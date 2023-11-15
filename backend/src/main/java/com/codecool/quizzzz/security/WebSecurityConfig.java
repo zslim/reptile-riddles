@@ -64,7 +64,7 @@ public class WebSecurityConfig {
   }
 
   public AuthTokenFilter authenticationJwtTokenFilter() {
-    return new AuthTokenFilter(jwtUtils, userDetailsService, logger);
+    return new AuthTokenFilter(jwtUtils, logger);
   }
 
   @Bean
