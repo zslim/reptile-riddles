@@ -3,6 +3,7 @@ package com.codecool.quizzzz.service;
 import com.codecool.quizzzz.dto.user.LoginDTO;
 import com.codecool.quizzzz.dto.user.UserInfoDTO;
 import com.codecool.quizzzz.dto.user.UserInfoJwtDTO;
+import com.codecool.quizzzz.model.user.RoleEnum;
 import com.codecool.quizzzz.security.jwt.JwtUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -39,7 +40,7 @@ public class AuthenticationService {
   public UserInfoJwtDTO loginAsGuest() {
     String username = String.format("GUEST-%s", UUID.randomUUID());
     String jwt = jwtUtils.generateJwtToken(username);
-    List<String> roles = List.of("ROLE_GUEST");
+    List<String> roles = List.of(RoleEnum.ROLE_GUEST.toString());
     return new UserInfoJwtDTO(jwt, username, roles);
   }
 
