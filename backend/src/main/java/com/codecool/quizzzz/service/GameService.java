@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class GameService {
@@ -47,6 +46,15 @@ public class GameService {
     return taskToGameTaskDTO(nextTask, game.getDeadline(), game.getCurrentTaskIndex());
   }
 
+  private GameTaskDTO taskToGameTaskDTO(Task nextTask, LocalDateTime deadline, int currentTaskIndex) {
+    List<GameAnswerDTO> gameAnswerDTOList = getGameAnswerDTOList(nextTask.getAnswers());
+    return new GameTaskDTO(nextTask.getQuestion(), gameAnswerDTOList, deadline, currentTaskIndex);
+  }
+
+  private List<GameAnswerDTO> getGameAnswerDTOList(List<Answer> answers) {
+    return answers.stream().map((answer -> new GameAnswerDTO(answer.getId(), answer.getText()))).toList();
+  }
+
   public Boolean handleAnswerSubmit(Long gameId, Long playerId, Long answerId) {
     Game game = gameRepository.findGameById(gameId);
     Player player = game.getPlayerById(playerId);
@@ -63,16 +71,5 @@ public class GameService {
                .stream()
                .map(player -> new PlayerDTO(player.getPlayerId(), player.getScore(), player.getPlayerName()))
                .toList();
-  }
-
-  private GameTaskDTO taskToGameTaskDTO(Task nextTask, LocalDateTime deadline, int currentTaskIndex) {
-    List<GameAnswerDTO> gameAnswerDTOList = getGameAnswerDTOList(nextTask.getAnswers());
-    return new GameTaskDTO(nextTask.getQuestion(), gameAnswerDTOList, deadline, currentTaskIndex);
-  }
-
-  private List<GameAnswerDTO> getGameAnswerDTOList(List<Answer> answers) {
-    return answers.stream()
-                  .map((answer -> new GameAnswerDTO(answer.getId(), answer.getText())))
-                  .toList();
   }
 }

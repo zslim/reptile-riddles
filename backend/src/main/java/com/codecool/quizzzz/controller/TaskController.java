@@ -1,6 +1,9 @@
 package com.codecool.quizzzz.controller;
 
-import com.codecool.quizzzz.dto.task.*;
+import com.codecool.quizzzz.dto.task.BriefTaskDTO;
+import com.codecool.quizzzz.dto.task.EditorTaskDTO;
+import com.codecool.quizzzz.dto.task.IncomingQuestionDTO;
+import com.codecool.quizzzz.dto.task.OutgoingQuestionDTO;
 import com.codecool.quizzzz.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
