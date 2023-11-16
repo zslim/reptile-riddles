@@ -16,9 +16,16 @@ async function userLogin(user) {
       "Content-Type": "application/json"
     }
   });
+  return await res.json();
+}
+
+async function getCredentials() {
+  const res = await fetch(`/user/credentials`);
+  return await res.json();
 }
 
 module.exports = {
   userRegister,
-  userLogin
+  userLogin,
+  getCredentials
 };
