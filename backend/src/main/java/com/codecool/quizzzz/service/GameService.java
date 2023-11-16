@@ -33,12 +33,11 @@ public class GameService {
     return new GameQuizDTO(newGame.getGameId(), quiz.getTitle(), quiz.getTaskCount());
   }
 
-  // TODO: get information about how players will be stored (gen. from user? what abt guest users? spring sec tokens?)
-  public Long joinToGame(Long gameId, NewPlayerDTO newPlayerDTO) {
+  public boolean joinToGame(Long gameId, NewPlayerDTO newPlayerDTO) {
     Game game = gameRepository.findGameById(gameId);
     String username = getUsernameFromSecurityContext();
     game.addPlayer(new Player(newPlayerDTO.playerName(), username));
-    return 1L;
+    return true;
   }
 
   private String getUsernameFromSecurityContext() {

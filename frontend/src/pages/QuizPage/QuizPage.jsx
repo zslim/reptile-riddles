@@ -4,24 +4,26 @@ import TaskPage from "../TaskPage";
 import Loading from "../../components/Loading";
 import { createGameLobby, getNextTask, joinToGameLobby } from "../../controllers/gameProvider";
 import GameLobby from "../../components/GameLobby";
+import { useUser } from "../../context/UserContextProvider";
 
 const QuizPage = () => {
   const {quizId} = useParams();
   const [loading, setLoading] = useState(false);
   const [quiz, setQuiz] = useState({gameId: -1, title: "", taskCount: -1});
   const [firstTask, setFirstTask] = useState({});
-  const [temporaryPlayer, setTemporaryPlayer] = useState({playerName: "Sanyi", playerId: -1});
   const [lobbyState, setLobbyState] = useState("creating");
   const navigate = useNavigate();
+  const {user} = useUser();
 
   async function createLobby() {
     try {
       setLoading(true);
       const quiz = await createGameLobby(quizId);
       setQuiz(() => quiz);
-      const playerId = await joinToGameLobby(quiz.gameId, temporaryPlayer.playerName);
-      setTemporaryPlayer({...temporaryPlayer, playerId});
-      setLobbyState("ready");
+      const isSuccessful = await joinToGameLobby(quiz.gameId, user.username);
+      if (isSuccessful) {
+        setLobbyState("ready");
+      }
     }
     catch (error) {
       console.error(error);
