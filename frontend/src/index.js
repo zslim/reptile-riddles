@@ -6,7 +6,6 @@ import "./index.css";
 
 import Layout from './pages/Layout';
 import Homepage from "./pages/Homepage";
-import QuizListPage from "./pages/QuizListPage";
 import QuizPage from "./pages/QuizPage";
 import ResultPage from "./pages/ResultPage";
 import QuizEditor from "./pages/QuizEditor";
@@ -14,6 +13,8 @@ import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import { UserContextProvider } from "./context/UserContextProvider";
 import Protected from "./context";
+import PublicQuizListPage from "./pages/PublicQuizListPage";
+import MyQuizListPage from "./pages/MyQuizListPage";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -64,7 +65,15 @@ const router = createBrowserRouter([{
               path: "all",
               element: (
                 <Protected roleRequirement={"user"}>
-                  <QuizListPage/>
+                  <PublicQuizListPage/>
+                </Protected>
+              )
+            },
+            {
+              path: "my",
+              element: (
+                <Protected roleRequirement={"user"}>
+                  <MyQuizListPage/>
                 </Protected>
               )
             }

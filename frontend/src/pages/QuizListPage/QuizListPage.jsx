@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { fetchAllQuizzes } from "../../controllers/quizProvider";
 import QuizListContainer from "../../components/QuizListContainer";
 import QuizFilterContainer from "../../components/QuizFilterContainer";
 import Loading from "../../components/Loading";
 
-const QuizListPage = () => {
+const QuizListPage = ({fetchQuizzes}) => {
   const [loading, setLoading] = useState(true);
   const [quizList, setQuizList] = useState([]);
 
@@ -12,7 +11,7 @@ const QuizListPage = () => {
     async function getQuizzes() {
       try {
         setLoading(true);
-        const quizzes = await fetchAllQuizzes();
+        const quizzes = await fetchQuizzes();
         setQuizList(quizzes);
       }
       catch (error) {

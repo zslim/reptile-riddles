@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { getCredentials, userLogin, userLogout } from "../controllers/userProvider";
-import authenticate from "./authenticator";
 
 const UserContext = createContext({});
 const NO_USER = {username: "", roles: []};
@@ -49,7 +48,8 @@ export const UserContextProvider = ({children}) => {
       const status = await userLogout();
 
       setUser({...NO_USER});
-    } catch (e){
+    }
+    catch (e) {
       console.error(e);
     }
     finally {

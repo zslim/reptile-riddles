@@ -22,7 +22,12 @@ public class QuizController {
   }
 
   @GetMapping("/all")
-  ResponseEntity<List<OutgoingEditorQuizDTO>> getAllQuiz() {
+  ResponseEntity<List<OutgoingEditorQuizDTO>> getAllQuizzes() {
+    return ResponseEntity.ok().body(quizService.getAll());
+  }
+
+  @GetMapping("/my")
+  ResponseEntity<List<OutgoingEditorQuizDTO>> getMyQuizzes() {
     return ResponseEntity.ok().body(quizService.getAll());
   }
 

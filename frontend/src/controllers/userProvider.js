@@ -25,13 +25,14 @@ async function getCredentials() {
 }
 
 async function userLogout() {
-  const res =  await fetch(`/user/logout`, {
+  const res = await fetch(`/user/logout`, {
     method: "DELETE", headers: {
       "Content-Type": "application/json"
     }
   });
   return res.json();
 }
+
 module.exports = {
   userRegister,
   userLogin,

@@ -21,6 +21,11 @@ async function fetchAllQuizzes() {
   return await httpRawRes.json();
 }
 
+async function fetchMyQuizzes() {
+  const httpRawRes = await fetch("/quiz/my");
+  return await httpRawRes.json();
+}
+
 async function saveEmptyQuiz() {
   const httpRes = await fetch(`/quiz/create`, {
     method: "POST"
@@ -40,4 +45,12 @@ async function fetchModifiedAtById(quizId) {
   return await httpRes.json();
 }
 
-module.exports = {updateQuizName, fetchQuizById, fetchAllQuizzes, saveEmptyQuiz, deleteQuizById, fetchModifiedAtById};
+module.exports = {
+  updateQuizName,
+  fetchQuizById,
+  fetchAllQuizzes,
+  fetchMyQuizzes,
+  saveEmptyQuiz,
+  deleteQuizById,
+  fetchModifiedAtById
+};

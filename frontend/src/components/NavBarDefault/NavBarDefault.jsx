@@ -13,12 +13,12 @@ export function NavBarDefault() {
   const [hasUser, setHasUser] = useState(false);
   const {user, logout} = useUser();
 
-  function isLoggedIn(){
+  function isLoggedIn() {
     return authenticate(user, "user");
   }
 
   useEffect(() => {
-    setHasUser(() => isLoggedIn())
+    setHasUser(() => isLoggedIn());
     console.log(isLoggedIn());
     window.addEventListener(
       "resize",
@@ -26,12 +26,13 @@ export function NavBarDefault() {
     );
   }, []);
 
-  async function handleLogout(){
+  async function handleLogout() {
     try {
       await logout();
       setHasUser(false);
-    } catch (e) {
-     console.error(e);
+    }
+    catch (e) {
+      console.error(e);
     }
   }
 
@@ -44,9 +45,9 @@ export function NavBarDefault() {
         className="flex items-center gap-x-2 p-1 font-medium"
       >
         <PlayIcon/>
-        <a href="#" className="flex items-center">
+        <Link to="#" className="flex items-center">
           Games
-        </a>
+        </Link>
       </Typography>
       <Typography
         as="li"
@@ -55,9 +56,9 @@ export function NavBarDefault() {
         className="flex items-center gap-x-2 p-1 font-medium"
       >
         <QuizzesIcon/>
-        <a href="/quiz/all" className="flex items-center">
+        <Link to="/quiz/all" className="flex items-center">
           Quizzes
-        </a>
+        </Link>
       </Typography>
       <Typography
         as="li"
@@ -66,9 +67,9 @@ export function NavBarDefault() {
         className="flex items-center gap-x-2 p-1 font-medium"
       >
         <MyQuizIcon/>
-        <a href="/quiz/all" className="flex items-center">
+        <Link to="/quiz/my" className="flex items-center">
           My Quizzes
-        </a>
+        </Link>
       </Typography>
       <Typography
         as="li"
@@ -77,9 +78,9 @@ export function NavBarDefault() {
         className="flex items-center gap-x-2 p-1 font-medium"
       >
         <UserIcon/>
-        <a href="#" className="flex items-center">
+        <Link to="#" className="flex items-center">
           Account
-        </a>
+        </Link>
       </Typography>
     </ul>
   );
@@ -96,9 +97,9 @@ export function NavBarDefault() {
             <Link to={"/login"}>
               <Button variant="text" size="sm" className="hidden lg:inline-block" onClick={() => handleLogout()}>
                 <span>Logout</span>
-              </Button >
+              </Button>
             </Link>
-            :<>
+            : <>
               <Link to={"/login"}>
                 <Button variant="text" size="sm" className="hidden lg:inline-block">
                   <span>Login</span>
