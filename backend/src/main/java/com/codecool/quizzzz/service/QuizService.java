@@ -26,6 +26,19 @@ public class QuizService {
     return quizRepository.findAll().stream().map(this::modelToDTO).toList();
   }
 
+  private OutgoingEditorQuizDTO modelToDTO(Quiz quiz) {
+    List<BriefTaskDTO> taskList = quiz.getTasks().stream().map(this::convertTaskModelToBriefTaskDTO).toList();
+    return new OutgoingEditorQuizDTO(quiz.getId(),
+                                     quiz.getTitle(),
+                                     taskList,
+                                     quiz.getCreatedAt(),
+                                     quiz.getLastModifiedTimestamp());
+  }
+
+  private BriefTaskDTO convertTaskModelToBriefTaskDTO(Task task) {
+    return new BriefTaskDTO(task.getId(), task.getIndex(), task.getQuestion());
+  }
+
   public OutgoingEditorQuizDTO getById(Long quizId) {
     Quiz foundQuiz = quizRepository.findById(quizId)
                                    .orElseThrow(() -> new NotFoundException(String.format(
@@ -57,18 +70,5 @@ public class QuizService {
 
   public void deleteById(Long quizId) {
     quizRepository.deleteById(quizId);
-  }
-
-  private OutgoingEditorQuizDTO modelToDTO(Quiz quiz) {
-    List<BriefTaskDTO> taskList = quiz.getTasks().stream().map(this::convertTaskModelToBriefTaskDTO).toList();
-    return new OutgoingEditorQuizDTO(quiz.getId(),
-                                     quiz.getTitle(),
-                                     taskList,
-                                     quiz.getCreatedAt(),
-                                     quiz.getLastModifiedTimestamp());
-  }
-
-  private BriefTaskDTO convertTaskModelToBriefTaskDTO(Task task) {
-    return new BriefTaskDTO(task.getId(), task.getIndex(), task.getQuestion());
   }
 }

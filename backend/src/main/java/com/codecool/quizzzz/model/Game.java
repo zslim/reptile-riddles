@@ -31,23 +31,25 @@ public class Game {
     playerSet.add(player);
   }
 
-  public void removePlayer(Player player){
+  public void removePlayer(Player player) {
     playerSet.remove(player);
   }
 
-  public Player getPlayerById(Long playerId) {
-    return playerSet.stream().filter(player -> player.getPlayerId().equals(playerId))
-                                                     .findFirst().orElseThrow(() -> new NotFoundException(String.format(
-                                                      "The player with id %d doesn't exist!", playerId)));
-  }
-
-  public Task getCurrentTask() {
-    return quiz.getTasks().get(currentTaskIndex);
+  public Player getPlayerByUsername(String username) {
+    return playerSet.stream()
+                    .filter(player -> player.getUsername().equals(username))
+                    .findFirst()
+                    .orElseThrow(() -> new NotFoundException(String.format("Player not found with username: %s",
+                                                                           username)));
   }
 
   public Task advanceToNextTask() {
     currentTaskIndex++;
     return getCurrentTask();
+  }
+
+  public Task getCurrentTask() {
+    return quiz.getTasks().get(currentTaskIndex);
   }
 
   public List<Player> getTopPlayers(int limit) {

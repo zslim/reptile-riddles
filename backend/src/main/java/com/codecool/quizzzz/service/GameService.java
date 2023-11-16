@@ -10,6 +10,7 @@ import com.codecool.quizzzz.model.*;
 import com.codecool.quizzzz.service.repository.GameRepository;
 import com.codecool.quizzzz.service.repository.QuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -33,13 +34,15 @@ public class GameService {
     return new GameQuizDTO(newGame.getGameId(), quiz.getTitle(), quiz.getTaskCount());
   }
 
-  // TODO: get information about how players will be stored (gen. from user? what abt guest users? spring sec tokens?)
-  public Long joinToGame(Long gameId, NewPlayerDTO newPlayerDTO) {
-    Game game = gameRepository.findGameById(gameId)
-                              .orElseThrow(() -> new NotFoundException("No game found with this id!"));
-    Player player = new Player(newPlayerDTO.playerName());
-    game.addPlayer(player);
-    return player.getPlayerId();
+  public boolean joinToGame(Long gameId, NewPlayerDTO newPlayerDTO) {
+    Game game = gameRepository.findGameById(gameId).orElseThrow(() -> new NotFoundException("No game found with this id!"));
+    String username = getUsernameFromSecurityContext();
+    game.addPlayer(new Player(newPlayerDTO.playerName(), username));
+    return true;
+  }
+
+  private String getUsernameFromSecurityContext() {
+    return SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
   }
 
   public GameTaskDTO getNextTaskFromGame(Long gameId) {
@@ -50,10 +53,19 @@ public class GameService {
     return taskToGameTaskDTO(nextTask, game.getDeadline(), game.getCurrentTaskIndex());
   }
 
-  public Boolean handleAnswerSubmit(Long gameId, Long playerId, Long answerId) {
-    Game game = gameRepository.findGameById(gameId)
-                              .orElseThrow(() -> new NotFoundException("No game found with this id!"));
-    Player player = game.getPlayerById(playerId);
+  private GameTaskDTO taskToGameTaskDTO(Task nextTask, LocalDateTime deadline, int currentTaskIndex) {
+    List<GameAnswerDTO> gameAnswerDTOList = getGameAnswerDTOList(nextTask.getAnswers());
+    return new GameTaskDTO(nextTask.getQuestion(), gameAnswerDTOList, deadline, currentTaskIndex);
+  }
+
+  private List<GameAnswerDTO> getGameAnswerDTOList(List<Answer> answers) {
+    return answers.stream().map((answer -> new GameAnswerDTO(answer.getId(), answer.getText()))).toList();
+  }
+
+  public Boolean handleAnswerSubmit(Long gameId, Long answerId) {
+    Game game = gameRepository.findGameById(gameId).orElseThrow(() -> new NotFoundException("No game found with this id!"));
+    String username = getUsernameFromSecurityContext();
+    Player player = game.getPlayerByUsername(username);
     Answer answer = game.getCurrentTask().getAnswerById(answerId).orElseThrow();
     int scoreGain = answer.isCorrect() ? game.calculateScoreGain(LocalDateTime.now()) : 0;
     //TODO: make sure a player can't get points twice for the same question
@@ -68,14 +80,5 @@ public class GameService {
                .stream()
                .map(player -> new PlayerDTO(player.getPlayerId(), player.getScore(), player.getPlayerName()))
                .toList();
-  }
-
-  private GameTaskDTO taskToGameTaskDTO(Task nextTask, LocalDateTime deadline, int currentTaskIndex) {
-    List<GameAnswerDTO> gameAnswerDTOList = getGameAnswerDTOList(nextTask.getAnswers());
-    return new GameTaskDTO(nextTask.getQuestion(), gameAnswerDTOList, deadline, currentTaskIndex);
-  }
-
-  private List<GameAnswerDTO> getGameAnswerDTOList(List<Answer> answers) {
-    return answers.stream().map((answer -> new GameAnswerDTO(answer.getId(), answer.getText()))).toList();
   }
 }

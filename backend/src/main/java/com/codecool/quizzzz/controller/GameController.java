@@ -1,6 +1,5 @@
 package com.codecool.quizzzz.controller;
 
-import com.codecool.quizzzz.dto.answer.GameAnswerDTO;
 import com.codecool.quizzzz.dto.quiz.GameQuizDTO;
 import com.codecool.quizzzz.dto.task.GameTaskDTO;
 import com.codecool.quizzzz.dto.user.NewPlayerDTO;
@@ -9,6 +8,7 @@ import com.codecool.quizzzz.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -27,7 +27,7 @@ public class GameController {
   }
 
   @PostMapping("/join/{gameId}")
-  ResponseEntity<Long> joinToGame(@PathVariable Long gameId, @RequestBody NewPlayerDTO newPlayerDTO) {
+  ResponseEntity<Boolean> joinToGame(@PathVariable Long gameId, @RequestBody NewPlayerDTO newPlayerDTO) {
     return ResponseEntity.ok().body(gameService.joinToGame(gameId, newPlayerDTO));
   }
 
@@ -36,11 +36,9 @@ public class GameController {
     return ResponseEntity.ok().body(gameService.getNextTaskFromGame(gameId));
   }
 
-  @PostMapping("/submit/{gameId}/{playerId}")
-  public ResponseEntity<Boolean> handleAnswerSubmit(@PathVariable Long gameId, @PathVariable Long playerId,
-                                                    @RequestBody GameAnswerDTO answer) {
-    System.out.println(answer.answerId());
-    return ResponseEntity.ok().body(gameService.handleAnswerSubmit(gameId, playerId, answer.answerId()));
+  @PatchMapping("/submit/{gameId}")
+  public ResponseEntity<Boolean> handleAnswerSubmit(@PathVariable Long gameId, @RequestParam Long answer) {
+    return ResponseEntity.ok().body(gameService.handleAnswerSubmit(gameId, answer));
   }
 
   @GetMapping("/result/{gameId}")

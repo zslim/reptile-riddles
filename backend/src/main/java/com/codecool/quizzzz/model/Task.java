@@ -35,11 +35,6 @@ public class Task {
   @UpdateTimestamp
   private LocalDateTime modifiedAt;
 
-  public void addAnswer(Answer answer) {
-    this.answers.add(answer);
-    answer.setTask(this);
-  }
-
   public Optional<Answer> getAnswerById(Long answerId) {
     return answers.stream().filter(answer -> answer.getId().equals(answerId)).findFirst();
   }
@@ -48,6 +43,11 @@ public class Task {
     for (Answer a : c) {
       this.addAnswer(a);
     }
+  }
+
+  public void addAnswer(Answer answer) {
+    this.answers.add(answer);
+    answer.setTask(this);
   }
 
   public void removeAnswer(Answer a) {
