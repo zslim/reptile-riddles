@@ -12,6 +12,8 @@ import ResultPage from "./pages/ResultPage";
 import QuizEditor from "./pages/QuizEditor";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
+import { UserContextProvider } from "./context/UserContextProvider";
+import Protected from "./context";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -39,20 +41,32 @@ const router = createBrowserRouter([{
           children: [
             {
               path: "",
-              element: <ResultPage/>
+              element: (
+                <Protected roleRequirement={"user"}>
+                  <ResultPage/>
+                </Protected>
+              )
             }
           ]
         },
         {
           path: "quizform/:quizId",
-          element: <QuizEditor/>
+          element: (
+            <Protected  roleRequirement={"user"}>
+              <QuizEditor/>
+            </Protected>
+          )
         },
         {
           path: "quiz",
           children: [
             {
               path: "all",
-              element: <QuizListPage/>,
+              element: (
+                <Protected  roleRequirement={"user"}>
+                  <QuizListPage/>
+                </Protected>
+              )
             }
           ]
         }
@@ -63,7 +77,11 @@ const router = createBrowserRouter([{
       children: [
         {
           path: "quiz/:quizId",
-          element: <QuizPage/>,
+          element: (
+            <Protected roleRequirement={"guest"}>
+              <QuizPage/>
+            </Protected>
+          )
         },
       ]
     },
@@ -72,7 +90,9 @@ const router = createBrowserRouter([{
 
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router}/>
+    <UserContextProvider>
+      <RouterProvider router={router}/>
+    </UserContextProvider>
   </React.StrictMode>
 );
 
