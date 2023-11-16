@@ -23,7 +23,7 @@ public class Quiz {
   @Column(insertable = false)
   @ColumnDefault("'My new quiz'")
   private String title;
-  @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
   private List<Task> tasks = new ArrayList<>();
   @Column(insertable = false)
   @ColumnDefault("false")

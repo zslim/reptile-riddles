@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -35,7 +36,8 @@ public class GameService {
   }
 
   public boolean joinToGame(Long gameId, NewPlayerDTO newPlayerDTO) {
-    Game game = gameRepository.findGameById(gameId).orElseThrow(() -> new NotFoundException("No game found with this id!"));
+    Game game = gameRepository.findGameById(gameId)
+                              .orElseThrow(() -> new NotFoundException("No game found with this id!"));
     String username = getUsernameFromSecurityContext();
     game.addPlayer(new Player(newPlayerDTO.playerName(), username));
     return true;
@@ -59,11 +61,15 @@ public class GameService {
   }
 
   private List<GameAnswerDTO> getGameAnswerDTOList(List<Answer> answers) {
-    return answers.stream().map((answer -> new GameAnswerDTO(answer.getId(), answer.getText()))).toList();
+    return answers.stream()
+                  .map((answer -> new GameAnswerDTO(answer.getId(), answer.getText())))
+                  .sorted(Comparator.comparing(GameAnswerDTO::answerId))
+                  .toList();
   }
 
   public Boolean handleAnswerSubmit(Long gameId, Long answerId) {
-    Game game = gameRepository.findGameById(gameId).orElseThrow(() -> new NotFoundException("No game found with this id!"));
+    Game game = gameRepository.findGameById(gameId)
+                              .orElseThrow(() -> new NotFoundException("No game found with this id!"));
     String username = getUsernameFromSecurityContext();
     Player player = game.getPlayerByUsername(username);
     Answer answer = game.getCurrentTask().getAnswerById(answerId).orElseThrow();
