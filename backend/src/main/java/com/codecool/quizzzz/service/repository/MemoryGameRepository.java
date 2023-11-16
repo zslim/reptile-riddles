@@ -4,6 +4,7 @@ import com.codecool.quizzzz.model.Game;
 
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 public class MemoryGameRepository implements GameRepository {
@@ -15,7 +16,7 @@ public class MemoryGameRepository implements GameRepository {
   }
 
   @Override
-  public Game findGameById(Long gameId) {
-    return gameSet.stream().filter(game -> Objects.equals(game.getGameId(), gameId)).findFirst().orElse(null);
+  public Optional<Game> findGameById(Long gameId) {
+    return gameSet.stream().filter(game -> Objects.equals(game.getGameId(), gameId)).findFirst();
   }
 }
