@@ -1,69 +1,79 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import TaskPage from "../TaskPage";
-import { fetchQuizById } from "../../controllers/quizProvider";
-import { fetchTask } from "../../controllers/taskProvider";
 import Loading from "../../components/Loading";
+import { createGameLobby, getNextTask, joinToGameLobby } from "../../controllers/gameProvider";
+import GameLobby from "../../components/GameLobby";
 
 const QuizPage = () => {
   const {quizId} = useParams();
   const [loading, setLoading] = useState(false);
-  const [taskCount, setTaskCount] = useState(null);
-  const [taskIndex, setTaskIndex] = useState(null);
-  const [quiz, setQuiz] = useState({});
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [quiz, setQuiz] = useState({gameId: -1, title: "", taskCount: -1});
   const [firstTask, setFirstTask] = useState({});
+  const [temporaryPlayer, setTemporaryPlayer] = useState({playerName: "Sanyi", playerId: -1});
+  const [lobbyState, setLobbyState] = useState("creating");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    async function getQuiz() {
-      try {
-        setLoading(true);
-        const quiz = await fetchQuizById(quizId);
-        const task = await fetchTask(quizId, 0);
-        setFirstTask(() => task);
-        setQuiz(() => quiz);
-        setTaskCount(() => quiz.taskList.length);
-        setTaskIndex(0);
-      }
-      catch (error) {
-        console.error(error);
-      }
-      finally {
-        setLoading(false);
-      }
+  async function createLobby() {
+    try {
+      setLoading(true);
+      const quiz = await createGameLobby(quizId);
+      setQuiz(() => quiz);
+      const playerId = await joinToGameLobby(quiz.gameId, temporaryPlayer.playerName);
+      setTemporaryPlayer({...temporaryPlayer, playerId});
+      setLobbyState("ready");
     }
+    catch (error) {
+      console.error(error);
+    }
+    finally {
+      setLoading(false);
+    }
+  }
 
-    getQuiz();
-  }, []);
+  async function handleGameStart() {
+    await getTaskForGame();
+    setLobbyState("running");
+  }
+
+  async function getTaskForGame() {
+    try {
+      setLoading(true);
+      const task = await getNextTask(quiz.gameId);
+      setFirstTask({...task, deadline: new Date(task.deadline)});
+    }
+    catch (e) {
+      console.error(e);
+    }
+    finally {
+      setLoading(false);
+    }
+  }
 
   function navigateHome() {
     navigate("/");
   }
 
+  const renderLobbyState = useCallback(() => {
+    switch (lobbyState) {
+      case "creating":
+        return <div className="bg-[#1D2226] h-screen w-screen grid">
+          <button
+            className="w-fit h-fit p-16 place-self-center text-white font-bold text-3xl bg-pink-500 hover:bg-pink-600 rounded-md"
+            onClick={() => createLobby()}>Create game lobby
+          </button>
+        </div>
+      case "ready":
+        return <GameLobby quiz={quiz} navigateHome={navigateHome} handleGameStart={handleGameStart}/>
+      case "running":
+        return <TaskPage firstTask={firstTask} quiz={quiz} player={temporaryPlayer}/>
+    }
+  }, [lobbyState])
+
   return (
     <>
       {loading ? <Loading/>
-        : isPlaying ? <TaskPage firstTask={firstTask} quizId={quizId} taskCount={taskCount} taskIndex={taskIndex}
-                                setTaskIndex={setTaskIndex}/>
-          : <div className="bg-[#1D2226] h-screen">
-            <div className="mx-auto h-3/6 w-3/6 rounded-3xl bg-black top-32 relative">
-              <div className="pt-20 pb-10 text-white text-center text-4xl">{quiz.title}</div>
-              <div className="grid grid-cols-2 mt-10">
-                <div className="p-10 text-white text-2xl text-center">{taskCount} Questions</div>
-                {taskCount <= 0
-                  ? <button
-                    className="mx-auto pb-16 text-white font-bold text-3xl bg-pink-500 hover:bg-pink-600 p-6 w-40 h-20  relative -bottom-4 rounded-md"
-                    onClick={() => navigateHome()}>:(
-                  </button>
-                  : <button
-                    className="mx-auto pb-16 text-white font-bold text-3xl bg-pink-500 hover:bg-pink-600 p-6 w-40 h-20  relative -bottom-4 rounded-md"
-                    onClick={() => setIsPlaying(true)}>Start
-                  </button>
-                }
-              </div>
-            </div>
-          </div>
+        : renderLobbyState()
       }
     </>
   );

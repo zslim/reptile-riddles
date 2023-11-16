@@ -1,7 +1,7 @@
-async function validateAnswer(answerId) {
-  const httpRawRes = await fetch(`/answer/validate/${answerId}`);
-  return await httpRawRes.json();
-}
+// async function validateAnswer(answerId) {
+//   const httpRawRes = await fetch(`/answer/validate/${answerId}`);
+//   return await httpRawRes.json();
+// }
 
 async function saveAnswer(taskId, answer) {
   return await fetch(`/answer/task/${taskId}`, {
@@ -58,7 +58,7 @@ async function magicalAnswerUpdate(answersToDelete, answersToUpdate, answersToSa
 }
 
 module.exports = {
-  validateAnswer,
+  // validateAnswer,
   saveAnswerList,
   deleteAnswerList,
   magicalAnswerUpdate
