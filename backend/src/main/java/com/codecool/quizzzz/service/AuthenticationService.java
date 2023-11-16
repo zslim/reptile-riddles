@@ -36,7 +36,12 @@ public class AuthenticationService {
     return new UserInfoJwtDTO(jwt, loginDTO.username(), roles);
   }
 
-  // TODO: guest login
+  public UserInfoJwtDTO loginAsGuest() {
+    String username = String.format("GUEST-%s", UUID.randomUUID());
+    String jwt = jwtUtils.generateJwtToken(username);
+    List<String> roles = List.of("ROLE_GUEST");
+    return new UserInfoJwtDTO(jwt, username, roles);
+  }
 
   public UserInfoDTO getCredentials() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
