@@ -62,6 +62,20 @@ public class UserController {
 
   @GetMapping("/credentials")
   public ResponseEntity<UserInfoDTO> getCredentials() {
-    return ResponseEntity.ok().body(null);
+    return ResponseEntity.ok().body(authenticationService.getCredentials());
+  }
+
+  @DeleteMapping("/logout")
+  public ResponseEntity<Void> logout() {
+    Cookie cookie = generateDeletedCookie();
+    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
+  }
+
+  private Cookie generateDeletedCookie() {
+    Cookie cookie = new Cookie(AuthTokenFilter.USER_TOKEN, DELETED);
+    cookie.setHttpOnly(true);
+    cookie.setPath("/");
+    cookie.setMaxAge(1);
+    return cookie;
   }
 }
