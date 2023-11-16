@@ -26,7 +26,7 @@ public class Task {
   @Column(nullable = false)
   private int index;
   private String question;
-  @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
   private List<Answer> answers = new ArrayList<>();
   @Column(nullable = false)
   private int timeLimit;
