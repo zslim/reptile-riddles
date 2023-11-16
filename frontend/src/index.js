@@ -10,6 +10,8 @@ import QuizListPage from "./pages/QuizListPage";
 import QuizPage from "./pages/QuizPage";
 import ResultPage from "./pages/ResultPage";
 import QuizEditor from "./pages/QuizEditor";
+import RegisterPage from "./pages/RegisterPage";
+import LoginPage from "./pages/LoginPage";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -23,6 +25,14 @@ const router = createBrowserRouter([{
         {
           path: "/",
           element: <Homepage/>,
+        },
+        {
+          path: "register",
+          element: <RegisterPage/>,
+        },
+        {
+          path: "login",
+          element: <LoginPage/>,
         },
         {
           path: "result",
@@ -56,7 +66,7 @@ const router = createBrowserRouter([{
           element: <QuizPage/>,
         },
       ]
-    }
+    },
   ]
 }]);
 

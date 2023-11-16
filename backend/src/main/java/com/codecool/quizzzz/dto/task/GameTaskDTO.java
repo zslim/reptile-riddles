@@ -2,8 +2,8 @@ package com.codecool.quizzzz.dto.task;
 
 import com.codecool.quizzzz.dto.answer.GameAnswerDTO;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-public record GameTaskDTO(Long taskId, Long quizId, int taskIndex, String question, List<GameAnswerDTO> answers,
-                          int timeLimit) {
+public record GameTaskDTO(String question, List<GameAnswerDTO> answers, LocalDateTime deadline, int taskIndex) {
 }

@@ -30,30 +30,13 @@ public class TaskService {
     this.quizRepository = quizRepository;
   }
 
-  public List<GameTaskDTO> getAllByQuiz(Long quizId) {
-    return taskRepository.findAllByQuizId(quizId)
-                         .stream()
-                         .map(this::modelToGameDTO)
-                         .sorted(Comparator.comparing(GameTaskDTO::taskIndex))
-                         .toList();
-  }
-
-  private GameTaskDTO modelToGameDTO(Task task) {
-    return new GameTaskDTO(task.getId(),
-                           task.getQuiz().getId(),
-                           task.getIndex(),
-                           task.getQuestion(),
-                           convertAnswerListToAnswerDTOList(answerRepository.findAllByTaskId(task.getId())),
-                           task.getTimeLimit());
-  }
-
-  private List<GameAnswerDTO> convertAnswerListToAnswerDTOList(List<Answer> answerList) {
-    return answerList.stream().map(this::convertAnswerModelToDTO).toList();
-  }
-
-  private GameAnswerDTO convertAnswerModelToDTO(Answer answer) {
-    return new GameAnswerDTO(answer.getId(), answer.getText());
-  }
+//  public List<GameTaskDTO> getAllByQuiz(Long quizId) {
+//    return taskRepository.findAllByQuizId(quizId)
+//                         .stream()
+//                         .map(this::modelToGameDTO)
+//                         .sorted(Comparator.comparing(GameTaskDTO::taskIndex))
+//                         .toList();
+//  }
 
   public List<EditorTaskDTO> getAllDetailedByQuiz(Long quizId) {
     return taskRepository.findAllByQuizId(quizId)
@@ -63,33 +46,12 @@ public class TaskService {
                          .toList();
   }
 
-  private EditorTaskDTO modelToEditorDTO(Task task) {
-    return new EditorTaskDTO(task.getId(),
-                             task.getIndex(),
-                             task.getQuestion(),
-                             convertAnswerListToDetailedAnswerDTO(answerRepository.findAllByTaskId(task.getId())),
-                             task.getTimeLimit(),
-                             task.getModifiedAt());
-  }
-
-  private List<EditorAnswerDTO> convertAnswerListToDetailedAnswerDTO(List<Answer> answerList) {
-    return answerList.stream().map(this::convertAnswerModelToDetailedAnswerDTO).toList();
-  }
-
-  private EditorAnswerDTO convertAnswerModelToDetailedAnswerDTO(Answer answer) {
-    return new EditorAnswerDTO(answer.getId(), answer.getText(), answer.isCorrect(), answer.getModifiedAt());
-  }
-
   public List<BriefTaskDTO> getAllBriefByQuiz(Long quizId) {
     return taskRepository.findAllByQuizId(quizId)
                          .stream()
                          .map(this::modelToBriefDTO)
                          .sorted(Comparator.comparing(BriefTaskDTO::taskIndex))
                          .toList();
-  }
-
-  private BriefTaskDTO modelToBriefDTO(Task task) {
-    return new BriefTaskDTO(task.getId(), task.getIndex(), task.getQuestion());
   }
 
   @Transactional
@@ -104,18 +66,6 @@ public class TaskService {
     return newTask.getId();
   }
 
-  private void updateTaskFromDTO(Task task, EditorTaskDTO editorTaskDTO) {
-    task.setQuestion(editorTaskDTO.question());
-    task.setIndex(editorTaskDTO.taskIndex());
-    task.deleteAllAnswers();
-    for (EditorAnswerDTO editorAnswerDTO : editorTaskDTO.answers()) {
-      Answer newAnswer = new Answer();
-      newAnswer.setText(editorAnswerDTO.text());
-      newAnswer.setCorrect(editorAnswerDTO.isCorrect());
-      task.addAnswer(newAnswer);
-    }
-  }
-
   @Transactional
   public Long update(Long taskId, EditorTaskDTO editorTaskDTO) {
     Task task = taskRepository.findById(taskId)
@@ -125,21 +75,21 @@ public class TaskService {
     return taskRepository.save(task).getId();
   }
 
-  public GameTaskDTO getTask(Long quizId, int taskIndex) {
-    Task task = taskRepository.findByQuizIdAndIndex(quizId, taskIndex)
-                              .orElseThrow(() -> new NotFoundException(String.format(
-                                      "There is no task with quizId %d and taskindex %d",
-                                      quizId,
-                                      taskIndex)));
-    return modelToGameDTO(task);
-  }
+//  public GameTaskDTO getTask(Long quizId, int taskIndex) {
+//    Task task = taskRepository.findByQuizIdAndIndex(quizId, taskIndex)
+//                              .orElseThrow(() -> new NotFoundException(String.format(
+//                                      "There is no task with quizId %d and taskindex %d",
+//                                      quizId,
+//                                      taskIndex)));
+//    return modelToGameDTO(task);
+//  }
 
-  public GameTaskDTO getTask(Long taskId) {
-    Task task = taskRepository.findById(taskId)
-                              .orElseThrow(() -> new NotFoundException(String.format("There is no task with taskId %d",
-                                                                                     taskId)));
-    return modelToGameDTO(task);
-  }
+//  public GameTaskDTO getTask(Long taskId) {
+//    Task task = taskRepository.findById(taskId)
+//                              .orElseThrow(() -> new NotFoundException(String.format("There is no task with taskId %d",
+//                                                                                     taskId)));
+//    return modelToGameDTO(task);
+//  }
 
   public EditorTaskDTO getTaskToEdit(Long taskId) {
     Task task = taskRepository.findById(taskId)
@@ -153,17 +103,58 @@ public class TaskService {
     return true;
   }
 
+//  private GameTaskDTO modelToGameDTO(Task task) {
+//    return new GameTaskDTO(task.getId(),
+//                           task.getQuiz().getId(),
+//                           task.getIndex(),
+//                           task.getQuestion(),
+//                           convertAnswerListToAnswerDTOList(answerRepository.findAllByTaskId(task.getId())),
+//                           task.getTimeLimit());
+//  }
+
+  private EditorTaskDTO modelToEditorDTO(Task task) {
+    return new EditorTaskDTO(task.getId(),
+                             task.getIndex(),
+                             task.getQuestion(),
+                             convertAnswerListToDetailedAnswerDTO(answerRepository.findAllByTaskId(task.getId())),
+                             task.getTimeLimit(),
+                             task.getModifiedAt());
+  }
+
   private IncomingQuestionDTO modelToQuestionDTO(Task task) {
     return new IncomingQuestionDTO(task.getQuestion(), task.getIndex(), task.getTimeLimit());
   }
 
-  public OutgoingQuestionDTO createQuestion(Long quizId, IncomingQuestionDTO questionDTO) {
-    Task newTask = new Task();
-    Quiz quiz = quizRepository.findById(quizId)
-                              .orElseThrow(() -> new NotFoundException(String.format("There is no quiz with quizId %d",
-                                                                                     quizId)));
-    newTask.setQuiz(quiz);
-    return updateQuestionFromDTO(newTask, questionDTO);
+  private BriefTaskDTO modelToBriefDTO(Task task) {
+    return new BriefTaskDTO(task.getId(), task.getIndex(), task.getQuestion());
+  }
+
+  private List<GameAnswerDTO> convertAnswerListToAnswerDTOList(List<Answer> answerList) {
+    return answerList.stream().map(this::convertAnswerModelToDTO).toList();
+  }
+
+  private GameAnswerDTO convertAnswerModelToDTO(Answer answer) {
+    return new GameAnswerDTO(answer.getId(), answer.getText());
+  }
+
+  private List<EditorAnswerDTO> convertAnswerListToDetailedAnswerDTO(List<Answer> answerList) {
+    return answerList.stream().map(this::convertAnswerModelToDetailedAnswerDTO).toList();
+  }
+
+  private EditorAnswerDTO convertAnswerModelToDetailedAnswerDTO(Answer answer) {
+    return new EditorAnswerDTO(answer.getId(), answer.getText(), answer.isCorrect(), answer.getModifiedAt());
+  }
+
+  private void updateTaskFromDTO(Task task, EditorTaskDTO editorTaskDTO) {
+    task.setQuestion(editorTaskDTO.question());
+    task.setIndex(editorTaskDTO.taskIndex());
+    task.deleteAllAnswers();
+    for (EditorAnswerDTO editorAnswerDTO : editorTaskDTO.answers()) {
+      Answer newAnswer = new Answer();
+      newAnswer.setText(editorAnswerDTO.text());
+      newAnswer.setCorrect(editorAnswerDTO.isCorrect());
+      task.addAnswer(newAnswer);
+    }
   }
 
   private OutgoingQuestionDTO updateQuestionFromDTO(Task task, IncomingQuestionDTO questionDTO) {
@@ -178,6 +169,15 @@ public class TaskService {
                                    savedTask.getIndex(),
                                    savedTask.getTimeLimit(),
                                    savedTask.getModifiedAt());
+  }
+
+  public OutgoingQuestionDTO createQuestion(Long quizId, IncomingQuestionDTO questionDTO) {
+    Task newTask = new Task();
+    Quiz quiz = quizRepository.findById(quizId)
+                              .orElseThrow(() -> new NotFoundException(String.format("There is no quiz with quizId %d",
+                                                                                     quizId)));
+    newTask.setQuiz(quiz);
+    return updateQuestionFromDTO(newTask, questionDTO);
   }
 
   public OutgoingQuestionDTO updateQuestion(Long taskId, IncomingQuestionDTO questionDTO) {

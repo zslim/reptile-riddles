@@ -23,7 +23,7 @@ public class Quiz {
   @Column(insertable = false)
   @ColumnDefault("'My new quiz'")
   private String title;
-  @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<Task> tasks = new ArrayList<>();
   @Column(insertable = false)
   @ColumnDefault("false")
@@ -54,5 +54,9 @@ public class Quiz {
       }
     }
     return result;
+  }
+
+  public int getTaskCount() {
+    return tasks.size();
   }
 }
