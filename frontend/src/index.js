@@ -17,6 +17,9 @@ import Protected from "./context";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
+const REQUIREMENT_USER = ["role_user"];
+const REQUIREMENT_GUEST = ["role_user", "role_guest"];
+
 const router = createBrowserRouter([{
   path: "/",
   children: [
@@ -42,7 +45,7 @@ const router = createBrowserRouter([{
             {
               path: "",
               element: (
-                <Protected>
+                <Protected requiredRoles={REQUIREMENT_USER}>
                   <ResultPage/>
                 </Protected>
               )
@@ -52,7 +55,7 @@ const router = createBrowserRouter([{
         {
           path: "quizform/:quizId",
           element: (
-            <Protected>
+            <Protected  requiredRoles={REQUIREMENT_USER}>
               <QuizEditor/>
             </Protected>
           )
@@ -63,7 +66,7 @@ const router = createBrowserRouter([{
             {
               path: "all",
               element: (
-                <Protected>
+                <Protected  requiredRoles={REQUIREMENT_USER}>
                   <QuizListPage/>
                 </Protected>
               )
@@ -78,7 +81,7 @@ const router = createBrowserRouter([{
         {
           path: "quiz/:quizId",
           element: (
-            <Protected>
+            <Protected requiredRoles={REQUIREMENT_GUEST}>
               <QuizPage/>
             </Protected>
           )
