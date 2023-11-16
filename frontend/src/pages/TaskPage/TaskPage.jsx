@@ -7,7 +7,7 @@ import { getGameResult, getNextTask, handleAnswerSubmit } from "../../controller
 import TaskDisplayContainer from "../../components/TaskDisplayContainer";
 import ScoreBoard from "../../components/ScoreBoard";
 
-const TaskPage = ({firstTask, quiz, player}) => {
+const TaskPage = ({firstTask, quiz}) => {
   const [isCorrect, setIsCorrect] = useState(false);
   const [task, setTask] = useState(firstTask);
   const [color, setColor] = useState("zinc-500");

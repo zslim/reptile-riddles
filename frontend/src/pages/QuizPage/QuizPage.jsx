@@ -68,7 +68,7 @@ const QuizPage = () => {
       case "ready":
         return <GameLobby quiz={quiz} navigateHome={navigateHome} handleGameStart={handleGameStart}/>
       case "running":
-        return <TaskPage firstTask={firstTask} quiz={quiz} player={temporaryPlayer}/>
+        return <TaskPage firstTask={firstTask} quiz={quiz}/>
     }
   }, [lobbyState])
 
