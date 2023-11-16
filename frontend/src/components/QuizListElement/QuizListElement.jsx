@@ -38,6 +38,6 @@ const QuizListElement = ({quiz, deleteQuiz}) => {
             onClick={() => handlePlayClick(quiz.id)}>Play
     </button>
   </div>);
-}
+};
 
 export default QuizListElement;

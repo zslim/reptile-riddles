@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -25,7 +26,7 @@ public class Task {
   @Column(nullable = false)
   private int index;
   private String question;
-  @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<Answer> answers = new ArrayList<>();
   @Column(nullable = false)
   private int timeLimit;
@@ -34,15 +35,19 @@ public class Task {
   @UpdateTimestamp
   private LocalDateTime modifiedAt;
 
-  public void addAnswer(Answer answer) {
-    this.answers.add(answer);
-    answer.setTask(this);
+  public Optional<Answer> getAnswerById(Long answerId) {
+    return answers.stream().filter(answer -> answer.getId().equals(answerId)).findFirst();
   }
 
   public void addAllAnswers(Collection<? extends Answer> c) {
     for (Answer a : c) {
       this.addAnswer(a);
     }
+  }
+
+  public void addAnswer(Answer answer) {
+    this.answers.add(answer);
+    answer.setTask(this);
   }
 
   public void removeAnswer(Answer a) {

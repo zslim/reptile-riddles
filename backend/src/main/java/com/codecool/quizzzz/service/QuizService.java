@@ -2,6 +2,7 @@ package com.codecool.quizzzz.service;
 
 import com.codecool.quizzzz.dto.quiz.IncomingEditorQuizDTO;
 import com.codecool.quizzzz.dto.quiz.OutgoingEditorQuizDTO;
+import com.codecool.quizzzz.dto.task.BriefTaskDTO;
 import com.codecool.quizzzz.exception.NotFoundException;
 import com.codecool.quizzzz.model.Quiz;
 import com.codecool.quizzzz.model.Task;
@@ -23,6 +24,19 @@ public class QuizService {
 
   public List<OutgoingEditorQuizDTO> getAll() {
     return quizRepository.findAll().stream().map(this::modelToDTO).toList();
+  }
+
+  private OutgoingEditorQuizDTO modelToDTO(Quiz quiz) {
+    List<BriefTaskDTO> taskList = quiz.getTasks().stream().map(this::convertTaskModelToBriefTaskDTO).toList();
+    return new OutgoingEditorQuizDTO(quiz.getId(),
+                                     quiz.getTitle(),
+                                     taskList,
+                                     quiz.getCreatedAt(),
+                                     quiz.getLastModifiedTimestamp());
+  }
+
+  private BriefTaskDTO convertTaskModelToBriefTaskDTO(Task task) {
+    return new BriefTaskDTO(task.getId(), task.getIndex(), task.getQuestion());
   }
 
   public OutgoingEditorQuizDTO getById(Long quizId) {
@@ -56,10 +70,5 @@ public class QuizService {
 
   public void deleteById(Long quizId) {
     quizRepository.deleteById(quizId);
-  }
-
-  private OutgoingEditorQuizDTO modelToDTO(Quiz quiz) {
-    List<Long> taskIdList = quiz.getTasks().stream().map(Task::getId).toList();
-    return new OutgoingEditorQuizDTO(quiz.getId(), quiz.getTitle(), taskIdList, quiz.getCreatedAt(), quiz.getModifiedAt());
   }
 }

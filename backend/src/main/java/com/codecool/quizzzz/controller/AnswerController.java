@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/answer")
@@ -18,18 +19,27 @@ public class AnswerController {
   }
 
   @PostMapping("/task/{taskId}")
-  public ResponseEntity<Long> createAnswer(@PathVariable Long taskId, @RequestBody EditorAnswerDTO editorAnswerDTO) {
-    Long answerId = answerService.create(taskId, editorAnswerDTO);
-    return ResponseEntity.created(URI.create("/answer/" + answerId)).body(answerId);
+  public ResponseEntity<LocalDateTime> createAnswer(@PathVariable Long taskId,
+                                                    @RequestBody EditorAnswerDTO editorAnswerDTO) {
+    LocalDateTime modifiedAt = answerService.create(taskId, editorAnswerDTO);
+    return ResponseEntity.created(URI.create("/answer")).body(modifiedAt);
   }
 
-  @PatchMapping("/update")
-  public ResponseEntity<Long> updateAnswer(@RequestBody EditorAnswerDTO editorAnswerDTO) {
-    return ResponseEntity.ok().body(answerService.update(editorAnswerDTO));
+  @PatchMapping("/update/{answerId}")
+  public ResponseEntity<LocalDateTime> updateAnswer(@PathVariable Long answerId,
+                                                    @RequestBody EditorAnswerDTO editorAnswerDTO) {
+    return ResponseEntity.ok().body(answerService.update(answerId, editorAnswerDTO));
   }
 
-  @GetMapping("/validate/{answerId}")
-  public ResponseEntity<Boolean> checkIfAnswerIsCorrect(@PathVariable Long answerId) {
-    return ResponseEntity.ok().body(answerService.checkIfCorrect(answerId));
+  @DeleteMapping("/{answerId}")
+  public ResponseEntity<Long> deleteAnswer(@PathVariable Long answerId) {
+    answerService.delete(answerId);
+    return ResponseEntity.ok(answerId);
   }
+
+  //TODO move to game controller
+//  @GetMapping("/validate/{answerId}")
+//  public ResponseEntity<Boolean> checkIfAnswerIsCorrect(@PathVariable Long answerId) {
+//    return ResponseEntity.ok().body(answerService.checkIfCorrect(answerId));
+//  }
 }

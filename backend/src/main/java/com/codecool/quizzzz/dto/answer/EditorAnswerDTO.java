@@ -1,4 +1,6 @@
 package com.codecool.quizzzz.dto.answer;
 
-public record EditorAnswerDTO(Long answerId, String text, boolean isCorrect) {
+import java.time.LocalDateTime;
+
+public record EditorAnswerDTO(Long answerId, String text, boolean isCorrect, LocalDateTime modifiedAt) {
 }

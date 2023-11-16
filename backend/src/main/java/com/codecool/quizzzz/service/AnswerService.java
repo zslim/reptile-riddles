@@ -1,7 +1,6 @@
 package com.codecool.quizzzz.service;
 
 import com.codecool.quizzzz.dto.answer.EditorAnswerDTO;
-import com.codecool.quizzzz.dto.answer.NewAnswerDTO;
 import com.codecool.quizzzz.exception.NotFoundException;
 import com.codecool.quizzzz.model.Answer;
 import com.codecool.quizzzz.model.Task;
@@ -9,6 +8,8 @@ import com.codecool.quizzzz.service.repository.AnswerRepository;
 import com.codecool.quizzzz.service.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 public class AnswerService {
@@ -21,7 +22,7 @@ public class AnswerService {
     this.taskRepository = taskRepository;
   }
 
-  public Long create(Long taskId, EditorAnswerDTO editorAnswerDTO) {
+  public LocalDateTime create(Long taskId, EditorAnswerDTO editorAnswerDTO) {
     Task task = taskRepository.findById(taskId)
                               .orElseThrow(() -> new NotFoundException(String.format("There is no task with taskId %d",
                                                                                      taskId)));
@@ -29,17 +30,19 @@ public class AnswerService {
     newAnswer.setText(editorAnswerDTO.text());
     newAnswer.setCorrect(editorAnswerDTO.isCorrect());
     newAnswer.setTask(task);
-    return answerRepository.save(newAnswer).getId();
+    Long id = answerRepository.save(newAnswer).getId();
+    return answerRepository.findById(id).get().getModifiedAt();
   }
 
-  public Long update(EditorAnswerDTO editorAnswerDTO) {
-    Answer answer = answerRepository.findById(editorAnswerDTO.answerId())
+  public LocalDateTime update(Long answerId, EditorAnswerDTO editorAnswerDTO) {
+    Answer answer = answerRepository.findById(answerId)
                                     .orElseThrow(() -> new NotFoundException(String.format(
                                             "There is no answer with answerId: %d",
                                             editorAnswerDTO.answerId())));
     answer.setText(editorAnswerDTO.text());
     answer.setCorrect(editorAnswerDTO.isCorrect());
-    return answerRepository.save(answer).getId();
+    Long id = answerRepository.save(answer).getId();
+    return answerRepository.findById(id).get().getModifiedAt();
   }
 
   public boolean checkIfCorrect(Long answerId) {
@@ -47,5 +50,9 @@ public class AnswerService {
                            .orElseThrow(() -> new NotFoundException(String.format("There is no answer with answerId: %d",
                                                                                   answerId)))
                            .isCorrect();
+  }
+
+  public void delete(Long answerId) {
+    answerRepository.deleteById(answerId);
   }
 }
