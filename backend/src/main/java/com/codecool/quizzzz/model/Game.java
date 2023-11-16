@@ -35,12 +35,12 @@ public class Game {
     playerSet.remove(player);
   }
 
-  public Player getPlayerById(Long playerId) {
+  public Player getPlayerByUsername(String username) {
     return playerSet.stream()
-                    .filter(player -> player.getPlayerId().equals(playerId))
+                    .filter(player -> player.getUsername().equals(username))
                     .findFirst()
-                    .orElseThrow(() -> new NotFoundException(String.format("The player with id %d doesn't exist!",
-                                                                           playerId)));
+                    .orElseThrow(() -> new NotFoundException(String.format("Player not found with username: %s",
+                                                                           username)));
   }
 
   public Task advanceToNextTask() {

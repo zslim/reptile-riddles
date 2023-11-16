@@ -9,6 +9,7 @@ import com.codecool.quizzzz.model.*;
 import com.codecool.quizzzz.service.repository.GameRepository;
 import com.codecool.quizzzz.service.repository.QuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,8 +36,13 @@ public class GameService {
   // TODO: get information about how players will be stored (gen. from user? what abt guest users? spring sec tokens?)
   public Long joinToGame(Long gameId, NewPlayerDTO newPlayerDTO) {
     Game game = gameRepository.findGameById(gameId);
-    game.addPlayer(new Player(newPlayerDTO.playerName()));
+    String username = getUsernameFromSecurityContext();
+    game.addPlayer(new Player(newPlayerDTO.playerName(), username));
     return 1L;
+  }
+
+  private String getUsernameFromSecurityContext() {
+    return SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
   }
 
   public GameTaskDTO getNextTaskFromGame(Long gameId) {
@@ -55,9 +61,10 @@ public class GameService {
     return answers.stream().map((answer -> new GameAnswerDTO(answer.getId(), answer.getText()))).toList();
   }
 
-  public Boolean handleAnswerSubmit(Long gameId, Long playerId, Long answerId) {
+  public Boolean handleAnswerSubmit(Long gameId, Long answerId) {
     Game game = gameRepository.findGameById(gameId);
-    Player player = game.getPlayerById(playerId);
+    String username = getUsernameFromSecurityContext();
+    Player player = game.getPlayerByUsername(username);
     Answer answer = game.getCurrentTask().getAnswerById(answerId).orElseThrow();
     int scoreGain = answer.isCorrect() ? game.calculateScoreGain(LocalDateTime.now()) : 0;
     //TODO: make sure a player can't get points twice for the same question
