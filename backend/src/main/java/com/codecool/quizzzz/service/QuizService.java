@@ -4,6 +4,7 @@ import com.codecool.quizzzz.dto.quiz.IncomingEditorQuizDTO;
 import com.codecool.quizzzz.dto.quiz.OutgoingEditorQuizDTO;
 import com.codecool.quizzzz.dto.task.BriefTaskDTO;
 import com.codecool.quizzzz.exception.NotFoundException;
+import com.codecool.quizzzz.model.Answer;
 import com.codecool.quizzzz.model.Quiz;
 import com.codecool.quizzzz.model.Task;
 import com.codecool.quizzzz.model.user.Credentials;
@@ -17,6 +18,8 @@ import java.util.List;
 
 @Service
 public class QuizService {
+  private static final int MIN_ANSWER_COUNT = 2;
+  private static final int MAX_ANSWER_COUNT = 6;
   private final QuizRepository quizRepository;
 
   @Autowired
@@ -67,7 +70,41 @@ public class QuizService {
                                            quizId)));
     foundQuiz.setTitle(incomingEditorQuizDTO.title());
     foundQuiz.setPublic(incomingEditorQuizDTO.isPublic());
+    foundQuiz.setValid(isQuizValid(foundQuiz));
+    foundQuiz.setPublic(incomingEditorQuizDTO.isPublic());
     return quizRepository.save(foundQuiz).getId();
+  }
+
+  private boolean isQuizValid(Quiz quiz) {
+    if (isNotEmpty(quiz.getTitle())) {
+      List<Task> tasks = quiz.getTasks();
+      return !tasks.isEmpty() && tasks.stream().allMatch(this::isTaskValid);
+    }
+    return false;
+  }
+
+  private boolean isNotEmpty(String string) {
+    return !string.trim().isEmpty();
+  }
+
+  private boolean isTaskValid(Task task) {
+    if (isNotEmpty(task.getQuestion())) {
+      List<Answer> answers = task.getAnswers();
+      return isBetween(answers.size()) && isAnswerListValid(answers);
+    }
+    return false;
+  }
+
+  private boolean isBetween(int size) {
+    return size >= MIN_ANSWER_COUNT && size <= MAX_ANSWER_COUNT;
+  }
+
+  private boolean isAnswerListValid(List<Answer> answers) {
+    return answers.stream().anyMatch(Answer::isCorrect) && answers.stream().allMatch(this::isAnswerValid);
+  }
+
+  private boolean isAnswerValid(Answer answer) {
+    return isNotEmpty(answer.getText());
   }
 
   public void deleteById(Long quizId) {
@@ -76,6 +113,6 @@ public class QuizService {
 
   public List<OutgoingEditorQuizDTO> getMy() {
     Credentials userCredentials = (Credentials) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    return quizRepository.findByCreatorId(Long.valueOf(userCredentials.user_id())).stream().map(this::modelToDTO).toList();
+    return quizRepository.findByCreatorId(userCredentials.user_id()).stream().map(this::modelToDTO).toList();
   }
 }

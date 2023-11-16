@@ -2,7 +2,8 @@ async function updateQuizName(quizName, quizId) {
   const httpRes = await fetch(`/quiz/${quizId}`, {
     method: "PATCH",
     body: JSON.stringify({
-      "title": quizName
+      "title": quizName,
+      "isPublic": true // TODO: create public checkbox in quiz editor
     }),
     headers: {
       "Content-Type": "application/json"
