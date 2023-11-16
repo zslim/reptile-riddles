@@ -49,7 +49,7 @@ public class UserController {
     UserInfoJwtDTO userInfoJwtDTO = authenticationService.login(loginDTO);
     UserInfoDTO userInfoDTO = new UserInfoDTO(userInfoJwtDTO.username(), userInfoJwtDTO.roles());
     Cookie cookie = generateCookie(userInfoJwtDTO.jwt());
-    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(userInfoDTO);
+    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.getValue()).body(userInfoDTO);
   }
 
   private Cookie generateCookie(String userToken) {
@@ -68,7 +68,7 @@ public class UserController {
   @DeleteMapping("/logout")
   public ResponseEntity<Void> logout() {
     Cookie cookie = generateDeletedCookie();
-    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
+    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.getValue()).build();
   }
 
   private Cookie generateDeletedCookie() {
@@ -84,6 +84,6 @@ public class UserController {
     UserInfoJwtDTO userInfoJwtDTO = authenticationService.loginAsGuest();
     UserInfoDTO userInfoDTO = new UserInfoDTO(userInfoJwtDTO.username(), userInfoJwtDTO.roles());
     Cookie cookie = generateCookie(userInfoJwtDTO.jwt());
-    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(userInfoDTO);
+    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.getValue()).body(userInfoDTO);
   }
 }
