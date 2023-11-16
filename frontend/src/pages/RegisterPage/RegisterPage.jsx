@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { register } from "../../controllers/userProvider";
+import { userRegister } from "../../controllers/userProvider";
 import AccessFormInput from "../../components/AccessFormInput";
 
 const RegisterPage = () => {
@@ -13,7 +13,7 @@ const RegisterPage = () => {
   async function handleRegister() {
     try {
       setLoading(true);
-      await register({email, username, password});
+      await userRegister({email, username, password});
       navigate("/login");
     }
     catch (e) {
@@ -47,7 +47,7 @@ const RegisterPage = () => {
                   onClick={() => handleRegister()}>
             SIGN UP
           </button>
-          <div>
+          <div className="mb-8">
             <span className="text-stone-300 text-sm">Already have an account? </span>
             <Link to={"/login"}>
               <button className={`text-white text-sm text-left underline underline-offset-2 cursor-default 
