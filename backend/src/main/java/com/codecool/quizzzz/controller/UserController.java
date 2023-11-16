@@ -78,4 +78,12 @@ public class UserController {
     cookie.setMaxAge(1);
     return cookie;
   }
+
+  @PostMapping("/guestlogin")
+  public ResponseEntity<UserInfoDTO> loginAsGuest() {
+    UserInfoJwtDTO userInfoJwtDTO = authenticationService.loginAsGuest();
+    UserInfoDTO userInfoDTO = new UserInfoDTO(userInfoJwtDTO.username(), userInfoJwtDTO.roles());
+    Cookie cookie = generateCookie(userInfoJwtDTO.jwt());
+    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(userInfoDTO);
+  }
 }
