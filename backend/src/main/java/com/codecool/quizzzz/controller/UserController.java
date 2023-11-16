@@ -1,11 +1,12 @@
 package com.codecool.quizzzz.controller;
 
-import com.codecool.quizzzz.dto.user.LoginDTO;
-import com.codecool.quizzzz.dto.user.NewUserDTO;
-import com.codecool.quizzzz.dto.user.UserDTO;
-import com.codecool.quizzzz.dto.user.UserInfoDTO;
+import com.codecool.quizzzz.dto.user.*;
+import com.codecool.quizzzz.security.jwt.AuthTokenFilter;
 import com.codecool.quizzzz.service.AuthenticationService;
 import com.codecool.quizzzz.service.UserService;
+import jakarta.servlet.http.Cookie;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,8 +15,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+  private static final String DELETED = "";
   private final UserService userService;
   private final AuthenticationService authenticationService;
+  @Value("${codecool.app.jwtExpirationMs}")
+  private int jwtExpirationMs;
 
   public UserController(UserService userService, AuthenticationManager authenticationManager,
                         AuthenticationService authenticationService) {
@@ -42,7 +46,18 @@ public class UserController {
 
   @PostMapping("/login")
   public ResponseEntity<UserInfoDTO> login(@RequestBody LoginDTO loginDTO) {
-    return ResponseEntity.ok().body(authenticationService.login(loginDTO));
+    UserInfoJwtDTO userInfoJwtDTO = authenticationService.login(loginDTO);
+    UserInfoDTO userInfoDTO = new UserInfoDTO(userInfoJwtDTO.username(), userInfoJwtDTO.roles());
+    Cookie cookie = generateCookie(userInfoJwtDTO.jwt());
+    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(userInfoDTO);
+  }
+
+  private Cookie generateCookie(String userToken) {
+    Cookie cookie = new Cookie(AuthTokenFilter.USER_TOKEN, userToken);
+    cookie.setHttpOnly(true);
+    cookie.setPath("/");
+    cookie.setMaxAge(jwtExpirationMs / 1000);
+    return cookie;
   }
 
   @GetMapping("/credentials")
