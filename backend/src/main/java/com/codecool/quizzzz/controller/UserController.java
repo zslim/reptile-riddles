@@ -5,8 +5,8 @@ import com.codecool.quizzzz.security.jwt.AuthTokenFilter;
 import com.codecool.quizzzz.service.AuthenticationService;
 import com.codecool.quizzzz.service.UserService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -45,11 +45,12 @@ public class UserController {
   }
 
   @PostMapping("/login")
-  public ResponseEntity<UserInfoDTO> login(@RequestBody LoginDTO loginDTO) {
+  public ResponseEntity<UserInfoDTO> login(@RequestBody LoginDTO loginDTO, HttpServletResponse response) {
     UserInfoJwtDTO userInfoJwtDTO = authenticationService.login(loginDTO);
     UserInfoDTO userInfoDTO = new UserInfoDTO(userInfoJwtDTO.username(), userInfoJwtDTO.roles());
     Cookie cookie = generateCookie(userInfoJwtDTO.jwt());
-    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.getValue()).body(userInfoDTO);
+    response.addCookie(cookie);
+    return ResponseEntity.ok().body(userInfoDTO);
   }
 
   private Cookie generateCookie(String userToken) {
@@ -66,9 +67,10 @@ public class UserController {
   }
 
   @DeleteMapping("/logout")
-  public ResponseEntity<Void> logout() {
+  public ResponseEntity<Void> logout(HttpServletResponse response) {
     Cookie cookie = generateDeletedCookie();
-    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.getValue()).build();
+    response.addCookie(cookie);
+    return ResponseEntity.ok().build();
   }
 
   private Cookie generateDeletedCookie() {
@@ -80,10 +82,11 @@ public class UserController {
   }
 
   @PostMapping("/guestlogin")
-  public ResponseEntity<UserInfoDTO> loginAsGuest() {
+  public ResponseEntity<UserInfoDTO> loginAsGuest(HttpServletResponse response) {
     UserInfoJwtDTO userInfoJwtDTO = authenticationService.loginAsGuest();
     UserInfoDTO userInfoDTO = new UserInfoDTO(userInfoJwtDTO.username(), userInfoJwtDTO.roles());
     Cookie cookie = generateCookie(userInfoJwtDTO.jwt());
-    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.getValue()).body(userInfoDTO);
+    response.addCookie(cookie);
+    return ResponseEntity.ok().body(userInfoDTO);
   }
 }
