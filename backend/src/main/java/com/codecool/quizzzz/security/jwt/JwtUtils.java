@@ -66,6 +66,7 @@ public class JwtUtils {
     return Jwts.builder()
                .setSubject(username)
                .claim("roles", List.of(RoleEnum.ROLE_GUEST.toString()))
+               .claim("user_id", -1)
                .setIssuedAt(new Date())
                .setExpiration(new Date(new Date().getTime() + jwtExpirationMs))
                .signWith(key(), SignatureAlgorithm.HS256)
@@ -73,7 +74,7 @@ public class JwtUtils {
   }
 
   public Credentials getCredentialFromJwtToken(Jws<Claims> claims) {
-    return new Credentials(claims.getBody().getSubject());
+    return new Credentials(claims.getBody().getSubject(), Long.valueOf((Integer) claims.getBody().get("user_id")));
   }
 
   public Collection<? extends GrantedAuthority> getAuthoritiesFromJwtToken(Jws<Claims> claims) {

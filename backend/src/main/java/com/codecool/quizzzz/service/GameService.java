@@ -16,10 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class GameService {
@@ -43,6 +41,14 @@ public class GameService {
     Game newGame = new Game(quiz);
     gameRepository.addGame(newGame);
     return new GameQuizDTO(newGame.getGameId(), quiz.getTitle(), quiz.getTaskCount());
+  }
+
+  private List<Task> getTasksByQuizId(Long quizId) {
+    List<Task> tasks = taskRepository.findAllByQuizId(quizId);
+    for (Task task : tasks) {
+      task.setAnswers(answerRepository.findAllByTaskId(task.getId()));
+    }
+    return tasks;
   }
 
   public boolean joinToGame(Long gameId, NewPlayerDTO newPlayerDTO) {
@@ -96,13 +102,5 @@ public class GameService {
                .stream()
                .map(player -> new PlayerDTO(player.getPlayerId(), player.getScore(), player.getPlayerName()))
                .toList();
-  }
-
-  private List<Task> getTasksByQuizId(Long quizId) {
-    List<Task> tasks = taskRepository.findAllByQuizId(quizId);
-    for (Task task : tasks) {
-      task.setAnswers(answerRepository.findAllByTaskId(task.getId()));
-    }
-    return tasks;
   }
 }

@@ -6,8 +6,10 @@ import com.codecool.quizzzz.dto.task.BriefTaskDTO;
 import com.codecool.quizzzz.exception.NotFoundException;
 import com.codecool.quizzzz.model.Quiz;
 import com.codecool.quizzzz.model.Task;
+import com.codecool.quizzzz.model.user.Credentials;
 import com.codecool.quizzzz.service.repository.QuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -70,5 +72,10 @@ public class QuizService {
 
   public void deleteById(Long quizId) {
     quizRepository.deleteById(quizId);
+  }
+
+  public List<OutgoingEditorQuizDTO> getMy() {
+    Credentials userCredentials = (Credentials) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    return quizRepository.findByUserId(Long.valueOf(userCredentials.user_id())).stream().map(this::modelToDTO).toList();
   }
 }

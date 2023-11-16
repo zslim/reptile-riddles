@@ -1,5 +1,6 @@
 package com.codecool.quizzzz.model;
 
+import com.codecool.quizzzz.model.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,8 @@ public class Quiz {
   @Column(insertable = false)
   @ColumnDefault("'My new quiz'")
   private String title;
+  @ManyToOne
+  private UserEntity creator;
   @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
   private List<Task> tasks = new ArrayList<>();
   @Column(insertable = false)

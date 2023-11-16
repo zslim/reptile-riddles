@@ -28,7 +28,7 @@ public class QuizController {
 
   @GetMapping("/my")
   ResponseEntity<List<OutgoingEditorQuizDTO>> getMyQuizzes() {
-    return ResponseEntity.ok().body(quizService.getAll());
+    return ResponseEntity.ok().body(quizService.getMy());
   }
 
   @GetMapping("/{quizId}")
