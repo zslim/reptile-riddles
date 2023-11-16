@@ -52,7 +52,7 @@ const router = createBrowserRouter([{
         {
           path: "quizform/:quizId",
           element: (
-            <Protected  roleRequirement={"user"}>
+            <Protected roleRequirement={"user"}>
               <QuizEditor/>
             </Protected>
           )
@@ -63,7 +63,7 @@ const router = createBrowserRouter([{
             {
               path: "all",
               element: (
-                <Protected  roleRequirement={"user"}>
+                <Protected roleRequirement={"user"}>
                   <QuizListPage/>
                 </Protected>
               )

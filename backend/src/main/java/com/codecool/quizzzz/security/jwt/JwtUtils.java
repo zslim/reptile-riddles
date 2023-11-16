@@ -1,7 +1,7 @@
 package com.codecool.quizzzz.security.jwt;
 
 import com.codecool.quizzzz.exception.NotFoundException;
-import com.codecool.quizzzz.model.user.Credential;
+import com.codecool.quizzzz.model.user.Credentials;
 import com.codecool.quizzzz.model.user.RoleEnum;
 import com.codecool.quizzzz.model.user.UserEntity;
 import com.codecool.quizzzz.service.logger.Logger;
@@ -72,8 +72,8 @@ public class JwtUtils {
                .compact();
   }
 
-  public Credential getCredentialFromJwtToken(Jws<Claims> claims) {
-    return new Credential(claims.getBody().getSubject());
+  public Credentials getCredentialFromJwtToken(Jws<Claims> claims) {
+    return new Credentials(claims.getBody().getSubject());
   }
 
   public Collection<? extends GrantedAuthority> getAuthoritiesFromJwtToken(Jws<Claims> claims) {

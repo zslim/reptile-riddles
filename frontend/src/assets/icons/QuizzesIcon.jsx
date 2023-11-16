@@ -18,7 +18,7 @@ const QuizzesIcon = () => {
         fill="#90A4AE"
       />
     </svg>
-  )
-}
+  );
+};
 
 export default QuizzesIcon;

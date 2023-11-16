@@ -14,7 +14,7 @@ const AnswerListContainer = ({handleSubmit, handleColorChange, task, loading}) =
                         loading={loading}
           />
         </div>
-  )}
+      )}
     </div>
   );
 };

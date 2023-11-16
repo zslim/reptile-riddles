@@ -7,7 +7,7 @@ const PlayIcon = () => {
              0 010 1.262l-3.5 2.25A.75.75 0 018 12.25v-4.5a.75.75 0 01.39-.658z"
             clipRule="evenodd"/>
     </svg>
-  )
-}
+  );
+};
 
 export default PlayIcon;

@@ -36,6 +36,6 @@ const QuizListPage = () => {
       }
     </>
   );
-}
+};
 
 export default QuizListPage;

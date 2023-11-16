@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import TaskPage from "../TaskPage";
 import Loading from "../../components/Loading";
@@ -64,13 +64,13 @@ const QuizPage = () => {
             className="w-fit h-fit p-16 place-self-center text-white font-bold text-3xl bg-pink-500 hover:bg-pink-600 rounded-md"
             onClick={() => createLobby()}>Create game lobby
           </button>
-        </div>
+        </div>;
       case "ready":
-        return <GameLobby quiz={quiz} navigateHome={navigateHome} handleGameStart={handleGameStart}/>
+        return <GameLobby quiz={quiz} navigateHome={navigateHome} handleGameStart={handleGameStart}/>;
       case "running":
-        return <TaskPage firstTask={firstTask} quiz={quiz}/>
+        return <TaskPage firstTask={firstTask} quiz={quiz}/>;
     }
-  }, [lobbyState])
+  }, [lobbyState]);
 
   return (
     <>

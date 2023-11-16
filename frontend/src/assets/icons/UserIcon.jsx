@@ -19,7 +19,7 @@ const UserIcon = () => {
         fill="#90A4AE"
       />
     </svg>
-  )
-}
+  );
+};
 
 export default UserIcon;
