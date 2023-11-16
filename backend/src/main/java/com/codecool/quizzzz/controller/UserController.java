@@ -44,4 +44,9 @@ public class UserController {
   public ResponseEntity<UserInfoDTO> login(@RequestBody LoginDTO loginDTO) {
     return ResponseEntity.ok().body(authenticationService.login(loginDTO));
   }
+
+  @GetMapping("/credentials")
+  public ResponseEntity<UserInfoDTO> getCredentials() {
+    return ResponseEntity.ok().body(null);
+  }
 }
