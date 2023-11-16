@@ -2,24 +2,24 @@ import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import AccessFormInput from "../../components/AccessFormInput";
 import { useUser } from "../../context/UserContextProvider";
-import { userLogin } from "../../controllers/userProvider";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const {user, setUser, token, setToken} = useUser();
+  const {user, login} = useUser();
   const navigate = useNavigate();
 
-  async function handleLogin() {
+  async function handleLogin(username, password) {
     try {
       setLoading(true);
-      const userCredentials = await userLogin({username, password});
-      setUser(userCredentials);
+      await login(username, password);
       navigate("/");
-    } catch (e) {
+    }
+    catch (e) {
       console.error(e);
-    } finally {
+    }
+    finally {
       setLoading(false);
     }
   }
@@ -37,7 +37,8 @@ const LoginPage = () => {
                            id={"password"} type={"password"} labelText={"Password"}/>
           <button className={`mr-4 mt-6 text-white w-full font-bold p-4 bg-green-800  
                   ${!loading && "hover:bg-green-700 hover:cursor-pointer"}`}
-                  disabled={loading}>
+                  disabled={loading}
+                  onClick={() => handleLogin(username, password)}>
             LOGIN
           </button>
           <div className="mb-8">
@@ -45,8 +46,7 @@ const LoginPage = () => {
             <Link to={"/register"}>
               <button className={`text-white text-sm text-left underline underline-offset-2 cursor-default 
                       ${!loading && "hover:text-stone-200 hover:cursor-pointer"}`}
-                      disabled={loading}
-                      onClick={() => handleLogin()}>
+                      disabled={loading}>
                 Sign up
               </button>
             </Link>
