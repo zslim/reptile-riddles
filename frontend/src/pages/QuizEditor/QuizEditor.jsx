@@ -1,15 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { deleteQuizById, fetchModifiedAtById, fetchQuizById, updateQuizName } from "../../controllers/quizProvider";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  deleteTaskById, fetchDetailedTaskById, saveQuestion, updateQuestion,
-} from "../../controllers/taskProvider";
+import { deleteTaskById, fetchDetailedTaskById, saveQuestion, updateQuestion, } from "../../controllers/taskProvider";
 import TaskForm from "../../components/TaskForm/TaskForm";
-import {
-  deleteAnswerList,
-  magicalAnswerUpdate,
-  saveAnswerList,
-} from "../../controllers/answerProvider";
+import { magicalAnswerUpdate, saveAnswerList, } from "../../controllers/answerProvider";
 
 const QuizEditor = () => {
   const {quizId} = useParams();
@@ -54,6 +48,13 @@ const QuizEditor = () => {
 
     getQuiz();
   }, [quizId]);
+
+  async function needToLoadFromDb() {
+    if (await isModified()) {
+      return window.confirm("This quiz has been updated! Do you want to get the latest version?");
+    }
+    return false;
+  }
 
   async function getLatestQuizVersion() {
     try {
@@ -183,7 +184,7 @@ const QuizEditor = () => {
     }
     //TODO: look into modification time after updating task - it does not update properly
     modifiedAt = await fetchModifiedAtById(quizId);
-    setQuiz({...quiz, modifiedAt: modifiedAt});
+    setQuiz({...quiz, modifiedAt});
   }
 
   async function saveTask() {
@@ -269,41 +270,34 @@ const QuizEditor = () => {
   }
 
   async function handleTaskDelete() {
-    if (await isModified()) {
-      if (window.confirm("This quiz has been updated! Do you want to get the latest version?")) {
+    if (window.confirm("Delete?")) {
+      if (await needToLoadFromDb()) {
         await getLatestQuizVersion();
       }
       else {
         await deleteTask();
       }
     }
-    else {
-      await deleteTask();
-    }
   }
 
   async function deleteTask() {
-    if (window.confirm("Delete?")) {
-      try {
-        setLoading(true);
-        if (!isNewTask(selectedTask.taskId)) {
-          await deleteTaskById(selectedTask.taskId);
-          await deleteAnswerList(answers);
-          const modifiedAt = await fetchModifiedAtById(quizId);
-          setQuiz({...quiz, modifiedAt: modifiedAt});
-          resetTaskDatabaseStatus();
-        }
-        setTaskList((taskList) => [...taskList.filter((task) => task.taskId !== selectedTask.taskId)]);
-        resetSelectedTaskState();
-
-        setEditing(false);
+    try {
+      setLoading(true);
+      if (!isNewTask(selectedTask.taskId)) {
+        await deleteTaskById(selectedTask.taskId);
+        const modifiedAt = await fetchModifiedAtById(quizId);
+        setQuiz({...quiz, modifiedAt});
+        resetTaskDatabaseStatus();
       }
-      catch (e) {
-        console.error(e);
-      }
-      finally {
-        setLoading(false);
-      }
+      setTaskList((taskList) => [...taskList.filter((task) => task.taskId !== selectedTask.taskId)]);
+      resetSelectedTaskState();
+      setEditing(false);
+    }
+    catch (e) {
+      console.error(e);
+    }
+    finally {
+      setLoading(false);
     }
   }
 
@@ -328,7 +322,7 @@ const QuizEditor = () => {
     }
     else {
       if (window.confirm("Save changes?")) {
-        await saveQuizName()
+        await saveQuizName();
       }
     }
   }
@@ -413,8 +407,12 @@ const QuizEditor = () => {
       taskIndex: newTask.taskIndex,
       timeLimit: newTask.timeLimit
     });
-    setCurrentAnswersInDb([...newTask.answers.map((answer) => {return {...answer}})]);
-    setAnswers(indexAnswers([...newTask.answers.map((answer) => {return {...answer}})]));
+    setCurrentAnswersInDb([...newTask.answers.map((answer) => {
+      return {...answer};
+    })]);
+    setAnswers(indexAnswers([...newTask.answers.map((answer) => {
+      return {...answer};
+    })]));
   }
 
   function resetSelectedTaskState() {
@@ -474,7 +472,7 @@ const QuizEditor = () => {
       return await fetchModifiedAtById(quizId);
     }
     catch (e) {
-      console.error(e)
+      console.error(e);
     }
     finally {
       setLoading(false);
@@ -515,7 +513,7 @@ const QuizEditor = () => {
                                : `bg-zinc-800 ${loading ? null : `hover:bg-zinc-700`}`} 
                                ${loading ? null : `hover:cursor-pointer`}`}
                              onClick={() => handleTaskSelection(task.taskId)}>{i + 1}. {createQuestionLabel(task.question)}
-              </button>
+              </button>;
             })}
           </div>
 
