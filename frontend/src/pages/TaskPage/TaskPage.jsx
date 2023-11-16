@@ -103,7 +103,7 @@ const TaskPage = ({firstTask, quiz}) => {
             task={task}
             handleColorChange={handleColorChange}
             loading={loading}/>
-        </>
+        </>;
       case "result":
         return <>
           <TaskDisplayContainer/>
@@ -117,16 +117,16 @@ const TaskPage = ({firstTask, quiz}) => {
             loading={loading}
             navigateToScoreBoard={navigateToScoreBoard}
           />
-        </>
+        </>;
       case "scoreBoard":
         return <>
           <ScoreBoard scores={scores}
                       loading={loading}
                       handleTaskChange={handleTaskChange}
                       taskCount={task.taskIndex + 1}/>
-        </>
+        </>;
     }
-  }, [gameState])
+  }, [gameState]);
 
   return (
     <>

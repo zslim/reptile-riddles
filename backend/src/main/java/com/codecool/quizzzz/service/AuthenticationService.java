@@ -3,7 +3,7 @@ package com.codecool.quizzzz.service;
 import com.codecool.quizzzz.dto.user.LoginDTO;
 import com.codecool.quizzzz.dto.user.UserInfoDTO;
 import com.codecool.quizzzz.dto.user.UserInfoJwtDTO;
-import com.codecool.quizzzz.model.user.Credential;
+import com.codecool.quizzzz.model.user.Credentials;
 import com.codecool.quizzzz.model.user.RoleEnum;
 import com.codecool.quizzzz.security.jwt.JwtUtils;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -47,8 +47,8 @@ public class AuthenticationService {
 
   public UserInfoDTO getCredentials() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    Credential user = (Credential) authentication.getPrincipal();
-    String username = user.username();
+    Credentials userCredentials = (Credentials) authentication.getPrincipal();
+    String username = userCredentials.username();
     List<String> roles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
     return new UserInfoDTO(username, roles);
   }

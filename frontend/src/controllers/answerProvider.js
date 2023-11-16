@@ -15,7 +15,7 @@ async function saveAnswer(taskId, answer) {
 
 async function saveAnswerList(taskId, answerList) {
   const promises = answerList.map(async (answer) => {
-    return (await saveAnswer(taskId, answer))
+    return (await saveAnswer(taskId, answer));
   });
   const resAll = await Promise.all(promises);
   return resAll.map((res) => res.json());
@@ -31,7 +31,7 @@ async function deleteAnswerById(answerId) {
 
 async function deleteAnswerList(answerList) {
   const promises = answerList.map(async (answer) => {
-    return (await deleteAnswerById(answer.answerId))
+    return (await deleteAnswerById(answer.answerId));
   });
   const resAll = await Promise.all(promises);
   return resAll.map((res) => res.json());

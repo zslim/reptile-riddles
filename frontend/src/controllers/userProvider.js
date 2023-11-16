@@ -21,7 +21,7 @@ async function userLogin(user) {
 
 async function getCredentials() {
   const res = await fetch(`/user/credentials`);
-  return await res.json();
+  return res.status === 200 ? await res.json() : null;
 }
 
 module.exports = {

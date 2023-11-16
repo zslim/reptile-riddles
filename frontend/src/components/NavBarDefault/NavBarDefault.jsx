@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, IconButton, Navbar, Typography, } from "@material-tailwind/react";
 import PlayIcon from "../../assets/icons/PlayIcon";
 import QuizzesIcon from "../../assets/icons/QuizzesIcon";
 import MyQuizIcon from "../../assets/icons/MyQuizIcon";
 import UserIcon from "../../assets/icons/UserIcon";
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 export function NavBarDefault() {

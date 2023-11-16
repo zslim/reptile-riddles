@@ -1,4 +1,4 @@
-.LoadingContainer{
+.LoadingContainer {
     position: absolute;
     top: 0;
     left: 0;
@@ -6,6 +6,7 @@
     height: 100vh;
     width: 100vw;
 }
+
 .Loading {
     position: absolute;
     top: 40%;

@@ -6,14 +6,16 @@ const AnswerForm = ({index, answer, changeCorrect, changeAnswer, deleteAnswer, i
       <div className="col-span-11">
         <label htmlFor={"answer-" + answer.index}
                className="text-white ml-4">{(index + 1) + ". "}</label>
-        <input className={`ml-1 bg-[#050409] text-white p-1 border border-zinc-700 w-[calc(100%-80px)] ${isDeletable ? "border-r-0" : null}`} value={answer.text}
-               type="text" id={"answer-" + answer.index}
-               onChange={(e) => changeAnswer({
-                 isCorrect: answer.isCorrect,
-                 answerId: answer.answerId,
-                 text: e.target.value,
-                 index: answer.index
-               })}
+        <input
+          className={`ml-1 bg-[#050409] text-white p-1 border border-zinc-700 w-[calc(100%-80px)] ${isDeletable ? "border-r-0" : null}`}
+          value={answer.text}
+          type="text" id={"answer-" + answer.index}
+          onChange={(e) => changeAnswer({
+            isCorrect: answer.isCorrect,
+            answerId: answer.answerId,
+            text: e.target.value,
+            index: answer.index
+          })}
         />
         {isDeletable ?
           <button disabled={loading}
