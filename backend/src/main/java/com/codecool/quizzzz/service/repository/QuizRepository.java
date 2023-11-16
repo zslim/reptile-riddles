@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface QuizRepository extends JpaRepository<Quiz, Long> {
-  List<Quiz> findByUserId(Long user_id);
+  List<Quiz> findByCreatorId(Long user_id);
+  List<Quiz> findByIsPublicAndIsValid(Boolean isPublic, Boolean isValid);
 }

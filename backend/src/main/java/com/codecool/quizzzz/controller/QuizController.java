@@ -21,12 +21,12 @@ public class QuizController {
     this.quizService = quizService;
   }
 
-  @GetMapping("/all")
-  ResponseEntity<List<OutgoingEditorQuizDTO>> getAllQuizzes() {
-    return ResponseEntity.ok().body(quizService.getAll());
+  @GetMapping("/public")
+  ResponseEntity<List<OutgoingEditorQuizDTO>> getPublicQuizzes() {
+    return ResponseEntity.ok().body(quizService.getPublic());
   }
 
-  @GetMapping("/my")
+  @GetMapping("/own")
   ResponseEntity<List<OutgoingEditorQuizDTO>> getMyQuizzes() {
     return ResponseEntity.ok().body(quizService.getMy());
   }

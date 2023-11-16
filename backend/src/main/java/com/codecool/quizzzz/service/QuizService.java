@@ -24,8 +24,8 @@ public class QuizService {
     this.quizRepository = quizRepository;
   }
 
-  public List<OutgoingEditorQuizDTO> getAll() {
-    return quizRepository.findAll().stream().map(this::modelToDTO).toList();
+  public List<OutgoingEditorQuizDTO> getPublic() {
+    return quizRepository.findByIsPublicAndIsValid(true, true).stream().map(this::modelToDTO).toList();
   }
 
   private OutgoingEditorQuizDTO modelToDTO(Quiz quiz) {
@@ -76,6 +76,6 @@ public class QuizService {
 
   public List<OutgoingEditorQuizDTO> getMy() {
     Credentials userCredentials = (Credentials) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    return quizRepository.findByUserId(Long.valueOf(userCredentials.user_id())).stream().map(this::modelToDTO).toList();
+    return quizRepository.findByCreatorId(Long.valueOf(userCredentials.user_id())).stream().map(this::modelToDTO).toList();
   }
 }

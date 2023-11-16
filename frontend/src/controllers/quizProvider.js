@@ -17,12 +17,12 @@ async function fetchQuizById(quizId) {
 }
 
 async function fetchAllQuizzes() {
-  const httpRawRes = await fetch("/quiz/all");
+  const httpRawRes = await fetch("/quiz/public");
   return await httpRawRes.json();
 }
 
 async function fetchMyQuizzes() {
-  const httpRawRes = await fetch("/quiz/my");
+  const httpRawRes = await fetch("/quiz/own");
   return await httpRawRes.json();
 }
 
