@@ -14,13 +14,13 @@ const LoginPage = () => {
   async function handleLogin() {
     try {
       setLoading(true);
-      const responseUser = await userLogin({username, password});
-      setUser(responseUser);
+      const userCredentials = await userLogin({username, password});
+      setUser(userCredentials);
       navigate("/");
     } catch (e) {
       console.error(e);
     } finally {
-      setLoading(true);
+      setLoading(false);
     }
   }
 
