@@ -1,5 +1,6 @@
 package com.codecool.quizzzz.security.jwt;
 
+import com.codecool.quizzzz.exception.NotFoundException;
 import com.codecool.quizzzz.model.user.Credential;
 import com.codecool.quizzzz.security.authmodel.AuthenticationModel;
 import com.codecool.quizzzz.service.logger.Logger;
@@ -7,18 +8,20 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
+  public static final String USER_TOKEN = "user_token";
   private final JwtUtils jwtUtils;
   private final Logger logger;
 
@@ -52,10 +55,18 @@ public class AuthTokenFilter extends OncePerRequestFilter {
   }
 
   private String parseJwt(HttpServletRequest request) {
-    String headerAuth = request.getHeader("Authorization");
-    if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-      return headerAuth.substring(7);
-    }
-    return null;
+    Cookie sessionCookie = getSessionCookie(request);
+    return sessionCookie.getValue();
+  }
+
+  private Cookie getSessionCookie(HttpServletRequest request) {
+    return Arrays.stream(request.getCookies())
+                 .filter(this::getSessionIdCookie)
+                 .findFirst()
+                 .orElseThrow(() -> new NotFoundException("There is no user token"));
+  }
+
+  private boolean getSessionIdCookie(Cookie cookie) {
+    return cookie.getName().equalsIgnoreCase(USER_TOKEN);
   }
 }
