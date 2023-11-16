@@ -3,7 +3,7 @@ import QuizListContainer from "../../components/QuizListContainer";
 import QuizFilterContainer from "../../components/QuizFilterContainer";
 import Loading from "../../components/Loading";
 
-const QuizListPage = ({fetchQuizzes}) => {
+const QuizListPage = ({fetchQuizzes, editable}) => {
   const [loading, setLoading] = useState(true);
   const [quizList, setQuizList] = useState([]);
 
@@ -29,7 +29,7 @@ const QuizListPage = ({fetchQuizzes}) => {
     <>
       {loading ? <Loading/>
         : <div className="w-full h-full flex flex-row text-white">
-          <QuizListContainer quizList={quizList} loading={loading} setQuizList={setQuizList}/>
+          <QuizListContainer quizList={quizList} loading={loading} setQuizList={setQuizList} editable={editable}/>
           <QuizFilterContainer/>
         </div>
       }

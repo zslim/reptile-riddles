@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { deleteQuizById, saveEmptyQuiz } from "../../controllers/quizProvider";
 import Loading from "../Loading";
 
-function QuizListContainer({quizList, loading, setQuizList}) {
+function QuizListContainer({quizList, loading, setQuizList, editable}) {
   const navigate = useNavigate();
 
   async function deleteQuiz(quizId) {
@@ -33,7 +33,7 @@ function QuizListContainer({quizList, loading, setQuizList}) {
   return <div className="grow pt-16">
     {loading ? <Loading/>
       : (quizList.length === 0 ? <span>No quizzes found.</span> : quizList.map(quiz => <QuizListElement
-        key={quiz.id} quiz={quiz} deleteQuiz={deleteQuiz}/>))
+        key={quiz.id} quiz={quiz} deleteQuiz={deleteQuiz} editable={editable}/>))
     }
     <button className="bg-green-400 hover:bg-green-500 p-1 m-1 w-32 rounded-full text-black"
             onClick={() => createQuiz()}>Add Quiz

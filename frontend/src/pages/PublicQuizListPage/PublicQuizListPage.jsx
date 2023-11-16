@@ -4,7 +4,7 @@ import QuizListPage from "../QuizListPage";
 const PublicQuizListPage = () => {
   return (
     <>
-      <QuizListPage fetchQuizzes={fetchAllQuizzes}/>
+      <QuizListPage fetchQuizzes={fetchAllQuizzes} editable={false}/>
     </>
   );
 };
