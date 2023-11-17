@@ -8,7 +8,12 @@ import com.codecool.quizzzz.model.Answer;
 import com.codecool.quizzzz.model.Quiz;
 import com.codecool.quizzzz.model.Task;
 import com.codecool.quizzzz.model.user.Credentials;
+import com.codecool.quizzzz.model.user.UserEntity;
+import com.codecool.quizzzz.service.repository.AnswerRepository;
 import com.codecool.quizzzz.service.repository.QuizRepository;
+import com.codecool.quizzzz.service.repository.TaskRepository;
+import com.codecool.quizzzz.service.repository.UserRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -21,10 +26,19 @@ public class QuizService {
   private static final int MIN_ANSWER_COUNT = 2;
   private static final int MAX_ANSWER_COUNT = 6;
   private final QuizRepository quizRepository;
+  private final EntityManager entityManager;
+  private final UserRepository userRepository;
+  private final TaskRepository taskRepository;
+  private final AnswerRepository answerRepository;
 
   @Autowired
-  public QuizService(QuizRepository quizRepository) {
+  public QuizService(QuizRepository quizRepository, EntityManager entityManager, UserRepository userRepository,
+                     TaskRepository taskRepository, AnswerRepository answerRepository) {
     this.quizRepository = quizRepository;
+    this.entityManager = entityManager;
+    this.userRepository = userRepository;
+    this.taskRepository = taskRepository;
+    this.answerRepository = answerRepository;
   }
 
   public List<OutgoingEditorQuizDTO> getPublic() {
@@ -60,7 +74,14 @@ public class QuizService {
   }
 
   public Long create() {
-    return quizRepository.save(new Quiz()).getId();
+    Quiz quiz = new Quiz();
+    quiz.setCreator(getUser());
+    return quizRepository.save(quiz).getId();
+  }
+
+  private UserEntity getUser() {
+    Credentials userCredentials = (Credentials) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    return userRepository.getReferenceById(userCredentials.user_id());
   }
 
   public Long update(Long quizId, IncomingEditorQuizDTO incomingEditorQuizDTO) {
@@ -114,5 +135,38 @@ public class QuizService {
   public List<OutgoingEditorQuizDTO> getMy() {
     Credentials userCredentials = (Credentials) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     return quizRepository.findByCreatorId(userCredentials.user_id()).stream().map(this::modelToDTO).toList();
+  }
+
+  public Long copy(Long quizId) {
+    Quiz quiz = getQuiz(quizId);
+    removeIdsFromQuiz(quiz);
+    return quizRepository.save(quiz).getId();
+  }
+
+  private Quiz getQuiz(Long quizId) {
+    Quiz quiz = quizRepository.findById(quizId)
+                              .orElseThrow(() -> new NotFoundException(String.format(
+                                      "The quiz with id %d doesn't exist!",
+                                      quizId)));
+    quiz.setTasks(getTasksByQuizId(quiz.getId()));
+    return quiz;
+  }
+
+  private void removeIdsFromQuiz(Quiz quiz) {
+    entityManager.detach(quiz);
+    quiz.setId(null);
+    quiz.setCreator(getUser());
+    quiz.getTasks().forEach(task -> {
+      task.setId(null);
+      task.getAnswers().forEach(answer -> answer.setId(null));
+    });
+  }
+
+  private List<Task> getTasksByQuizId(Long quizId) {
+    List<Task> tasks = taskRepository.findAllByQuizId(quizId);
+    for (Task task : tasks) {
+      task.setAnswers(answerRepository.findAllByTaskId(task.getId()));
+    }
+    return tasks;
   }
 }

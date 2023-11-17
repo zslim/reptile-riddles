@@ -34,6 +34,13 @@ async function saveEmptyQuiz() {
   return await httpRes.json();
 }
 
+async function copyQuiz(quizId) {
+  const httpRes = await fetch(`/quiz/copy/${quizId}`, {
+    method: "POST"
+  });
+  return await httpRes.json();
+}
+
 async function deleteQuizById(quizId) {
   const httpRes = await fetch(`/quiz/${quizId}`, {
     method: "DELETE"
@@ -52,6 +59,7 @@ module.exports = {
   fetchAllQuizzes,
   fetchMyQuizzes,
   saveEmptyQuiz,
+  copyQuiz,
   deleteQuizById,
   fetchModifiedAtById
 };

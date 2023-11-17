@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
-const QuizListElement = ({quiz, deleteQuiz, editable}) => {
+const QuizListElement = ({quiz, deleteQuiz, copyQuiz, editable}) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -13,8 +13,18 @@ const QuizListElement = ({quiz, deleteQuiz, editable}) => {
     navigate(`/quizform/${id}`);
   }
 
-  function handleCopyClick(id) {
+  async function handleCopyClick(id) {
     // TODO: handle copy creation of quiz
+    try {
+      setLoading(true);
+      await copyQuiz(id);
+    }
+    catch (e) {
+      console.error(e);
+    }
+    finally {
+      setLoading(false);
+    }
   }
 
   async function handleDeleteClick(id) {

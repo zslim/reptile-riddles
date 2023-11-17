@@ -21,7 +21,6 @@ public class Quiz {
   @Id
   @GeneratedValue
   private Long id;
-  @Column(insertable = false)
   @ColumnDefault("'My new quiz'")
   private String title;
   @ManyToOne

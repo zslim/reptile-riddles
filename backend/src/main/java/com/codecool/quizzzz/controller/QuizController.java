@@ -47,6 +47,12 @@ public class QuizController {
     return ResponseEntity.created(URI.create(String.format("/quiz/%d", id))).body(id);
   }
 
+  @PostMapping("/copy/{quizId}")
+  ResponseEntity<Long> copyQuiz(@PathVariable Long quizId) {
+    Long id = quizService.copy(quizId);
+    return ResponseEntity.created(URI.create(String.format("/quiz/%d", id))).body(id);
+  }
+
   @PatchMapping("/{quizId}")
   ResponseEntity<Long> updateQuiz(@PathVariable Long quizId, @RequestBody IncomingEditorQuizDTO incomingEditorQuizDTO) {
     return ResponseEntity.ok().body(quizService.update(quizId, incomingEditorQuizDTO));

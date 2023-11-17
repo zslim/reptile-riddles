@@ -11,6 +11,7 @@ import com.codecool.quizzzz.service.repository.AnswerRepository;
 import com.codecool.quizzzz.service.repository.GameRepository;
 import com.codecool.quizzzz.service.repository.QuizRepository;
 import com.codecool.quizzzz.service.repository.TaskRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -25,19 +26,22 @@ public class GameService {
   private final TaskRepository taskRepository;
   private final AnswerRepository answerRepository;
   private final GameRepository gameRepository;
+  private final EntityManager entityManager;
 
   @Autowired
   public GameService(QuizRepository quizRepository, TaskRepository taskRepository, AnswerRepository answerRepository,
-                     GameRepository gameRepository) {
+                     GameRepository gameRepository, EntityManager entityManager) {
     this.quizRepository = quizRepository;
     this.taskRepository = taskRepository;
     this.answerRepository = answerRepository;
     this.gameRepository = gameRepository;
+    this.entityManager = entityManager;
   }
 
   public GameQuizDTO createGame(Long quizId) {
     Quiz quiz = quizRepository.findById(quizId).orElseThrow(() -> new NotFoundException("No quiz found with this id!"));
     quiz.setTasks(getTasksByQuizId(quiz.getId()));
+    entityManager.detach(quiz);
     Game newGame = new Game(quiz);
     gameRepository.addGame(newGame);
     return new GameQuizDTO(newGame.getGameId(), quiz.getTitle(), quiz.getTaskCount());
