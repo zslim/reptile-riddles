@@ -3,7 +3,7 @@ import ResultContainer from '../../components/ResultContainer';
 import { useNavigate } from "react-router-dom";
 import React, { useCallback, useState } from 'react';
 import TimeCounter from "../../components/TimeCounter";
-import { getGameResult, getNextTask, handleAnswerSubmit } from "../../controllers/gameProvider";
+import { getGameResult, getNextTask, handleAnswerSubmit } from "../../providers/gameProvider";
 import TaskDisplayContainer from "../../components/TaskDisplayContainer";
 import ScoreBoard from "../../components/ScoreBoard";
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { userRegister } from "../../controllers/userProvider";
+import { userRegister } from "../../providers/userProvider";
 import AccessFormInput from "../../components/AccessFormInput";
 
 const RegisterPage = () => {

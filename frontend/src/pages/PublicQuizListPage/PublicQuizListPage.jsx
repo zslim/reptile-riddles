@@ -1,4 +1,4 @@
-import { fetchAllQuizzes } from "../../controllers/quizProvider";
+import { fetchAllQuizzes } from "../../providers/quizProvider";
 import QuizListPage from "../QuizListPage";
 
 const PublicQuizListPage = () => {

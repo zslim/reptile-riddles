@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import TaskPage from "../TaskPage";
 import Loading from "../../components/Loading";
-import { createGameLobby, getNextTask, joinToGameLobby } from "../../controllers/gameProvider";
+import { createGameLobby, getNextTask, joinToGameLobby } from "../../providers/gameProvider";
 import GameLobby from "../../components/GameLobby";
 import { useUser } from "../../context/UserContextProvider";
 

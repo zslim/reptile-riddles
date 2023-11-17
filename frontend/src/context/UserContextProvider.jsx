@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { getCredentials, userLogin, userLogout } from "../controllers/userProvider";
+import { getCredentials, userLogin, userLogout } from "../providers/userProvider";
 
 const UserContext = createContext({});
 const NO_USER = {username: "", roles: []};

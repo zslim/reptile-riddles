@@ -1,4 +1,4 @@
-import { fetchMyQuizzes } from "../../controllers/quizProvider";
+import { fetchMyQuizzes } from "../../providers/quizProvider";
 import QuizListPage from "../QuizListPage";
 
 const MyQuizListPage = () => {

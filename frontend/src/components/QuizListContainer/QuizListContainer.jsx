@@ -1,7 +1,7 @@
 import React from 'react';
 import QuizListElement from "../QuizListElement";
 import { useNavigate } from "react-router-dom";
-import { copyQuiz, deleteQuizById, saveEmptyQuiz } from "../../controllers/quizProvider";
+import { copyQuiz, deleteQuizById, saveEmptyQuiz } from "../../providers/quizProvider";
 import Loading from "../Loading";
 
 function QuizListContainer({quizList, loading, setQuizList, editable}) {
