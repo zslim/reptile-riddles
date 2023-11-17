@@ -45,8 +45,7 @@ export const UserContextProvider = ({children}) => {
   async function logout() {
     try {
       setLoading(true);
-      const status = await userLogout();
-
+      await userLogout();
       setUser({...NO_USER});
     }
     catch (e) {

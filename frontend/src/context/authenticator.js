@@ -1,12 +1,12 @@
 const REQUIREMENTS = {
   user: ["ROLE_USER"],
-  guest: ["ROLE_USER", "ROLE_GUEST"]
+  guest: ["ROLE_USER", "ROLE_GUEST"],
 };
 
 function authorizeUser(user, roleRequirement) {
-  let authorized = false;
-  user.roles.forEach((role) => REQUIREMENTS[roleRequirement].includes(role) ? (authorized = true) : null);
-  return authorized;
+  return user.roles.some((role) =>
+    REQUIREMENTS[roleRequirement].includes(role)
+  );
 }
 
 function authenticate(user, roleRequirement) {

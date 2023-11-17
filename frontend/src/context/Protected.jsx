@@ -1,11 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "./UserContextProvider";
 import authenticate from "./authenticator";
 
-const Protected = ({children, roleRequirement}) => {
-  const {user} = useUser();
+const Protected = ({ children, roleRequirement }) => {
+  const { user } = useUser();
   const navigate = useNavigate();
+
+  const authorized = useMemo(() => {
+    return authenticate(user, roleRequirement);
+  }, [user, roleRequirement]);
 
   // const REQUIREMENTS = {
   //   user: ["ROLE_USER"],
@@ -13,10 +17,10 @@ const Protected = ({children, roleRequirement}) => {
   // };
 
   useEffect(() => {
-    if (!authenticate(user, roleRequirement)) {
+    if (!authorized) {
       navigate("/login");
     }
-  }, []);
+  }, [authorized]);
 
   // function authorizeUser() {
   //   let authorized = false;
@@ -24,7 +28,7 @@ const Protected = ({children, roleRequirement}) => {
   //   return authorized;
   // }
 
-  return <>{authenticate(user, roleRequirement) && children}</>;
+  return <>{authorized && children}</>;
 };
 
 export default Protected;
