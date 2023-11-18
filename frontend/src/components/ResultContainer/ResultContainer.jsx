@@ -1,5 +1,5 @@
-import checkMark from "../../assets/checkmark.png";
-import cross from "../../assets/cross.png";
+import checkMark from "../../assets/images/checkmark.png";
+import cross from "../../assets/images/cross.png";
 
 const ResultContainer = ({
                            selectedAnswer,
