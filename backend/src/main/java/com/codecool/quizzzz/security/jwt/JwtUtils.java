@@ -36,7 +36,7 @@ public class JwtUtils {
     this.userRepository = userRepository;
   }
 
-  public String generateJwtToken(Authentication authentication) {
+  public String generateUserJwtToken(Authentication authentication) {
     UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
     List<String> authorities = userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
     Date issuedAt = new Date();
@@ -62,7 +62,7 @@ public class JwtUtils {
     return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
   }
 
-  public String generateJwtToken(String username) {
+  public String generateGuestJwtToken(String username) {
     return Jwts.builder()
                .setSubject(username)
                .claim("roles", List.of(RoleEnum.ROLE_GUEST.toString()))

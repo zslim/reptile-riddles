@@ -37,14 +37,14 @@ public class AuthenticationService {
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
     User user = (User) authentication.getPrincipal();
-    String jwt = jwtUtils.generateJwtToken(authentication);
+    String jwt = jwtUtils.generateUserJwtToken(authentication);
     List<String> roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
     return new UserInfoJwtDTO(jwt, loginDTO.username(), roles);
   }
 
   public UserInfoJwtDTO loginAsGuest() {
     String username = String.format("GUEST-%s", UUID.randomUUID());
-    String jwt = jwtUtils.generateJwtToken(username);
+    String jwt = jwtUtils.generateGuestJwtToken(username);
     List<String> roles = List.of(RoleEnum.ROLE_GUEST.toString());
     return new UserInfoJwtDTO(jwt, username, roles);
   }
