@@ -8,11 +8,9 @@ import com.codecool.quizzzz.model.Answer;
 import com.codecool.quizzzz.model.Quiz;
 import com.codecool.quizzzz.model.Task;
 import com.codecool.quizzzz.model.user.Credentials;
-import com.codecool.quizzzz.model.user.UserEntity;
 import com.codecool.quizzzz.service.repository.AnswerRepository;
 import com.codecool.quizzzz.service.repository.QuizRepository;
 import com.codecool.quizzzz.service.repository.TaskRepository;
-import com.codecool.quizzzz.service.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,18 +25,18 @@ public class QuizService {
   private static final int MAX_ANSWER_COUNT = 6;
   private final QuizRepository quizRepository;
   private final EntityManager entityManager;
-  private final UserRepository userRepository;
   private final TaskRepository taskRepository;
   private final AnswerRepository answerRepository;
+  private final AuthenticationService authenticationService;
 
   @Autowired
-  public QuizService(QuizRepository quizRepository, EntityManager entityManager, UserRepository userRepository,
-                     TaskRepository taskRepository, AnswerRepository answerRepository) {
+  public QuizService(QuizRepository quizRepository, EntityManager entityManager, TaskRepository taskRepository,
+                     AnswerRepository answerRepository, AuthenticationService authenticationService) {
     this.quizRepository = quizRepository;
     this.entityManager = entityManager;
-    this.userRepository = userRepository;
     this.taskRepository = taskRepository;
     this.answerRepository = answerRepository;
+    this.authenticationService = authenticationService;
   }
 
   public List<OutgoingEditorQuizDTO> getPublic() {
@@ -75,13 +73,8 @@ public class QuizService {
 
   public Long create() {
     Quiz quiz = new Quiz();
-    quiz.setCreator(getUser());
+    quiz.setCreator(authenticationService.getUser());
     return quizRepository.save(quiz).getId();
-  }
-
-  private UserEntity getUser() {
-    Credentials userCredentials = (Credentials) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    return userRepository.getReferenceById(userCredentials.user_id());
   }
 
   public Long update(Long quizId, IncomingEditorQuizDTO incomingEditorQuizDTO) {
@@ -155,7 +148,7 @@ public class QuizService {
   private void removeIdsFromQuiz(Quiz quiz) {
     entityManager.detach(quiz);
     quiz.setId(null);
-    quiz.setCreator(getUser());
+    quiz.setCreator(authenticationService.getUser());
     quiz.getTasks().forEach(task -> {
       task.setId(null);
       task.getAnswers().forEach(answer -> answer.setId(null));

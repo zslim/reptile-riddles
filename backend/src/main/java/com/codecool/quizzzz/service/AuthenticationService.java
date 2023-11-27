@@ -5,6 +5,7 @@ import com.codecool.quizzzz.dto.user.UserInfoDTO;
 import com.codecool.quizzzz.dto.user.UserInfoJwtDTO;
 import com.codecool.quizzzz.model.user.Credentials;
 import com.codecool.quizzzz.model.user.RoleEnum;
+import com.codecool.quizzzz.model.user.UserEntity;
 import com.codecool.quizzzz.security.jwt.JwtUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,10 +22,13 @@ import java.util.UUID;
 public class AuthenticationService {
   private final AuthenticationManager authenticationManager;
   private final JwtUtils jwtUtils;
+  private final UserService userService;
 
-  public AuthenticationService(AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
+  public AuthenticationService(AuthenticationManager authenticationManager, JwtUtils jwtUtils,
+                               UserService userService) {
     this.authenticationManager = authenticationManager;
     this.jwtUtils = jwtUtils;
+    this.userService = userService;
   }
 
   public UserInfoJwtDTO login(LoginDTO loginDTO) {
@@ -51,5 +55,10 @@ public class AuthenticationService {
     String username = userCredentials.username();
     List<String> roles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
     return new UserInfoDTO(username, roles);
+  }
+
+  public UserEntity getUser() {
+    Credentials userCredentials = (Credentials) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    return userService.getUserById(userCredentials.user_id());
   }
 }
