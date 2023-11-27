@@ -59,7 +59,10 @@ public class TaskService {
   }
 
   private List<EditorAnswerDTO> convertAnswerListToDetailedAnswerDTO(List<Answer> answerList) {
-    return answerList.stream().map(this::convertAnswerModelToDetailedAnswerDTO).toList();
+    return answerList.stream()
+                     .map(this::convertAnswerModelToDetailedAnswerDTO)
+                     .sorted(Comparator.comparing(EditorAnswerDTO::answerId))
+                     .toList();
   }
 
   private EditorAnswerDTO convertAnswerModelToDetailedAnswerDTO(Answer answer) {

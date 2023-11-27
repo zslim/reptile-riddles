@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { deleteQuizById, fetchModifiedAtById, fetchQuizById, updateQuizName } from "../../controllers/quizProvider";
+import { deleteQuizById, fetchModifiedAtById, fetchQuizById, updateQuizName } from "../../providers/quizProvider";
 import { useNavigate, useParams } from "react-router-dom";
-import { deleteTaskById, fetchDetailedTaskById, saveQuestion, updateQuestion, } from "../../controllers/taskProvider";
+import { deleteTaskById, fetchDetailedTaskById, saveQuestion, updateQuestion, } from "../../providers/taskProvider";
 import TaskForm from "../../components/TaskForm/TaskForm";
-import { magicalAnswerUpdate, saveAnswerList, } from "../../controllers/answerProvider";
+import { magicalAnswerUpdate, saveAnswerList, } from "../../providers/answerProvider";
 
 const QuizEditor = () => {
   const {quizId} = useParams();

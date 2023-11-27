@@ -3,7 +3,7 @@ import ResultContainer from '../../components/ResultContainer';
 import { useNavigate } from "react-router-dom";
 import React, { useCallback, useState } from 'react';
 import TimeCounter from "../../components/TimeCounter";
-import { getGameResult, getNextTask, handleAnswerSubmit } from "../../controllers/gameProvider";
+import { getGameResult, getNextTask, handleAnswerSubmit } from "../../providers/gameProvider";
 import TaskDisplayContainer from "../../components/TaskDisplayContainer";
 import ScoreBoard from "../../components/ScoreBoard";
 
@@ -103,7 +103,7 @@ const TaskPage = ({firstTask, quiz}) => {
             task={task}
             handleColorChange={handleColorChange}
             loading={loading}/>
-        </>
+        </>;
       case "result":
         return <>
           <TaskDisplayContainer/>
@@ -117,16 +117,16 @@ const TaskPage = ({firstTask, quiz}) => {
             loading={loading}
             navigateToScoreBoard={navigateToScoreBoard}
           />
-        </>
+        </>;
       case "scoreBoard":
         return <>
           <ScoreBoard scores={scores}
                       loading={loading}
                       handleTaskChange={handleTaskChange}
                       taskCount={task.taskIndex + 1}/>
-        </>
+        </>;
     }
-  }, [gameState])
+  }, [gameState]);
 
   return (
     <>

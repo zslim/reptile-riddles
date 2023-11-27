@@ -7,35 +7,57 @@ import com.codecool.quizzzz.dto.user.NewPlayerDTO;
 import com.codecool.quizzzz.dto.user.PlayerDTO;
 import com.codecool.quizzzz.exception.NotFoundException;
 import com.codecool.quizzzz.model.*;
+import com.codecool.quizzzz.service.repository.AnswerRepository;
 import com.codecool.quizzzz.service.repository.GameRepository;
 import com.codecool.quizzzz.service.repository.QuizRepository;
+import com.codecool.quizzzz.service.repository.TaskRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
 public class GameService {
   private final QuizRepository quizRepository;
+  private final TaskRepository taskRepository;
+  private final AnswerRepository answerRepository;
   private final GameRepository gameRepository;
+  private final EntityManager entityManager;
 
   @Autowired
-  public GameService(QuizRepository quizRepository, GameRepository gameRepository) {
+  public GameService(QuizRepository quizRepository, TaskRepository taskRepository, AnswerRepository answerRepository,
+                     GameRepository gameRepository, EntityManager entityManager) {
     this.quizRepository = quizRepository;
+    this.taskRepository = taskRepository;
+    this.answerRepository = answerRepository;
     this.gameRepository = gameRepository;
+    this.entityManager = entityManager;
   }
 
   public GameQuizDTO createGame(Long quizId) {
     Quiz quiz = quizRepository.findById(quizId).orElseThrow(() -> new NotFoundException("No quiz found with this id!"));
+    quiz.setTasks(getTasksByQuizId(quiz.getId()));
+    entityManager.detach(quiz);
     Game newGame = new Game(quiz);
     gameRepository.addGame(newGame);
     return new GameQuizDTO(newGame.getGameId(), quiz.getTitle(), quiz.getTaskCount());
   }
 
+  private List<Task> getTasksByQuizId(Long quizId) {
+    List<Task> tasks = taskRepository.findAllByQuizId(quizId);
+    for (Task task : tasks) {
+      task.setAnswers(answerRepository.findAllByTaskId(task.getId()));
+    }
+    return tasks;
+  }
+
   public boolean joinToGame(Long gameId, NewPlayerDTO newPlayerDTO) {
-    Game game = gameRepository.findGameById(gameId).orElseThrow(() -> new NotFoundException("No game found with this id!"));
+    Game game = gameRepository.findGameById(gameId)
+                              .orElseThrow(() -> new NotFoundException("No game found with this id!"));
     String username = getUsernameFromSecurityContext();
     game.addPlayer(new Player(newPlayerDTO.playerName(), username));
     return true;
@@ -59,11 +81,15 @@ public class GameService {
   }
 
   private List<GameAnswerDTO> getGameAnswerDTOList(List<Answer> answers) {
-    return answers.stream().map((answer -> new GameAnswerDTO(answer.getId(), answer.getText()))).toList();
+    return answers.stream()
+                  .map((answer -> new GameAnswerDTO(answer.getId(), answer.getText())))
+                  .sorted(Comparator.comparing(GameAnswerDTO::answerId))
+                  .toList();
   }
 
   public Boolean handleAnswerSubmit(Long gameId, Long answerId) {
-    Game game = gameRepository.findGameById(gameId).orElseThrow(() -> new NotFoundException("No game found with this id!"));
+    Game game = gameRepository.findGameById(gameId)
+                              .orElseThrow(() -> new NotFoundException("No game found with this id!"));
     String username = getUsernameFromSecurityContext();
     Player player = game.getPlayerByUsername(username);
     Answer answer = game.getCurrentTask().getAnswerById(answerId).orElseThrow();

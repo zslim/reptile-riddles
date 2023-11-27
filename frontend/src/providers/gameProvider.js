@@ -21,7 +21,7 @@ async function getNextTask(gameId) {
 
 async function handleAnswerSubmit(gameId, answer) {
   console.log(answer);
-  const httpRawRes = await fetch(`/game/submit/${gameId}?answer=${answer}`, {
+  const httpRawRes = await fetch(`/game/submit/${gameId}?answer=${answer.answerId}`, {
     method: "PATCH",
   });
   return await httpRawRes.json();
@@ -38,4 +38,4 @@ module.exports = {
   getNextTask,
   handleAnswerSubmit,
   getGameResult
-}
+};

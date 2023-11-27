@@ -21,9 +21,14 @@ public class QuizController {
     this.quizService = quizService;
   }
 
-  @GetMapping("/all")
-  ResponseEntity<List<OutgoingEditorQuizDTO>> getAllQuiz() {
-    return ResponseEntity.ok().body(quizService.getAll());
+  @GetMapping("/public")
+  ResponseEntity<List<OutgoingEditorQuizDTO>> getPublicQuizzes() {
+    return ResponseEntity.ok().body(quizService.getPublic());
+  }
+
+  @GetMapping("/own")
+  ResponseEntity<List<OutgoingEditorQuizDTO>> getMyQuizzes() {
+    return ResponseEntity.ok().body(quizService.getMy());
   }
 
   @GetMapping("/{quizId}")
@@ -39,6 +44,12 @@ public class QuizController {
   @PostMapping("/create")
   ResponseEntity<Long> createQuiz() {
     Long id = quizService.create();
+    return ResponseEntity.created(URI.create(String.format("/quiz/%d", id))).body(id);
+  }
+
+  @PostMapping("/copy/{quizId}")
+  ResponseEntity<Long> copyQuiz(@PathVariable Long quizId) {
+    Long id = quizService.copy(quizId);
     return ResponseEntity.created(URI.create(String.format("/quiz/%d", id))).body(id);
   }
 

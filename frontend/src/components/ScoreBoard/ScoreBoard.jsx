@@ -1,11 +1,11 @@
 import React from "react";
 
 const ScoreBoard = ({scores, loading, handleTaskChange, taskCount}) => {
-  const  calculateScoreBarWidth = (score) => {
+  const calculateScoreBarWidth = (score) => {
     const MAX_SCORE_PER_TASK = 1000;
     const width = Math.max(Math.round((score / (taskCount * MAX_SCORE_PER_TASK)) * 100), 0.2);
     return width + "%";
-  }
+  };
 
   return (
     <>
@@ -15,7 +15,7 @@ const ScoreBoard = ({scores, loading, handleTaskChange, taskCount}) => {
             <div className="text-right w-full col-span-2 text-lg">{player.playerName}</div>
             <div style={{width: calculateScoreBarWidth(player.score)}} className={`h-7 col-span-8 bg-black`}></div>
             <div className=" w-full col-span-2 text-lg">{player.score}</div>
-          </div>
+          </div>;
         })}
       </div>
       <button disabled={loading} onClick={() => handleTaskChange()}
@@ -24,7 +24,7 @@ const ScoreBoard = ({scores, loading, handleTaskChange, taskCount}) => {
         Next
       </button>
     </>
-  )
-}
+  );
+};
 
 export default ScoreBoard;

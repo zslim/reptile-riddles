@@ -18,7 +18,7 @@ const TimeCounter = ({deadline, timeLeft, handleDisplayTimeChange, handleDeadlin
         clearInterval(cycle);
         handleDeadline();
       }
-    }, interval + difference)
+    }, interval + difference);
 
     return () => {
       if (cycle) {
@@ -29,12 +29,12 @@ const TimeCounter = ({deadline, timeLeft, handleDisplayTimeChange, handleDeadlin
 
   return (
     <>
-    {!loading ?
-    <div className="absolute right-10 top-5">
-      {timeLeft}
-    </div> : null}
+      {!loading ?
+        <div className="absolute right-10 top-5">
+          {timeLeft}
+        </div> : null}
     </>
-  )
-}
+  );
+};
 
 export default TimeCounter;

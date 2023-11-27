@@ -15,7 +15,7 @@ async function saveAnswer(taskId, answer) {
 
 async function saveAnswerList(taskId, answerList) {
   const promises = answerList.map(async (answer) => {
-    return (await saveAnswer(taskId, answer))
+    return (await saveAnswer(taskId, answer));
   });
   const resAll = await Promise.all(promises);
   return resAll.map((res) => res.json());
@@ -31,7 +31,7 @@ async function deleteAnswerById(answerId) {
 
 async function deleteAnswerList(answerList) {
   const promises = answerList.map(async (answer) => {
-    return (await deleteAnswerById(answer.answerId))
+    return (await deleteAnswerById(answer.answerId));
   });
   const resAll = await Promise.all(promises);
   return resAll.map((res) => res.json());
@@ -48,10 +48,15 @@ async function updateAnswer(answer) {
 }
 
 async function magicalAnswerUpdate(answersToDelete, answersToUpdate, answersToSave, taskId) {
-  const promises = [];
-  answersToDelete.map(async (answer) => promises.push(await deleteAnswerById(answer.answerId)));
-  answersToUpdate.map(async (answer) => promises.push(await updateAnswer(answer)));
-  answersToSave.map(async (answer) => promises.push(await saveAnswer(taskId, answer)));
+  const promises = [
+    ...answersToDelete.map(async (answer) => await deleteAnswerById(answer.answerId)),
+    ...answersToUpdate.map(async (answer) => await updateAnswer(answer)),
+    ...answersToSave.map(async (answer) => await saveAnswer(taskId, answer))   
+  ];
+
+  //answersToDelete.map(async (answer) => promises.push(await deleteAnswerById(answer.answerId)));
+  //answersToUpdate.map(async (answer) => promises.push(await updateAnswer(answer)));
+  //answersToSave.map(async (answer) => promises.push(await saveAnswer(taskId, answer)));
 
   const resAll = await Promise.all(promises);
   return resAll.map((res) => res.json());

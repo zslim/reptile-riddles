@@ -1,21 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, IconButton, Navbar, Typography, } from "@material-tailwind/react";
 import PlayIcon from "../../assets/icons/PlayIcon";
 import QuizzesIcon from "../../assets/icons/QuizzesIcon";
 import MyQuizIcon from "../../assets/icons/MyQuizIcon";
 import UserIcon from "../../assets/icons/UserIcon";
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useUser } from "../../context/UserContextProvider";
+import authenticate from "../../context/authenticator";
 
 export function NavBarDefault() {
-  const [openNav, setOpenNav] = React.useState(false);
+  const [openNav, setOpenNav] = useState(false);
+  const [hasUser, setHasUser] = useState(false);
+  const {user, logout} = useUser();
+
+  function isLoggedIn() {
+    return authenticate(user, "user");
+  }
 
   useEffect(() => {
+    setHasUser(() => isLoggedIn());
+    console.log(isLoggedIn());
     window.addEventListener(
       "resize",
       () => window.innerWidth >= 960 && setOpenNav(false),
     );
   }, []);
+
+  async function handleLogout() {
+    try {
+      await logout();
+      setHasUser(false);
+    }
+    catch (e) {
+      console.error(e);
+    }
+  }
 
   const navList = (
     <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
@@ -26,9 +45,9 @@ export function NavBarDefault() {
         className="flex items-center gap-x-2 p-1 font-medium"
       >
         <PlayIcon/>
-        <a href="#" className="flex items-center">
+        <Link to="#" className="flex items-center">
           Games
-        </a>
+        </Link>
       </Typography>
       <Typography
         as="li"
@@ -37,9 +56,9 @@ export function NavBarDefault() {
         className="flex items-center gap-x-2 p-1 font-medium"
       >
         <QuizzesIcon/>
-        <a href="/quiz/all" className="flex items-center">
+        <Link to="/quiz/all" className="flex items-center">
           Quizzes
-        </a>
+        </Link>
       </Typography>
       <Typography
         as="li"
@@ -48,9 +67,9 @@ export function NavBarDefault() {
         className="flex items-center gap-x-2 p-1 font-medium"
       >
         <MyQuizIcon/>
-        <a href="/quiz/all" className="flex items-center">
+        <Link to="/quiz/my" className="flex items-center">
           My Quizzes
-        </a>
+        </Link>
       </Typography>
       <Typography
         as="li"
@@ -59,9 +78,9 @@ export function NavBarDefault() {
         className="flex items-center gap-x-2 p-1 font-medium"
       >
         <UserIcon/>
-        <a href="#" className="flex items-center">
+        <Link to="#" className="flex items-center">
           Account
-        </a>
+        </Link>
       </Typography>
     </ul>
   );
@@ -69,29 +88,33 @@ export function NavBarDefault() {
   return (
     <Navbar className="sticky top-0 mx-auto max-w-screen-xl px-4 py-2 lg:px-8 lg:py-4 bg-inherit">
       <div className="container mx-auto flex items-center justify-between text-blue-gray-900">
-        <Typography
-          as="a"
-          href="/"
-          className="mr-4 cursor-pointer py-1.5 font-medium"
-        >
+        <Link to={"/"}>
           Reptile Riddles
-        </Typography>
+        </Link>
         <div className="hidden lg:block">{navList}</div>
         <div className="flex items-center gap-x-1">
-          <Link to={"/login"}>
-            <Button variant="text" size="sm" className="hidden lg:inline-block">
-              <span>Login</span>
-            </Button>
-          </Link>
-          <Link to={"/register"}>
-            <Button
-              variant="gradient"
-              size="sm"
-              className="hidden lg:inline-block"
-            >
-              <span>Sign up</span>
-            </Button>
-          </Link>
+          {hasUser ?
+            <Link to={"/login"}>
+              <Button variant="text" size="sm" className="hidden lg:inline-block" onClick={() => handleLogout()}>
+                <span>Logout</span>
+              </Button>
+            </Link>
+            : <>
+              <Link to={"/login"}>
+                <Button variant="text" size="sm" className="hidden lg:inline-block">
+                  <span>Login</span>
+                </Button>
+              </Link>
+              <Link to={"/register"}>
+                <Button
+                  variant="gradient"
+                  size="sm"
+                  className="hidden lg:inline-block">
+                  <span>Sign up</span>
+                </Button>
+              </Link>
+            </>
+          }
         </div>
         <IconButton
           variant="text"

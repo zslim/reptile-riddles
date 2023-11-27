@@ -1,8 +1,9 @@
-.root{
+.root {
     background-color: #1D2226;
     height: 100vh;
     width: 100vw;
 }
+
 .Loading {
     z-index: 100;
     color: #a27c00;

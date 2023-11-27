@@ -23,17 +23,6 @@ class GameServiceTest {
   private GameRepository gameRepositoryMock;
   private GameService gameService;
 
-  Quiz getSampleQuiz() {
-    Quiz quiz = new Quiz();
-    quiz.setId(1L);
-    quiz.setTitle("My new Quiz");
-    return quiz;
-  }
-
-  Game getSampleGame() {
-    return new Game(getSampleQuiz());
-  }
-
   @BeforeEach
   void beforeEach() {
     quizRepositoryMock = Mockito.mock(QuizRepository.class);
@@ -48,6 +37,13 @@ class GameServiceTest {
     GameQuizDTO expected = new GameQuizDTO(1L, "My new Quiz", 0);
     GameQuizDTO actual = gameService.createGame(1L);
     assertEquals(expected, actual);
+  }
+
+  Quiz getSampleQuiz() {
+    Quiz quiz = new Quiz();
+    quiz.setId(1L);
+    quiz.setTitle("My new Quiz");
+    return quiz;
   }
 
   @Test
@@ -67,6 +63,10 @@ class GameServiceTest {
     Long expected = 1L;
     Long actual = gameService.joinToGame(gameId, newPlayerDTO);
     assertEquals(expected, actual);
+  }
+
+  Game getSampleGame() {
+    return new Game(getSampleQuiz());
   }
 
   @Test

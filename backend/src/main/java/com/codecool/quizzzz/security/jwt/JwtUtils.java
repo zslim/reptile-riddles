@@ -1,7 +1,7 @@
 package com.codecool.quizzzz.security.jwt;
 
 import com.codecool.quizzzz.exception.NotFoundException;
-import com.codecool.quizzzz.model.user.Credential;
+import com.codecool.quizzzz.model.user.Credentials;
 import com.codecool.quizzzz.model.user.RoleEnum;
 import com.codecool.quizzzz.model.user.UserEntity;
 import com.codecool.quizzzz.service.logger.Logger;
@@ -36,7 +36,7 @@ public class JwtUtils {
     this.userRepository = userRepository;
   }
 
-  public String generateJwtToken(Authentication authentication) {
+  public String generateUserJwtToken(Authentication authentication) {
     UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
     List<String> authorities = userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
     Date issuedAt = new Date();
@@ -62,18 +62,19 @@ public class JwtUtils {
     return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
   }
 
-  public String generateJwtToken(String username) {
+  public String generateGuestJwtToken(String username) {
     return Jwts.builder()
                .setSubject(username)
                .claim("roles", List.of(RoleEnum.ROLE_GUEST.toString()))
+               .claim("user_id", -1)
                .setIssuedAt(new Date())
                .setExpiration(new Date(new Date().getTime() + jwtExpirationMs))
                .signWith(key(), SignatureAlgorithm.HS256)
                .compact();
   }
 
-  public Credential getCredentialFromJwtToken(Jws<Claims> claims) {
-    return new Credential(claims.getBody().getSubject());
+  public Credentials getCredentialFromJwtToken(Jws<Claims> claims) {
+    return new Credentials(claims.getBody().getSubject(), Long.valueOf((Integer) claims.getBody().get("user_id")));
   }
 
   public Collection<? extends GrantedAuthority> getAuthoritiesFromJwtToken(Jws<Claims> claims) {

@@ -1,5 +1,6 @@
 package com.codecool.quizzzz.model.user;
 
+import com.codecool.quizzzz.model.Quiz;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,9 +27,10 @@ public class UserEntity {
   private String password;
   @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER) // TODO: change cascade
   private Set<Role> roles;
+  @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
+  private Set<Quiz> quizzes;
 
   public Set<RoleEnum> getRoles() {
-    System.out.println(roles.size());
     return roles.stream().map(Role::getName).collect(Collectors.toSet());
   }
 }

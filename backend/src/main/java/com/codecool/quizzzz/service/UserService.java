@@ -40,8 +40,12 @@ public class UserService {
   }
 
   public UserDTO getById(long id) {
-    UserEntity user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User", id));
+    UserEntity user = getUserById(id);
     return modelToUserDTO(user);
+  }
+
+  public UserEntity getUserById(long id) {
+    return userRepository.findById(id).orElseThrow(() -> new NotFoundException("User", id));
   }
 
   private UserDTO modelToUserDTO(UserEntity user) {

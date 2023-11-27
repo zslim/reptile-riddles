@@ -76,7 +76,6 @@ async function updateQuestion(taskId, task) {
   return await res.json();
 }
 
-
 module.exports = {
   // fetchTask: fetchTaskByIndex,
   // fetchTasksByQuizId,

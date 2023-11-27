@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+  private static final int MS_TO_SEC = 1000;
   private static final String DELETED = "";
   private final UserService userService;
   private final AuthenticationService authenticationService;
@@ -57,7 +58,7 @@ public class UserController {
     Cookie cookie = new Cookie(AuthTokenFilter.USER_TOKEN, userToken);
     cookie.setHttpOnly(true);
     cookie.setPath("/");
-    cookie.setMaxAge(jwtExpirationMs / 1000);
+    cookie.setMaxAge(jwtExpirationMs / MS_TO_SEC);
     return cookie;
   }
 

@@ -21,11 +21,21 @@ async function userLogin(user) {
 
 async function getCredentials() {
   const res = await fetch(`/user/credentials`);
-  return await res.json();
+  return res.status === 200 ? await res.json() : null;
+}
+
+async function userLogout() {
+  const res = await fetch(`/user/logout`, {
+    method: "DELETE", headers: {
+      "Content-Type": "application/json"
+    }
+  });
+  return res.json();
 }
 
 module.exports = {
   userRegister,
   userLogin,
-  getCredentials
+  getCredentials,
+  userLogout
 };

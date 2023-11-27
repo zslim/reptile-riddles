@@ -1,5 +1,5 @@
 import React from 'react';
-import LogoMain from '../../images/logo_big.png';
+import LogoMain from '../../assets/images/logo_big.png';
 
 const Homepage = () => {
   return (
@@ -11,6 +11,6 @@ const Homepage = () => {
       </div>
     </>
   );
-}
+};
 
 export default Homepage;

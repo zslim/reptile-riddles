@@ -1,11 +1,12 @@
 package com.codecool.quizzzz.security.jwt;
 
 import com.codecool.quizzzz.exception.NotFoundException;
-import com.codecool.quizzzz.model.user.Credential;
+import com.codecool.quizzzz.model.user.Credentials;
 import com.codecool.quizzzz.security.authmodel.AuthenticationModel;
 import com.codecool.quizzzz.service.logger.Logger;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
+import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -31,17 +32,16 @@ public class AuthTokenFilter extends OncePerRequestFilter {
   }
 
   @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                  FilterChain filterChain) throws ServletException, IOException {
+  protected void doFilterInternal(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response,
+                                  @Nonnull FilterChain filterChain) throws ServletException, IOException {
     try {
       String jwt = parseJwt(request);
       if (jwt != null) {
         Jws<Claims> claimsJws = jwtUtils.validateJwtToken(jwt);
         if (claimsJws != null) {
-          Credential credential = jwtUtils.getCredentialFromJwtToken(claimsJws);
+          Credentials credentials = jwtUtils.getCredentialFromJwtToken(claimsJws);
           Collection<? extends GrantedAuthority> authorities = jwtUtils.getAuthoritiesFromJwtToken(claimsJws);
-
-          AuthenticationModel authenticationToken = new AuthenticationModel(credential, authorities);
+          AuthenticationModel authenticationToken = new AuthenticationModel(credentials, authorities);
           authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
           SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
@@ -50,7 +50,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     catch (Exception e) {
       logger.logError(e.getMessage(), "Cannot set user authentication");
     }
-
     filterChain.doFilter(request, response);
   }
 
