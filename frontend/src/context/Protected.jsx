@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "./UserContextProvider";
 import authenticate from "./authenticator";
 
-const Protected = ({ children, roleRequirement }) => {
-  const { user } = useUser();
+const Protected = ({children, roleRequirement}) => {
+  const {user} = useUser();
   const navigate = useNavigate();
 
   const authorized = useMemo(() => {

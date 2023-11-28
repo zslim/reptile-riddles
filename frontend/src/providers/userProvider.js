@@ -1,36 +1,29 @@
+const {fetchFromBackEnd} = require("./providerBase");
+
 async function userRegister(user) {
-  const res = await fetch(`/user/register`, {
-    method: "POST",
-    body: JSON.stringify(user),
-    headers: {
-      "Content-Type": "application/json"
-    }
-  });
+  const url = "/user/register";
+  const method = "POST";
+  const body = user;
+  return await fetchFromBackEnd({url, method, body});
 }
 
 async function userLogin(user) {
-  const res = await fetch(`/user/login`, {
-    method: "POST",
-    body: JSON.stringify(user),
-    headers: {
-      "Content-Type": "application/json"
-    }
-  });
-  return await res.json();
+  const url = "/user/login";
+  const method = "POST";
+  const body = user;
+  return await fetchFromBackEnd({url, method, body});
 }
 
 async function getCredentials() {
-  const res = await fetch(`/user/credentials`);
-  return res.status === 200 ? await res.json() : null;
+  const url = "/user/credentials";
+  return await fetchFromBackEnd({url});
+  //return response.status === 200 ? response : null;
 }
 
 async function userLogout() {
-  const res = await fetch(`/user/logout`, {
-    method: "DELETE", headers: {
-      "Content-Type": "application/json"
-    }
-  });
-  return res.json();
+  const url = "/user/logout";
+  const method = "DELETE";
+  return await fetchFromBackEnd({url, method});
 }
 
 module.exports = {
