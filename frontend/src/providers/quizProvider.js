@@ -1,10 +1,7 @@
-async function updateQuizName(quizName, quizId) {
+async function updateQuizName(quiz, quizId) {
   const httpRes = await fetch(`/quiz/${quizId}`, {
     method: "PATCH",
-    body: JSON.stringify({
-      "title": quizName,
-      "isPublic": true // TODO: create public checkbox in quiz editor
-    }),
+    body: JSON.stringify(quiz),
     headers: {
       "Content-Type": "application/json"
     }
@@ -14,6 +11,11 @@ async function updateQuizName(quizName, quizId) {
 
 async function fetchQuizById(quizId) {
   const httpRes = await fetch(`/quiz/${quizId}`);
+  return await httpRes.json();
+}
+
+async function fetchCategories(){
+  const httpRes = await fetch("/quiz/categories");
   return await httpRes.json();
 }
 
@@ -61,5 +63,6 @@ module.exports = {
   saveEmptyQuiz,
   copyQuiz,
   deleteQuizById,
-  fetchModifiedAtById
+  fetchModifiedAtById,
+  fetchCategories
 };
