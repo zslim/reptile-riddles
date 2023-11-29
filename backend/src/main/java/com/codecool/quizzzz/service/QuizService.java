@@ -4,10 +4,7 @@ import com.codecool.quizzzz.dto.quiz.IncomingEditorQuizDTO;
 import com.codecool.quizzzz.dto.quiz.OutgoingEditorQuizDTO;
 import com.codecool.quizzzz.dto.task.BriefTaskDTO;
 import com.codecool.quizzzz.exception.NotFoundException;
-import com.codecool.quizzzz.model.Answer;
-import com.codecool.quizzzz.model.CategoryEnum;
-import com.codecool.quizzzz.model.Quiz;
-import com.codecool.quizzzz.model.Task;
+import com.codecool.quizzzz.model.*;
 import com.codecool.quizzzz.model.user.Credentials;
 import com.codecool.quizzzz.service.repository.AnswerRepository;
 import com.codecool.quizzzz.service.repository.CategoryRepository;
@@ -57,10 +54,10 @@ public class QuizService {
                                      taskList,
                                      quiz.getCreatedAt(),
                                      quiz.getLastModifiedTimestamp(),
-                                     quiz.getCategories()
-                                         .stream()
-                                         .map(category -> category.getCategoryEnum().name())
-                                         .collect(Collectors.toSet()));
+                                     getStringFormatFromEnum(quiz.getCategories()
+                                                                 .stream()
+                                                                 .map(Category::getCategoryEnum)
+                                                                 .toList()));
   }
 
   private BriefTaskDTO convertTaskModelToBriefTaskDTO(Task task) {
@@ -152,11 +149,11 @@ public class QuizService {
   }
 
   public List<String> getAllQuizCategory() {
-    return categoryRepository.findAll()
-                             .stream()
-                             .map(category -> category.getCategoryEnum().toString())
-                             .sorted()
-                             .toList();
+    return getStringFormatFromEnum(categoryRepository.findAll()
+                                                     .stream()
+                                                     .map(Category::getCategoryEnum)
+                                                     .sorted()
+                                                     .toList());
   }
 
   private Quiz getQuiz(Long quizId) {
@@ -193,10 +190,10 @@ public class QuizService {
                      .collect(Collectors.toSet());
   }
 
-  private Set<String> getStringFormatFromEnum(Set<CategoryEnum> categoryEnums) {
+  private List<String> getStringFormatFromEnum(List<CategoryEnum> categoryEnums) {
     return categoryEnums.stream()
                         .map(category -> category.toString().toLowerCase().replace("_", " "))
                         .map(category -> category.substring(0, 1).toUpperCase() + category.substring(1))
-                        .collect(Collectors.toSet());
+                        .toList();
   }
 }
