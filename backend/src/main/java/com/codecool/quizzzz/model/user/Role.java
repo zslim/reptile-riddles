@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,6 +17,4 @@ public class Role {
   private Long id;
   @Enumerated(value = EnumType.STRING)
   private RoleEnum name;
-  @ManyToMany
-  private Set<UserEntity> users;
 }
