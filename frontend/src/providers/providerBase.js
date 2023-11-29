@@ -1,17 +1,13 @@
 async function get({url}) {
   const response = await fetch(url);
-  const json = await response.json();
-  json.status = response.status;
-  return json;
+  return parseResponse(response);
 }
 
 async function fetchWithMethod({url, method}) {
   const response = await fetch(url, {
     method
   });
-  const json = await response.json();
-  json.status = response.status;
-  return json;
+  return parseResponse(response);
 }
 
 async function fetchWithMethodAndBody({url, method, body}) {
@@ -22,9 +18,7 @@ async function fetchWithMethodAndBody({url, method, body}) {
       "Content-Type": "application/json"
     }
   });
-  const json = await response.json();
-  json.status = response.status;
-  return json;
+  return parseResponse(response);
 }
 
 async function fetchFromBackEnd(options) {
@@ -35,6 +29,16 @@ async function fetchFromBackEnd(options) {
     return fetchWithMethod(options);
   }
   return get(options);
+}
+
+async function parseResponse(response) {
+  let json = {};
+  const contentType = response.headers.get("content-type");
+  if (contentType && contentType.indexOf("application/json") !== -1) {
+    json = await response.json();
+  }
+  json.status = response.status;
+  return json;
 }
 
 module.exports = {
