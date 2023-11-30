@@ -19,7 +19,7 @@
 // }
 
 async function fetchDetailedTaskById(taskId) {
-  const res = await fetch(`/task/${taskId}`);
+  const res = await fetch(`/api/task/${taskId}`);
   return await res.json();
 }
 
@@ -35,7 +35,7 @@ async function fetchDetailedTaskById(taskId) {
 // }
 
 async function deleteTaskById(taskId) {
-  const res = await fetch(`/task/${taskId}`, {
+  const res = await fetch(`/api/task/${taskId}`, {
     method: "DELETE", headers: {
       "Content-Type": "application/json"
     }
@@ -55,7 +55,7 @@ async function deleteTaskById(taskId) {
 // }
 
 async function saveQuestion(quizId, task) {
-  const res = await fetch(`/task/question/${quizId}`, {
+  const res = await fetch(`/api/task/question/${quizId}`, {
     method: "POST",
     body: JSON.stringify(task),
     headers: {
@@ -66,7 +66,7 @@ async function saveQuestion(quizId, task) {
 }
 
 async function updateQuestion(taskId, task) {
-  const res = await fetch(`/task/question/${taskId}`, {
+  const res = await fetch(`/api/task/question/${taskId}`, {
     method: "PATCH",
     body: JSON.stringify(task),
     headers: {

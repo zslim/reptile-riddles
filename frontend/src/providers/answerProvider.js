@@ -4,7 +4,7 @@
 // }
 
 async function saveAnswer(taskId, answer) {
-  return await fetch(`/answer/task/${taskId}`, {
+  return await fetch(`/api/answer/task/${taskId}`, {
     method: "POST",
     body: JSON.stringify(answer),
     headers: {
@@ -22,7 +22,7 @@ async function saveAnswerList(taskId, answerList) {
 }
 
 async function deleteAnswerById(answerId) {
-  return await fetch(`/answer/${answerId}`, {
+  return await fetch(`/api/answer/${answerId}`, {
     method: "DELETE", headers: {
       "Content-Type": "application/json"
     }
@@ -38,7 +38,7 @@ async function deleteAnswerList(answerList) {
 }
 
 async function updateAnswer(answer) {
-  return await fetch(`/answer/update/${answer.answerId}`, {
+  return await fetch(`/api/answer/update/${answer.answerId}`, {
     method: "PATCH",
     body: JSON.stringify(answer),
     headers: {

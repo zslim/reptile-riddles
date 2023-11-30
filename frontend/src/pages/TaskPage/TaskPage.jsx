@@ -3,90 +3,24 @@ import ResultContainer from '../../components/ResultContainer';
 import { useNavigate } from "react-router-dom";
 import React, { useCallback, useState } from 'react';
 import TimeCounter from "../../components/TimeCounter";
-import { getGameResult, getNextTask, handleAnswerSubmit } from "../../providers/gameProvider";
+import { handleAnswerSubmit } from "../../providers/gameProvider";
 import TaskDisplayContainer from "../../components/TaskDisplayContainer";
-import ScoreBoard from "../../components/ScoreBoard";
+import WaitingContainer from "../../components/WaitingContainer";
 
-const TaskPage = ({firstTask, quiz}) => {
-  const [isCorrect, setIsCorrect] = useState(false);
-  const [task, setTask] = useState(firstTask);
+const TaskPage = ({task, quiz, changeGameState, gameState, selectAnswer, selectedAnswer, isCorrect, handleSubmit, timeLeft, handleTimeChange}) => {
   const [color, setColor] = useState("zinc-500");
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(30);
   const [isTimedOut, setIsTimedOut] = useState(false);
-  const [scores, setScores] = useState([]);
-  const [gameState, setGameState] = useState("playingField");
+
   const navigate = useNavigate();
 
-  async function handleTaskChange() {
-    if (quiz.taskCount - 1 > task.taskIndex) {
-      try {
-        setLoading(true);
-        const newTask = await getNextTask(quiz.gameId);
-        resetTimer(new Date(newTask.deadline));
-        setTask({...newTask, deadline: new Date(newTask.deadline)});
-        setGameState("playingField");
-      }
-      catch (e) {
-        console.error(e);
-      }
-      finally {
-        setLoading(false);
-      }
-    }
-    else {
-      navigate("/result");
-    }
-  }
-
-  async function handleSubmit(answer) {
-    try {
-      setLoading(true);
-      const isCorrectAnswer = await handleAnswerSubmit(quiz.gameId, answer);
-      setSelectedAnswer(answer);
-      setIsCorrect(isCorrectAnswer);
-      resetTimer();
-      setGameState("result");
-    }
-    catch (e) {
-      console.error(e);
-    }
-    finally {
-      setLoading(false);
-    }
-  }
-
-  async function navigateToScoreBoard() {
-    try {
-      setLoading(true);
-      const updatedResult = await getGameResult(quiz.gameId);
-      setScores(updatedResult);
-      setGameState("scoreBoard");
-    }
-    catch (e) {
-      console.error(e);
-    }
-    finally {
-      setLoading(false);
-    }
-  }
-
-  function resetTimer(deadline) {
-    setIsTimedOut(false);
-    const newTimeLeft = deadline - new Date().getTime();
-    const toDisplay = Math.max(Math.floor(newTimeLeft / 1000), 0);
-    setTimeLeft(toDisplay);
-  }
-
   function handleDisplayTimeChange(secondsLeft) {
-    setTimeLeft(secondsLeft);
+    handleTimeChange(secondsLeft);
   }
 
   function handleDeadline() {
-    setIsCorrect(false);
     setIsTimedOut(true);
-    setGameState("result");
+    changeGameState("waiting");
   }
 
   function handleColorChange(selectedButtonColor) {
@@ -97,7 +31,7 @@ const TaskPage = ({firstTask, quiz}) => {
     switch (gameState) {
       case "playingField":
         return <>
-          <TaskDisplayContainer/>
+          {/*<TaskDisplayContainer/>*/}
           <AnswerListContainer
             handleSubmit={handleSubmit}
             task={task}
@@ -106,25 +40,33 @@ const TaskPage = ({firstTask, quiz}) => {
         </>;
       case "result":
         return <>
-          <TaskDisplayContainer/>
+          {/*<TaskDisplayContainer/>*/}
           <ResultContainer
-            handleTaskChange={handleTaskChange}
             selectedAnswer={selectedAnswer}
             isCorrect={isCorrect}
             color={color}
             isTimedOut={isTimedOut}
             isAnswered={true}
             loading={loading}
-            navigateToScoreBoard={navigateToScoreBoard}
           />
         </>;
-      case "scoreBoard":
+      case "waiting":
         return <>
-          <ScoreBoard scores={scores}
-                      loading={loading}
-                      handleTaskChange={handleTaskChange}
-                      taskCount={task.taskIndex + 1}/>
+          {/*<TaskDisplayContainer/>*/}
+          <WaitingContainer
+            handleColorChange={handleColorChange}
+            selectedAnswer={selectedAnswer}
+            color={color}
+            loading={loading}
+            task={task}
+          />
         </>;
+      // case "scoreBoard":
+      //   return <>
+      //     <ScoreBoard scores={scores}
+      //                 loading={loading}
+      //                 taskCount={task.taskIndex + 1}/>
+      //   </>;
     }
   }, [gameState]);
 
