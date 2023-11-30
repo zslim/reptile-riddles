@@ -4,7 +4,7 @@ import {
   fetchCategories,
   fetchModifiedAtById,
   fetchQuizById,
-  updateQuizName
+  updateQuiz
 } from "../../providers/quizProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import { deleteTaskById, fetchDetailedTaskById, saveQuestion, updateQuestion, } from "../../providers/taskProvider";
@@ -359,7 +359,7 @@ const QuizEditor = () => {
   async function saveQuizName() {
     try {
       setQuizLoading(true);
-      await updateQuizName(quiz, quizId);
+      await updateQuiz(quiz, quizId);
       navigate("/quiz/all");
     }
     catch (e) {
