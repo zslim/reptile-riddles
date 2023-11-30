@@ -57,7 +57,8 @@ public class QuizService {
                                      getStringFormatFromEnum(quiz.getCategories()
                                                                  .stream()
                                                                  .map(Category::getCategoryEnum)
-                                                                 .toList()));
+                                                                 .toList()),
+                                     quiz.isPublic());
   }
 
   private BriefTaskDTO convertTaskModelToBriefTaskDTO(Task task) {
@@ -69,8 +70,6 @@ public class QuizService {
                                    .orElseThrow(() -> new NotFoundException(String.format(
                                            "The quiz with id %d doesn't exist!",
                                            quizId)));
-    System.out.println(foundQuiz.getCategories().size());
-    foundQuiz.getCategories().forEach(System.out::println);
     return modelToDTO(foundQuiz);
   }
 
