@@ -27,6 +27,9 @@ public class Game {
     this.quiz = quiz;
   }
 
+  public Long getGameId() {
+    return gameId;
+  }
   public void addPlayer(Player player) {
     playerSet.add(player);
   }
@@ -71,5 +74,17 @@ public class Game {
 
   public void setDeadline(LocalDateTime deadline) {
     this.deadline = deadline;
+  }
+
+  public int getPlayerCount(){
+    return playerSet.size();
+  }
+
+  public Player getPlayerByPlayerName(String username) {
+    return playerSet.stream()
+                    .filter(player -> player.getPlayerName().equals(username))
+                    .findFirst()
+                    .orElseThrow(() -> new NotFoundException(String.format("Player not found with username: %s",
+                                                                           username)));
   }
 }

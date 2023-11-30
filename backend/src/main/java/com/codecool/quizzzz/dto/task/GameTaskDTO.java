@@ -5,5 +5,5 @@ import com.codecool.quizzzz.dto.answer.GameAnswerDTO;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record GameTaskDTO(String question, List<GameAnswerDTO> answers, LocalDateTime deadline, int taskIndex) {
+public record GameTaskDTO(String question, List<GameAnswerDTO> answers, String deadline, int taskIndex) {
 }
