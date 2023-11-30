@@ -552,7 +552,7 @@ const QuizEditor = () => {
 
   return (
     <>
-      <div className="h-[calc(100%-52px)] fixed bg-inherit w-full grid grid-cols-12">
+      <div className="h-[calc(100%-52px)] w-full bg-inherit grid grid-cols-12">
         <div className="max-h-4/6 p-2 pl-6 mt-10 grid grid-cols-1 col-span-2 auto-rows-min">
           <button
             disabled={quizLoading}
