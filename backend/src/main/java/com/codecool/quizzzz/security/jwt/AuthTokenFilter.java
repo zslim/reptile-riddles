@@ -3,7 +3,6 @@ package com.codecool.quizzzz.security.jwt;
 import com.codecool.quizzzz.exception.NotFoundException;
 import com.codecool.quizzzz.model.user.Credentials;
 import com.codecool.quizzzz.security.authmodel.AuthenticationModel;
-// import com.codecool.quizzzz.service.logger.Logger;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import jakarta.annotation.Nonnull;

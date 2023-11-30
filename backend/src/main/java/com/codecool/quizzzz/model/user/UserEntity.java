@@ -25,7 +25,7 @@ public class UserEntity {
   @Column(unique = true)
   private String email;
   private String password;
-  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER) // TODO: change cascade
+  @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private Set<Role> roles;
   @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
   private Set<Quiz> quizzes;
