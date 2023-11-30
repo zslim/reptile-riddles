@@ -1,20 +1,18 @@
-package com.codecool.quizzzz.model.user;
+package com.codecool.quizzzz.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-@Builder
-public class Role {
+public class Category {
   @Id
   @GeneratedValue
   private Long id;
   @Enumerated(value = EnumType.STRING)
-  private RoleEnum name;
+  private CategoryEnum categoryEnum;
 }
