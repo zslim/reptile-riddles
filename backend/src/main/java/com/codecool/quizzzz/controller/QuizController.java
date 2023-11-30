@@ -63,4 +63,9 @@ public class QuizController {
     quizService.deleteById(quizId);
     return ResponseEntity.ok().body(true);
   }
+
+  @GetMapping("/categories")
+  ResponseEntity<List<String>> getAllCategories(){
+    return ResponseEntity.ok().body(quizService.getAllQuizCategory());
+  }
 }

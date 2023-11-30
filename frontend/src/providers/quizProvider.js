@@ -1,17 +1,19 @@
 const {fetchFromBackEnd} = require("./providerBase");
 
-async function updateQuizName(quizName, quizId) {
+async function updateQuiz(quiz, quizId) {
   const url = `/quiz/${quizId}`;
   const method = "PATCH";
-  const body = {
-    "title": quizName,
-    "isPublic": true // TODO: create public checkbox in quiz editor
-  };
+  const body = quiz;
   return await fetchFromBackEnd({url, method, body});
 }
 
 async function fetchQuizById(quizId) {
   const url = `/quiz/${quizId}`;
+  return await fetchFromBackEnd({url});
+}
+
+async function fetchCategories(){
+  const url = '/quiz/categories';
   return await fetchFromBackEnd({url});
 }
 
@@ -49,12 +51,13 @@ async function fetchModifiedAtById(quizId) {
 }
 
 module.exports = {
-  updateQuizName,
+  updateQuiz,
   fetchQuizById,
   fetchAllQuizzes,
   fetchMyQuizzes,
   saveEmptyQuiz,
   copyQuiz,
   deleteQuizById,
-  fetchModifiedAtById
+  fetchModifiedAtById,
+  fetchCategories
 };

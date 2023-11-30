@@ -1,0 +1,29 @@
+package com.codecool.quizzzz.model;
+
+public enum CategoryEnum {
+  GENERAL_KNOWLEDGE,
+  POP_CULTURE,
+  HISTORY,
+  SCIENCE,
+  NATURE,
+  LITERATURE,
+  BOOKS,
+  GEOGRAPHY,
+  TRAVEL,
+  ART,
+  ARTISTS,
+  SPORTS,
+  ATHLETICS,
+  FOOD,
+  CUISINE,
+  TECHNOLOGY,
+  MUSIC,
+  MUSIC_INSTRUMENTS,
+  MYTHOLOGY,
+  FOLKLORE,
+  MOVIES,
+  TV_SHOWS,
+  LANGUAGE,
+  LINGUISTICS,
+  HEALTH
+}

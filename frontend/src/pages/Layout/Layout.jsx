@@ -7,7 +7,7 @@ const Layout = () => {
       <div className="w-full h-fit bg-inherit">
         <NavBarDefault/>
       </div>
-      <div className="flex-grow bg-inherit">
+      <div className="flex-grow bg-inherit overflow-x-hidden">
         <Outlet/>
       </div>
     </div>

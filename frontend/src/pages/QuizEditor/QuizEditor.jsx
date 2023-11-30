@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { deleteQuizById, fetchModifiedAtById, fetchQuizById, updateQuizName } from "../../providers/quizProvider";
+import {
+  deleteQuizById,
+  fetchCategories,
+  fetchModifiedAtById,
+  fetchQuizById,
+  updateQuiz
+} from "../../providers/quizProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import { deleteTaskById, fetchDetailedTaskById, saveQuestion, updateQuestion, } from "../../providers/taskProvider";
 import TaskForm from "../../components/TaskForm/TaskForm";
@@ -15,11 +21,15 @@ const QuizEditor = () => {
 
   const [taskList, setTaskList] = useState([]);
   const [selectedTask, setSelectedTask] = useState({...DEFAULT_TASK});
-  const [quiz, setQuiz] = useState({title: '', modifiedAt: new Date(0)});
+  const [quiz, setQuiz] = useState({title: '', modifiedAt: new Date(0), categories: [], isPublic: false});
   const [answers, setAnswers] = useState([]);
 
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+
   const [answerIndex, setAnswerIndex] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [quizLoading, setQuizLoading] = useState(false);
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
   const [editing, setEditing] = useState(false);
 
   const [currentQuizInDb, setCurrentQuizInDb] = useState({title: ''});
@@ -32,22 +42,41 @@ const QuizEditor = () => {
   useEffect(() => {
     async function getQuiz() {
       try {
-        setLoading(true);
+        setQuizLoading(true);
         const newQuiz = await fetchQuizById(quizId);
-        setCurrentQuizInDb({...setCurrentQuizInDb, title: newQuiz.title});
-        setQuiz({...quiz, title: newQuiz.title, modifiedAt: newQuiz.modifiedAt});
+        setCurrentQuizInDb(newQuiz);
+        setQuiz(newQuiz);
         setTaskList([...newQuiz.taskList]);
+        console.log(newQuiz);
       }
       catch (error) {
         console.error(error);
       }
       finally {
-        setLoading(false);
+        setQuizLoading(false);
       }
     }
 
     getQuiz();
   }, [quizId]);
+
+  useEffect(() => {
+    async function getCategories() {
+      try {
+        setCategoriesLoading(true);
+        const categories = await fetchCategories();
+        setCategories(categories);
+      }
+      catch (error) {
+        console.log(error);
+      }
+      finally {
+        setCategoriesLoading(false);
+      }
+    }
+
+    getCategories();
+  }, [])
 
   async function needToLoadFromDb() {
     if (await isModified()) {
@@ -58,7 +87,7 @@ const QuizEditor = () => {
 
   async function getLatestQuizVersion() {
     try {
-      setLoading(true);
+      setQuizLoading(true);
       setEditing(false);
       resetTaskDatabaseStatus();
       resetSelectedTaskState();
@@ -71,7 +100,7 @@ const QuizEditor = () => {
       console.error(e);
     }
     finally {
-      setLoading(false);
+      setQuizLoading(false);
     }
   }
 
@@ -151,7 +180,7 @@ const QuizEditor = () => {
 
   async function selectTask(taskId) {
     try {
-      setLoading(true);
+      setQuizLoading(true);
       const newTask = await fetchDetailedTaskById(taskId);
       updateTaskState(newTask);
       setTaskList((taskList) => [...taskList.filter((task) => !isNewTask(task.taskId))]);
@@ -161,7 +190,7 @@ const QuizEditor = () => {
       console.error(e);
     }
     finally {
-      setLoading(false);
+      setQuizLoading(false);
     }
   }
 
@@ -207,7 +236,7 @@ const QuizEditor = () => {
 
   async function saveNewTask() {
     try {
-      setLoading(true);
+      setQuizLoading(true);
       const savedTask = await saveQuestion(quizId, selectedTask);
       await saveAnswerList(savedTask.taskId, answers);
       resetTaskDatabaseStatus();
@@ -219,13 +248,13 @@ const QuizEditor = () => {
       console.error(e);
     }
     finally {
-      setLoading(false);
+      setQuizLoading(false);
     }
   }
 
   async function updateExistingTask() {
     try {
-      setLoading(true);
+      setQuizLoading(true);
       await updateChangedObjects();
       resetTaskDatabaseStatus();
       resetSelectedTaskState();
@@ -235,7 +264,7 @@ const QuizEditor = () => {
       console.error(e);
     }
     finally {
-      setLoading(false);
+      setQuizLoading(false);
     }
   }
 
@@ -282,7 +311,7 @@ const QuizEditor = () => {
 
   async function deleteTask() {
     try {
-      setLoading(true);
+      setQuizLoading(true);
       if (!isNewTask(selectedTask.taskId)) {
         await deleteTaskById(selectedTask.taskId);
         const modifiedAt = await fetchModifiedAtById(quizId);
@@ -297,7 +326,7 @@ const QuizEditor = () => {
       console.error(e);
     }
     finally {
-      setLoading(false);
+      setQuizLoading(false);
     }
   }
 
@@ -329,22 +358,22 @@ const QuizEditor = () => {
 
   async function saveQuizName() {
     try {
-      setLoading(true);
-      await updateQuizName(quiz.title, quizId);
+      setQuizLoading(true);
+      await updateQuiz(quiz, quizId);
       navigate("/quiz/all");
     }
     catch (e) {
       console.error(e);
     }
     finally {
-      setLoading(false);
+      setQuizLoading(false);
     }
   }
 
   async function handleQuizDelete() {
     if (window.confirm("Delete?")) {
       try {
-        setLoading(true);
+        setQuizLoading(true);
         await deleteQuizById(quizId);
         navigate("/quiz/all");
       }
@@ -352,7 +381,7 @@ const QuizEditor = () => {
         console.error(e);
       }
       finally {
-        setLoading(false);
+        setQuizLoading(false);
       }
     }
   }
@@ -466,16 +495,44 @@ const QuizEditor = () => {
     return isEqual;
   }
 
+  function addCategoryToQuiz(e) {
+    if (!quiz.categories.includes(e.target.value) && e.target.value !== "") {
+      setQuiz(prevState => {
+        let newQuiz = {...prevState};
+        newQuiz.categories = [...prevState.categories, e.target.value];
+        return newQuiz;
+      });
+    }
+    setSelectedCategory("");
+  }
+
+  function deleteCategoryFromQuiz(categoryToDelete) {
+    setQuiz(prevState => {
+      let newQuiz = {...prevState};
+      newQuiz.categories = [...prevState.categories.filter(category => category !== categoryToDelete)];
+      return newQuiz;
+    });
+  }
+
+  function changePublic(e) {
+    console.log(e.target.checked);
+    setQuiz(prevState => {
+      let newQuiz = {...prevState};
+      newQuiz.isPublic = e.target.checked;
+      return newQuiz;
+    })
+  }
+
   async function checkLastQuizModification() {
     try {
-      setLoading(true);
+      setQuizLoading(true);
       return await fetchModifiedAtById(quizId);
     }
     catch (e) {
       console.error(e);
     }
     finally {
-      setLoading(false);
+      setQuizLoading(false);
     }
   }
 
@@ -495,37 +552,63 @@ const QuizEditor = () => {
 
   return (
     <>
-      <div className="h-[calc(100%-52px)] fixed bg-inherit w-full grid grid-cols-12">
+      <div className="h-[calc(100%-52px)] w-full bg-inherit grid grid-cols-12">
         <div className="max-h-4/6 p-2 pl-6 mt-10 grid grid-cols-1 col-span-2 auto-rows-min">
           <button
-            disabled={loading}
+            disabled={quizLoading}
             className={`h-fit text-white font-bold mb-4 p-4 bg-green-800 
-                      ${loading ? null : `hover:bg-green-700 hover:cursor-pointer`}`}
+                      ${quizLoading ? null : `hover:bg-green-700 hover:cursor-pointer`}`}
             onClick={() => handleTaskAddition()}>Add Question
           </button>
           <div className="max-h-[65vh] overflow-auto p-2 bg-zinc-900 grid grid-cols-1 gap-1 border-2 border-zinc-500">
             {taskList.map((task, i) => {
               return <button key={"task" + task.taskId}
-                             disabled={loading}
+                             disabled={quizLoading}
                              className={`text-white font-bold p-4 text-left
                                ${task.taskId === selectedTask.taskId
-                               ? `bg-neon-blue ${loading ? null : `hover:bg-neon2-blue`}`
-                               : `bg-zinc-800 ${loading ? null : `hover:bg-zinc-700`}`} 
-                               ${loading ? null : `hover:cursor-pointer`}`}
+                               ? `bg-neon-blue ${quizLoading ? null : `hover:bg-neon2-blue`}`
+                               : `bg-zinc-800 ${quizLoading ? null : `hover:bg-zinc-700`}`} 
+                               ${quizLoading ? null : `hover:cursor-pointer`}`}
                              onClick={() => handleTaskSelection(task.taskId)}>{i + 1}. {createQuestionLabel(task.question)}
               </button>;
             })}
           </div>
 
         </div>
+
+
         <div className="ml-20 w-full pl-4 pt-8 col-span-8">
-          <div>
-            <label htmlFor="name" className="text-white text-2xl">Quiz title: </label>
-            <input className="ml-6 w-4/6 p-2 text-2xl bg-[#050409] text-white border-2 border-zinc-700"
-                   value={quiz.title}
-                   type="text" id="name"
-                   onChange={(e) => setQuiz({...quiz, title: e.target.value})}
-            />
+          <div className="border-2 border-zinc-500 mr-2 p-7 bg-zinc-800 w-5/6">
+            <div>
+              <label htmlFor="name" className="text-white text-2xl">Quiz title: </label>
+              <input className="ml-6 w-4/6 p-2 text-2xl bg-[#050409] text-white border-2 border-zinc-700"
+                     value={quiz.title}
+                     type="text" id="name"
+                     onChange={(e) => setQuiz({...quiz, title: e.target.value})}
+              />
+            </div>
+            <div className="m-5 ml-12">
+              <label className="text-white" htmlFor="categorySelect">Categories: </label>
+              <select id="categorySelect" value={selectedCategory} disabled={categoriesLoading}
+                      onChange={(e) => addCategoryToQuiz(e)}>
+                <option value="" disabled>Choose category!</option>
+                {categories.map(
+                  category => (<option value={category} key={"option" + category}>{category}</option>)
+                )}
+              </select>
+              <label className="inline-block ml-8 text-white" htmlFor="publicOrPrivate">Public:</label>
+              <input className="scale-150 m-1 mr-6 ml-2 accent-stone-600 hover:cursor-pointer" type="checkbox"
+                     checked={quiz.isPublic}
+                     onChange={e => changePublic(e)}/>
+            </div>
+            <div className="table">
+              {quiz.categories.map(category => (
+                <span className="border-2 border-amber-600 ml-4 rounded-2xl p-2 bg-amber-300 mb-4 inline-block"
+                      key={"span" + category}>{category}
+                  <button className="ml-2 text-red-700" onClick={() => deleteCategoryFromQuiz(category)}>X</button>
+              </span>
+              ))}
+            </div>
           </div>
           <div className="pb-4 pt-6">
             {editing
@@ -539,22 +622,22 @@ const QuizEditor = () => {
                           indexAnswers={indexAnswers}
                           MAXIMUM_NUMBER_OF_ANSWERS={MAXIMUM_NUMBER_OF_ANSWERS}
                           MINIMUM_NUMBER_OF_ANSWERS={MINIMUM_NUMBER_OF_ANSWERS}
-                          loading={loading}
+                          loading={quizLoading}
                 />
               </>
               : null
             }
           </div>
           <button
-            disabled={loading}
+            disabled={quizLoading}
             className={`mr-4 mt-2 text-white w-40 font-bold p-4 bg-green-800 
-                      ${loading ? null : `hover:bg-green-700 hover:cursor-pointer`}`}
+                      ${quizLoading ? null : `hover:bg-green-700 hover:cursor-pointer`}`}
             onClick={() => handleQuizSave()}>Save quiz
           </button>
           <button
-            disabled={loading}
+            disabled={quizLoading}
             className={`mt-2 text-white w-40 font-bold p-4 bg-zinc-950 border-2 border-zinc-700 
-            ${loading ? null : `hover:bg-zinc-900 hover:cursor-pointer`}`}
+            ${quizLoading ? null : `hover:bg-zinc-900 hover:cursor-pointer`}`}
             onClick={() => handleQuizDelete()}>Delete quiz
           </button>
         </div>
