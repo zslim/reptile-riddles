@@ -10,7 +10,7 @@ import java.net.URI;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/answer")
+@RequestMapping("/api/answer")
 public class AnswerController {
   private final AnswerService answerService;
 

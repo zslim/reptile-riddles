@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
 
-@Service
+//@Service
 public class FileLogger implements Logger {
   private final String FILE_PATH = System.getenv("LOG_PATH");
 

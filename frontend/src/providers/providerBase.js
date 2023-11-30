@@ -1,17 +1,17 @@
 async function get({url}) {
-  const response = await fetch(url);
+  const response = await fetch("/api" + url);
   return parseResponse(response);
 }
 
 async function fetchWithMethod({url, method}) {
-  const response = await fetch(url, {
+  const response = await fetch("/api" + url, {
     method
   });
   return parseResponse(response);
 }
 
 async function fetchWithMethodAndBody({url, method, body}) {
-  const response = await fetch(url, {
+  const response = await fetch("/api" + url, {
     method,
     body: JSON.stringify(body),
     headers: {

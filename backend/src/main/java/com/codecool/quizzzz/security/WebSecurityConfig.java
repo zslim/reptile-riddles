@@ -3,7 +3,9 @@ package com.codecool.quizzzz.security;
 import com.codecool.quizzzz.security.jwt.AuthEntryPointJwt;
 import com.codecool.quizzzz.security.jwt.AuthTokenFilter;
 import com.codecool.quizzzz.security.jwt.JwtUtils;
-import com.codecool.quizzzz.service.logger.Logger;
+//import com.codecool.quizzzz.service.logger.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,14 +27,14 @@ public class WebSecurityConfig {
   private final UserDetailsService userDetailsService;
   private final JwtUtils jwtUtils;
   private final AuthEntryPointJwt unauthorizedHandler;
-  private final Logger logger;
+  private final Logger logger = LoggerFactory.getLogger(WebSecurityConfig.class);
 
   public WebSecurityConfig(UserDetailsService userDetailsService, JwtUtils jwtUtils,
-                           AuthEntryPointJwt unauthorizedHandler, Logger logger) {
+  //                         AuthEntryPointJwt unauthorizedHandler, Logger logger) {
+                           AuthEntryPointJwt unauthorizedHandler) {
     this.userDetailsService = userDetailsService;
     this.jwtUtils = jwtUtils;
     this.unauthorizedHandler = unauthorizedHandler;
-    this.logger = logger;
   }
 
   @Bean
@@ -41,21 +43,21 @@ public class WebSecurityConfig {
         .cors(AbstractHttpConfigurer::disable)
         .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authorizeHttpRequests(auth -> auth.requestMatchers("user/login")
+        .authorizeHttpRequests(auth -> auth.requestMatchers("api/user/login")
                                            .permitAll()
-                                           .requestMatchers("user/register")
+                                           .requestMatchers("api/user/register")
                                            .permitAll()
-                                           .requestMatchers("user/credentials")
+                                           .requestMatchers("api/user/credentials")
                                            .permitAll()
-                                           .requestMatchers("user/logout")
+                                           .requestMatchers("api/user/logout")
                                            .hasRole("USER")
-                                           .requestMatchers("quiz/**")
+                                           .requestMatchers("api/quiz/**")
                                            .hasRole("USER")
-                                           .requestMatchers("task/**")
+                                           .requestMatchers("api/task/**")
                                            .hasRole("USER")
-                                           .requestMatchers("answer/**")
+                                           .requestMatchers("api/answer/**")
                                            .hasRole("USER")
-                                           .requestMatchers("game/**")
+                                           .requestMatchers("api/game/**")
                                            .hasAnyRole("USER", "GUEST")
                                            .anyRequest()
                                            .authenticated());
@@ -72,7 +74,8 @@ public class WebSecurityConfig {
   }
 
   public AuthTokenFilter authenticationJwtTokenFilter() {
-    return new AuthTokenFilter(jwtUtils, logger);
+    //return new AuthTokenFilter(jwtUtils, logger);
+    return new AuthTokenFilter(jwtUtils);
   }
 
   @Bean

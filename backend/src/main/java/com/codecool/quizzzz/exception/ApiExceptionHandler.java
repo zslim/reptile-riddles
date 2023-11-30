@@ -1,7 +1,10 @@
 package com.codecool.quizzzz.exception;
 
-import com.codecool.quizzzz.service.logger.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+//import com.codecool.quizzzz.service.logger.Logger;
+//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,12 +17,13 @@ import java.time.ZonedDateTime;
 
 @ControllerAdvice
 public class ApiExceptionHandler {
-  private final Logger logger;
+  //private final Logger logger;
+  private final Logger logger = LoggerFactory.getLogger(ApiExceptionHandler.class);
 
-  @Autowired
-  public ApiExceptionHandler(Logger logger) {
-    this.logger = logger;
-  }
+  //@Autowired
+  //public ApiExceptionHandler(Logger logger) {
+  //  this.logger = logger;
+  //}
 
   @ExceptionHandler(value = {NotFoundException.class})
   public ResponseEntity<Object> handleNotFoundException(NotFoundException e) {
@@ -29,7 +33,8 @@ public class ApiExceptionHandler {
     PrintWriter pw = new PrintWriter(sw);
     e.printStackTrace(pw);
     String sStackTrace = sw.toString();
-    logger.logError(sStackTrace);
+    //logger.logError(sStackTrace);
+    logger.error(sStackTrace);
     return new ResponseEntity<>(apiException, status);
   }
 }
