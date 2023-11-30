@@ -3,7 +3,6 @@ package com.codecool.quizzzz.security;
 import com.codecool.quizzzz.security.jwt.AuthEntryPointJwt;
 import com.codecool.quizzzz.security.jwt.AuthTokenFilter;
 import com.codecool.quizzzz.security.jwt.JwtUtils;
-// import com.codecool.quizzzz.service.logger.Logger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;

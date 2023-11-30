@@ -4,7 +4,6 @@ import com.codecool.quizzzz.exception.NotFoundException;
 import com.codecool.quizzzz.model.user.Credentials;
 import com.codecool.quizzzz.model.user.RoleEnum;
 import com.codecool.quizzzz.model.user.UserEntity;
-// import com.codecool.quizzzz.service.logger.Logger;
 import com.codecool.quizzzz.service.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;

@@ -22,7 +22,7 @@ public class Quiz {
   private String title;
   @ManyToOne
   private UserEntity creator;
-  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
   private Set<Category> categories;
   @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
   private List<Task> tasks = new ArrayList<>();
