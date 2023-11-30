@@ -10,13 +10,13 @@ services:
     depends_on:
       - db
     environment:
-       DB_HOST: db
-       DB_PORT: 5432
-       DB_NAME: ${DB_NAME}
-       DB_USERNAME: ${DB_USERNAME}
-       DB_PASSWORD: ${DB_PASSWORD}
-#    ports:
-#      - "8080:8080"
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    #    ports:
+    #      - "8080:8080"
     networks:
       - my-shared-network
 
@@ -63,4 +63,4 @@ services:
 #      - frontend
 
 networks:
-  my-shared-network: {}
+  my-shared-network: { }

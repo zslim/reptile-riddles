@@ -65,7 +65,7 @@ public class QuizController {
   }
 
   @GetMapping("/categories")
-  ResponseEntity<List<String>> getAllCategories(){
+  ResponseEntity<List<String>> getAllCategories() {
     return ResponseEntity.ok().body(quizService.getAllQuizCategory());
   }
 }

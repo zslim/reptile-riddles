@@ -136,8 +136,10 @@ const TaskPage = ({firstTask, quiz}) => {
             {gameState === "scoreBoard" ? "SCOREBOARD" : task?.question}
           </div>
           {gameState === "playingField" ?
-            <TimeCounter deadline={task.deadline} timeLeft={timeLeft} handleDisplayTimeChange={handleDisplayTimeChange}
-                         handleDeadline={handleDeadline} isAnswered={gameState === "answered"} loading={loading}/>
+            <TimeCounter deadline={task.deadline} timeLeft={timeLeft}
+                         handleDisplayTimeChange={handleDisplayTimeChange}
+                         handleDeadline={handleDeadline} isAnswered={gameState === "answered"}
+                         loading={loading}/>
             : null}
         </div>
         {renderGameState()}

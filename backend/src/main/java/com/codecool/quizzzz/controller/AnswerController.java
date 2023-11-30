@@ -37,9 +37,9 @@ public class AnswerController {
     return ResponseEntity.ok(answerId);
   }
 
-  //TODO move to game controller
-//  @GetMapping("/validate/{answerId}")
-//  public ResponseEntity<Boolean> checkIfAnswerIsCorrect(@PathVariable Long answerId) {
-//    return ResponseEntity.ok().body(answerService.checkIfCorrect(answerId));
-//  }
+  // TODO move to game controller
+  //  @GetMapping("/validate/{answerId}")
+  //  public ResponseEntity<Boolean> checkIfAnswerIsCorrect(@PathVariable Long answerId) {
+  //    return ResponseEntity.ok().body(answerService.checkIfCorrect(answerId));
+  //  }
 }

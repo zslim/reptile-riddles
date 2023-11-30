@@ -6,10 +6,7 @@ const {fetchFromBackEnd} = require("./providerBase");
 // }
 
 async function saveAnswer(taskId, answer) {
-  const url = `/answer/task/${taskId}`;
-  const method = "POST";
-  const body = answer;
-  return await fetchFromBackEnd({url, method, body});
+  return await fetchFromBackEnd({url: `/answer/task/${taskId}`, method: "POST", body: answer});
 }
 
 async function saveAnswerList(taskId, answerList) {
@@ -22,9 +19,7 @@ async function saveAnswerList(taskId, answerList) {
 }
 
 async function deleteAnswerById(answerId) {
-  const url = `/answer/${answerId}`;
-  const method = "DELETE";
-  return await fetchFromBackEnd({url, method});
+  return await fetchFromBackEnd({url: `/answer/${answerId}`, method: "DELETE"});
 }
 
 async function deleteAnswerList(answerList) {
@@ -37,10 +32,7 @@ async function deleteAnswerList(answerList) {
 }
 
 async function updateAnswer(answer) {
-  const url = `/answer/update/${answer.answerId}`;
-  const method = "PATCH";
-  const body = answer;
-  return await fetchFromBackEnd({url, method, body});
+  return await fetchFromBackEnd({url: `/answer/update/${answer.answerId}`, method: "PATCH", body: answer});
 }
 
 async function magicalAnswerUpdate(answersToDelete, answersToUpdate, answersToSave, taskId) {

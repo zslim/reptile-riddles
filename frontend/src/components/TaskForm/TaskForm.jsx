@@ -58,8 +58,10 @@ const TaskForm = ({
           </div>
           {answers.map((answer, i) => (
             <div key={"answer" + answer.index}>
-              <AnswerForm index={i} answer={answer} changeCorrect={changeCorrect} changeAnswer={changeAnswer}
-                          deleteAnswer={deleteAnswer} isDeletable={answers.length > MINIMUM_NUMBER_OF_ANSWERS}
+              <AnswerForm index={i} answer={answer} changeCorrect={changeCorrect}
+                          changeAnswer={changeAnswer}
+                          deleteAnswer={deleteAnswer}
+                          isDeletable={answers.length > MINIMUM_NUMBER_OF_ANSWERS}
                           loading={loading}
               />
             </div>

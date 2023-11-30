@@ -13,7 +13,8 @@ const ScoreBoard = ({scores, loading, handleTaskChange, taskCount}) => {
         {scores?.map((player) => {
           return <div key={player.playerId} className="h-full w-full mt-10 grid grid-cols-12 gap-2">
             <div className="text-right w-full col-span-2 text-lg">{player.playerName}</div>
-            <div style={{width: calculateScoreBarWidth(player.score)}} className={`h-7 col-span-8 bg-black`}></div>
+            <div style={{width: calculateScoreBarWidth(player.score)}}
+                 className={`h-7 col-span-8 bg-black`}></div>
             <div className=" w-full col-span-2 text-lg">{player.score}</div>
           </div>;
         })}

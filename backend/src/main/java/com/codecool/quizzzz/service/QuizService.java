@@ -65,6 +65,13 @@ public class QuizService {
     return new BriefTaskDTO(task.getId(), task.getIndex(), task.getQuestion());
   }
 
+  private List<String> getStringFormatFromEnum(List<CategoryEnum> categoryEnums) {
+    return categoryEnums.stream()
+                        .map(category -> category.toString().toLowerCase().replace("_", " "))
+                        .map(category -> category.substring(0, 1).toUpperCase() + category.substring(1))
+                        .toList();
+  }
+
   public OutgoingEditorQuizDTO getById(Long quizId) {
     Quiz foundQuiz = quizRepository.findById(quizId)
                                    .orElseThrow(() -> new NotFoundException(String.format(
@@ -108,6 +115,13 @@ public class QuizService {
     return false;
   }
 
+  private Set<CategoryEnum> getCategoryEnums(Set<String> categories) {
+    return categories.stream()
+                     .map(category -> category.toUpperCase().replace(" ", "_"))
+                     .map(CategoryEnum::valueOf)
+                     .collect(Collectors.toSet());
+  }
+
   private boolean isNotEmpty(String string) {
     return !string.trim().isEmpty();
   }
@@ -147,14 +161,6 @@ public class QuizService {
     return quizRepository.save(quiz).getId();
   }
 
-  public List<String> getAllQuizCategory() {
-    return getStringFormatFromEnum(categoryRepository.findAll()
-                                                     .stream()
-                                                     .map(Category::getCategoryEnum)
-                                                     .sorted()
-                                                     .toList());
-  }
-
   private Quiz getQuiz(Long quizId) {
     Quiz quiz = quizRepository.findById(quizId)
                               .orElseThrow(() -> new NotFoundException(String.format(
@@ -182,17 +188,11 @@ public class QuizService {
     return tasks;
   }
 
-  private Set<CategoryEnum> getCategoryEnums(Set<String> categories) {
-    return categories.stream()
-                     .map(category -> category.toUpperCase().replace(" ", "_"))
-                     .map(CategoryEnum::valueOf)
-                     .collect(Collectors.toSet());
-  }
-
-  private List<String> getStringFormatFromEnum(List<CategoryEnum> categoryEnums) {
-    return categoryEnums.stream()
-                        .map(category -> category.toString().toLowerCase().replace("_", " "))
-                        .map(category -> category.substring(0, 1).toUpperCase() + category.substring(1))
-                        .toList();
+  public List<String> getAllQuizCategory() {
+    return getStringFormatFromEnum(categoryRepository.findAll()
+                                                     .stream()
+                                                     .map(Category::getCategoryEnum)
+                                                     .sorted()
+                                                     .toList());
   }
 }

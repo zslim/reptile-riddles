@@ -29,7 +29,8 @@ const QuizListPage = ({fetchQuizzes, editable}) => {
     <>
       {loading ? <Loading/>
         : <div className="w-full h-full flex flex-row text-white">
-          <QuizListContainer quizList={quizList} loading={loading} setQuizList={setQuizList} editable={editable}/>
+          <QuizListContainer quizList={quizList} loading={loading} setQuizList={setQuizList}
+                             editable={editable}/>
           <QuizFilterContainer/>
         </div>
       }

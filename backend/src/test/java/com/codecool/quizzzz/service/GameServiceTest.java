@@ -1,24 +1,24 @@
-//package com.codecool.quizzzz.service;
+// package com.codecool.quizzzz.service;
 //
-//import com.codecool.quizzzz.dto.quiz.GameQuizDTO;
-//import com.codecool.quizzzz.dto.user.NewPlayerDTO;
-//import com.codecool.quizzzz.exception.NotFoundException;
-//import com.codecool.quizzzz.model.Game;
-//import com.codecool.quizzzz.model.Quiz;
-//import com.codecool.quizzzz.service.repository.GameRepository;
-//import com.codecool.quizzzz.service.repository.QuizRepository;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.mockito.Mockito;
+// import com.codecool.quizzzz.dto.quiz.GameQuizDTO;
+// import com.codecool.quizzzz.dto.user.NewPlayerDTO;
+// import com.codecool.quizzzz.exception.NotFoundException;
+// import com.codecool.quizzzz.model.Game;
+// import com.codecool.quizzzz.model.Quiz;
+// import com.codecool.quizzzz.service.repository.GameRepository;
+// import com.codecool.quizzzz.service.repository.QuizRepository;
+// import org.junit.jupiter.api.BeforeEach;
+// import org.junit.jupiter.api.Test;
+// import org.mockito.Mockito;
 //
-//import java.util.Optional;
-//import java.util.Set;
-//import java.util.stream.Collectors;
+// import java.util.Optional;
+// import java.util.Set;
+// import java.util.stream.Collectors;
 //
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.junit.jupiter.api.Assertions.assertThrows;
+// import static org.junit.jupiter.api.Assertions.assertEquals;
+// import static org.junit.jupiter.api.Assertions.assertThrows;
 //
-//class GameServiceTest {
+// class GameServiceTest {
 //  private QuizRepository quizRepositoryMock;
 //  private GameRepository gameRepositoryMock;
 //  private GameService gameService;
@@ -72,7 +72,8 @@
 //  @Test
 //  void testGameJoinMultipleJoins() {
 //    Long gameId = 1L;
-//    Set<NewPlayerDTO> newPlayerDTOSet = Set.of(new NewPlayerDTO("p1"), new NewPlayerDTO("p2"), new NewPlayerDTO("p3"));
+//    Set<NewPlayerDTO> newPlayerDTOSet = Set.of(new NewPlayerDTO("p1"), new NewPlayerDTO("p2"), new NewPlayerDTO
+//    ("p3"));
 //    Mockito.when(gameRepositoryMock.findGameById(gameId)).thenReturn(Optional.ofNullable(getSampleGame()));
 //
 //    Set<Long> expected = Set.of(1L, 2L, 3L);

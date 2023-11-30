@@ -4,7 +4,7 @@ import com.codecool.quizzzz.exception.NotFoundException;
 import com.codecool.quizzzz.model.user.Credentials;
 import com.codecool.quizzzz.model.user.RoleEnum;
 import com.codecool.quizzzz.model.user.UserEntity;
-//import com.codecool.quizzzz.service.logger.Logger;
+// import com.codecool.quizzzz.service.logger.Logger;
 import com.codecool.quizzzz.service.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -34,8 +34,8 @@ public class JwtUtils {
   private int jwtExpirationMs;
 
   public JwtUtils(UserRepository userRepository) {
-  //public JwtUtils(Logger logger, UserRepository userRepository) {
-  //  this.logger = logger;
+    // public JwtUtils(Logger logger, UserRepository userRepository) {
+    //  this.logger = logger;
     this.userRepository = userRepository;
   }
 
@@ -90,19 +90,19 @@ public class JwtUtils {
       return Jwts.parserBuilder().setSigningKey(key()).build().parseClaimsJws(authToken);
     }
     catch (MalformedJwtException e) {
-      //logger.logError(e.getMessage(), "Invalid JWT token");
+      // logger.logError(e.getMessage(), "Invalid JWT token");
       logger.error("Invalid JWT token: " + e.getMessage());
     }
     catch (ExpiredJwtException e) {
-      //logger.logError("JWT token is expired", e.getMessage());
+      // logger.logError("JWT token is expired", e.getMessage());
       logger.error("JWT token is expired: " + e.getMessage());
     }
     catch (UnsupportedJwtException e) {
-      //logger.logError("JWT token is unsupported", e.getMessage());
+      // logger.logError("JWT token is unsupported", e.getMessage());
       logger.error("JWT token is unsupported: " + e.getMessage());
     }
     catch (IllegalArgumentException e) {
-      //logger.logError("JWT claims string is empty", e.getMessage());
+      // logger.logError("JWT claims string is empty", e.getMessage());
       logger.error("JWT claims string is empty: " + e.getMessage());
     }
 

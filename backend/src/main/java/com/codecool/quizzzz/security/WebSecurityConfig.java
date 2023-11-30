@@ -3,7 +3,7 @@ package com.codecool.quizzzz.security;
 import com.codecool.quizzzz.security.jwt.AuthEntryPointJwt;
 import com.codecool.quizzzz.security.jwt.AuthTokenFilter;
 import com.codecool.quizzzz.security.jwt.JwtUtils;
-//import com.codecool.quizzzz.service.logger.Logger;
+// import com.codecool.quizzzz.service.logger.Logger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -30,7 +30,7 @@ public class WebSecurityConfig {
   private final Logger logger = LoggerFactory.getLogger(WebSecurityConfig.class);
 
   public WebSecurityConfig(UserDetailsService userDetailsService, JwtUtils jwtUtils,
-  //                         AuthEntryPointJwt unauthorizedHandler, Logger logger) {
+                           //                         AuthEntryPointJwt unauthorizedHandler, Logger logger) {
                            AuthEntryPointJwt unauthorizedHandler) {
     this.userDetailsService = userDetailsService;
     this.jwtUtils = jwtUtils;
@@ -74,7 +74,7 @@ public class WebSecurityConfig {
   }
 
   public AuthTokenFilter authenticationJwtTokenFilter() {
-    //return new AuthTokenFilter(jwtUtils, logger);
+    // return new AuthTokenFilter(jwtUtils, logger);
     return new AuthTokenFilter(jwtUtils);
   }
 

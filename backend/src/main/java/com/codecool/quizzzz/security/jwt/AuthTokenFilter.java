@@ -3,7 +3,7 @@ package com.codecool.quizzzz.security.jwt;
 import com.codecool.quizzzz.exception.NotFoundException;
 import com.codecool.quizzzz.model.user.Credentials;
 import com.codecool.quizzzz.security.authmodel.AuthenticationModel;
-//import com.codecool.quizzzz.service.logger.Logger;
+// import com.codecool.quizzzz.service.logger.Logger;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import jakarta.annotation.Nonnull;
@@ -29,9 +29,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
   private final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
   public AuthTokenFilter(JwtUtils jwtUtils) {
-  //public AuthTokenFilter(JwtUtils jwtUtils, Logger logger) {
+    // public AuthTokenFilter(JwtUtils jwtUtils, Logger logger) {
     this.jwtUtils = jwtUtils;
-  //  this.logger = logger;
+    //  this.logger = logger;
   }
 
   @Override
@@ -51,7 +51,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
       }
     }
     catch (Exception e) {
-      //logger.logError(e.getMessage(), "Cannot set user authentication");
+      // logger.logError(e.getMessage(), "Cannot set user authentication");
       logger.error("Cannot set user authentication: " + e.getMessage());
     }
     filterChain.doFilter(request, response);

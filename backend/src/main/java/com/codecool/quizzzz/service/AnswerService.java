@@ -47,7 +47,7 @@ public class AnswerService {
 
   public boolean checkIfCorrect(Long answerId) {
     return answerRepository.findById(answerId)
-                           .orElseThrow(() -> new NotFoundException(String.format("There is no answer with answerId: %d",
+                           .orElseThrow(() -> new NotFoundException(String.format("There is no answer with answerId: " + "%d",
                                                                                   answerId)))
                            .isCorrect();
   }

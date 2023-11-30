@@ -95,7 +95,8 @@ export function NavBarDefault() {
         <div className="flex items-center gap-x-1">
           {hasUser ?
             <Link to={"/login"}>
-              <Button variant="text" size="sm" className="hidden lg:inline-block" onClick={() => handleLogout()}>
+              <Button variant="text" size="sm" className="hidden lg:inline-block"
+                      onClick={() => handleLogout()}>
                 <span>Logout</span>
               </Button>
             </Link>

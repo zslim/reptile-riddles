@@ -16,6 +16,17 @@ public class FileLogger implements Logger {
     log(content, "ERROR");
   }
 
+  private void log(String content, String type) {
+    try {
+      PrintWriter writer = new PrintWriter(new FileWriter(FILE_PATH, true));
+      writer.println(String.format("[%s]: [%s] \n%s\n", LocalDateTime.now(), type, content));
+      writer.close();
+    }
+    catch (IOException e) {
+      System.out.println(e);
+    }
+  }
+
   @Override
   public void logError(String content, String type) {
     log(content, "ERROR: " + type);
@@ -29,16 +40,5 @@ public class FileLogger implements Logger {
   @Override
   public void logInfo(String content, String type) {
     log(content, "INFO: " + type);
-  }
-
-  private void log(String content, String type) {
-    try {
-      PrintWriter writer = new PrintWriter(new FileWriter(FILE_PATH, true));
-      writer.println(String.format("[%s]: [%s] \n%s\n", LocalDateTime.now(), type, content));
-      writer.close();
-    }
-    catch (IOException e) {
-      System.out.println(e);
-    }
   }
 }

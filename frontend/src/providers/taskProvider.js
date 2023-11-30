@@ -21,8 +21,7 @@ const {fetchFromBackEnd} = require("./providerBase");
 // }
 
 async function fetchDetailedTaskById(taskId) {
-  const url = `/task/${taskId}`;
-  return await fetchFromBackEnd({url});
+  return await fetchFromBackEnd({url: `/task/${taskId}`});
 }
 
 // async function saveTask(quizId, task) {
@@ -37,9 +36,7 @@ async function fetchDetailedTaskById(taskId) {
 // }
 
 async function deleteTaskById(taskId) {
-  const url = `/task/${taskId}`;
-  const method = "DELETE";
-  return await fetchFromBackEnd({url, method});
+  return await fetchFromBackEnd({url: `/task/${taskId}`, method: "DELETE"});
 }
 
 // async function updateTask(taskId, task) {
@@ -54,17 +51,11 @@ async function deleteTaskById(taskId) {
 // }
 
 async function saveQuestion(quizId, task) {
-  const url = `/task/question/${quizId}`;
-  const method = "POST";
-  const body = task;
-  return await fetchFromBackEnd({url, method, body});
+  return await fetchFromBackEnd({url: `/task/question/${quizId}`, method: "POST", body: task});
 }
 
 async function updateQuestion(taskId, task) {
-  const url = `/task/question/${taskId}`;
-  const method = "PATCH";
-  const body = task;
-  return await fetchFromBackEnd({url, method, body});
+  return await fetchFromBackEnd({url: `/task/question/${taskId}`, method: "PATCH", body: task});
 }
 
 module.exports = {

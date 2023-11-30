@@ -76,7 +76,7 @@ const QuizEditor = () => {
     }
 
     getCategories();
-  }, [])
+  }, []);
 
   async function needToLoadFromDb() {
     if (await isModified()) {
@@ -520,7 +520,7 @@ const QuizEditor = () => {
       let newQuiz = {...prevState};
       newQuiz.isPublic = e.target.checked;
       return newQuiz;
-    })
+    });
   }
 
   async function checkLastQuizModification() {
@@ -560,7 +560,8 @@ const QuizEditor = () => {
                       ${quizLoading ? null : `hover:bg-green-700 hover:cursor-pointer`}`}
             onClick={() => handleTaskAddition()}>Add Question
           </button>
-          <div className="max-h-[65vh] overflow-auto p-2 bg-zinc-900 grid grid-cols-1 gap-1 border-2 border-zinc-500">
+          <div
+            className="max-h-[65vh] overflow-auto p-2 bg-zinc-900 grid grid-cols-1 gap-1 border-2 border-zinc-500">
             {taskList.map((task, i) => {
               return <button key={"task" + task.taskId}
                              disabled={quizLoading}
@@ -597,15 +598,18 @@ const QuizEditor = () => {
                 )}
               </select>
               <label className="inline-block ml-8 text-white" htmlFor="publicOrPrivate">Public:</label>
-              <input className="scale-150 m-1 mr-6 ml-2 accent-stone-600 hover:cursor-pointer" type="checkbox"
+              <input className="scale-150 m-1 mr-6 ml-2 accent-stone-600 hover:cursor-pointer"
+                     type="checkbox"
                      checked={quiz.isPublic}
                      onChange={e => changePublic(e)}/>
             </div>
             <div className="table">
               {quiz.categories.map(category => (
-                <span className="border-2 border-amber-600 ml-4 rounded-2xl p-2 bg-amber-300 mb-4 inline-block"
-                      key={"span" + category}>{category}
-                  <button className="ml-2 text-red-700" onClick={() => deleteCategoryFromQuiz(category)}>X</button>
+                <span
+                  className="border-2 border-amber-600 ml-4 rounded-2xl p-2 bg-amber-300 mb-4 inline-block"
+                  key={"span" + category}>{category}
+                  <button className="ml-2 text-red-700"
+                          onClick={() => deleteCategoryFromQuiz(category)}>X</button>
               </span>
               ))}
             </div>
