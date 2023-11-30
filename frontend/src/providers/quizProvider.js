@@ -13,8 +13,8 @@ async function fetchQuizById(quizId) {
 }
 
 async function fetchCategories(){
-  const httpRes = await fetch("/quiz/categories");
-  return await httpRes.json();
+  const url = '/quiz/categories';
+  return await fetchFromBackEnd({url});
 }
 
 async function fetchAllQuizzes() {
@@ -58,5 +58,6 @@ module.exports = {
   saveEmptyQuiz,
   copyQuiz,
   deleteQuizById,
-  fetchModifiedAtById
+  fetchModifiedAtById,
+  fetchCategories
 };
