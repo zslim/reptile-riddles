@@ -21,7 +21,7 @@ const QuizEditor = () => {
 
   const [taskList, setTaskList] = useState([]);
   const [selectedTask, setSelectedTask] = useState({...DEFAULT_TASK});
-  const [quiz, setQuiz] = useState({title: '', modifiedAt: new Date(0), categories: []});
+  const [quiz, setQuiz] = useState({title: '', modifiedAt: new Date(0), categories: [], isPublic: false});
   const [answers, setAnswers] = useState([]);
 
   const [categories, setCategories] = useState([]);
@@ -44,10 +44,10 @@ const QuizEditor = () => {
       try {
         setQuizLoading(true);
         const newQuiz = await fetchQuizById(quizId);
-        setCurrentQuizInDb({...setCurrentQuizInDb, title: newQuiz.title});
-        setQuiz({...quiz, title: newQuiz.title, modifiedAt: newQuiz.modifiedAt, categories: newQuiz.categories});
+        setCurrentQuizInDb(newQuiz);
+        setQuiz(newQuiz);
         setTaskList([...newQuiz.taskList]);
-        console.log(newQuiz.categories);
+        console.log(newQuiz);
       }
       catch (error) {
         console.error(error);
@@ -514,6 +514,15 @@ const QuizEditor = () => {
     });
   }
 
+  function changePublic(e) {
+    console.log(e.target.checked);
+    setQuiz(prevState => {
+      let newQuiz = {...prevState};
+      newQuiz.isPublic = e.target.checked;
+      return newQuiz;
+    })
+  }
+
   async function checkLastQuizModification() {
     try {
       setQuizLoading(true);
@@ -566,33 +575,40 @@ const QuizEditor = () => {
           </div>
 
         </div>
-        <div className="ml-20 w-full pl-4 pt-8 col-span-8">
-          <div>
-            <label htmlFor="name" className="text-white text-2xl">Quiz title: </label>
-            <input className="ml-6 w-4/6 p-2 text-2xl bg-[#050409] text-white border-2 border-zinc-700"
-                   value={quiz.title}
-                   type="text" id="name"
-                   onChange={(e) => setQuiz({...quiz, title: e.target.value})}
-            />
-          </div>
-          <div className="m-5 ml-12">
-            <label className="text-white" htmlFor="categorySelect">Categories: </label>
-            <select id="categorySelect" value={selectedCategory} disabled={categoriesLoading}
-                    onChange={(e) => addCategoryToQuiz(e)}>
-              <option value="" disabled>Choose category!</option>
-              {categories.map(
-                category => (<option value={category} key={"option" + category}>{category}</option>)
-              )}
-            </select>
 
-          </div>
-          <div className="table">
-            {quiz.categories.map(category => (
-              <span className="border-2 border-amber-600 ml-4 rounded-2xl p-2 bg-amber-300 mb-4 inline-block"
-                    key={"span" + category}>{category}
-                <button className="ml-2 text-red-700" onClick={() => deleteCategoryFromQuiz(category)}>X</button>
+
+        <div className="ml-20 w-full pl-4 pt-8 col-span-8">
+          <div className="border-2 border-zinc-500 mr-2 p-7 bg-zinc-800 w-5/6">
+            <div>
+              <label htmlFor="name" className="text-white text-2xl">Quiz title: </label>
+              <input className="ml-6 w-4/6 p-2 text-2xl bg-[#050409] text-white border-2 border-zinc-700"
+                     value={quiz.title}
+                     type="text" id="name"
+                     onChange={(e) => setQuiz({...quiz, title: e.target.value})}
+              />
+            </div>
+            <div className="m-5 ml-12">
+              <label className="text-white" htmlFor="categorySelect">Categories: </label>
+              <select id="categorySelect" value={selectedCategory} disabled={categoriesLoading}
+                      onChange={(e) => addCategoryToQuiz(e)}>
+                <option value="" disabled>Choose category!</option>
+                {categories.map(
+                  category => (<option value={category} key={"option" + category}>{category}</option>)
+                )}
+              </select>
+              <label className="inline-block ml-8 text-white" htmlFor="publicOrPrivate">Public:</label>
+              <input className="scale-150 m-1 mr-6 ml-2 accent-stone-600 hover:cursor-pointer" type="checkbox"
+                     checked={quiz.isPublic}
+                     onChange={e => changePublic(e)}/>
+            </div>
+            <div className="table">
+              {quiz.categories.map(category => (
+                <span className="border-2 border-amber-600 ml-4 rounded-2xl p-2 bg-amber-300 mb-4 inline-block"
+                      key={"span" + category}>{category}
+                  <button className="ml-2 text-red-700" onClick={() => deleteCategoryFromQuiz(category)}>X</button>
               </span>
-            ))}
+              ))}
+            </div>
           </div>
           <div className="pb-4 pt-6">
             {editing
