@@ -1,65 +1,62 @@
+const {fetchFromBackEnd} = require("./providerBase");
+
 // async function validateAnswer(answerId) {
 //   const httpRawRes = await fetch(`/answer/validate/${answerId}`);
 //   return await httpRawRes.json();
 // }
 
 async function saveAnswer(taskId, answer) {
-  return await fetch(`/answer/task/${taskId}`, {
-    method: "POST",
-    body: JSON.stringify(answer),
-    headers: {
-      "Content-Type": "application/json"
-    }
-  });
+  const url = `/answer/task/${taskId}`;
+  const method = "POST";
+  const body = answer;
+  return await fetchFromBackEnd({url, method, body});
 }
 
 async function saveAnswerList(taskId, answerList) {
   const promises = answerList.map(async (answer) => {
     return (await saveAnswer(taskId, answer));
   });
-  const resAll = await Promise.all(promises);
-  return resAll.map((res) => res.json());
+  return await Promise.all(promises);
+  //const resAll = await Promise.all(promises);
+  //return resAll.map((res) => res.json());
 }
 
 async function deleteAnswerById(answerId) {
-  return await fetch(`/answer/${answerId}`, {
-    method: "DELETE", headers: {
-      "Content-Type": "application/json"
-    }
-  });
+  const url = `/answer/${answerId}`;
+  const method = "DELETE";
+  return await fetchFromBackEnd({url, method});
 }
 
 async function deleteAnswerList(answerList) {
   const promises = answerList.map(async (answer) => {
     return (await deleteAnswerById(answer.answerId));
   });
-  const resAll = await Promise.all(promises);
-  return resAll.map((res) => res.json());
+  return await Promise.all(promises);
+  //const resAll = await Promise.all(promises);
+  //return resAll.map((res) => res.json());
 }
 
 async function updateAnswer(answer) {
-  return await fetch(`/answer/update/${answer.answerId}`, {
-    method: "PATCH",
-    body: JSON.stringify(answer),
-    headers: {
-      "Content-Type": "application/json"
-    }
-  });
+  const url = `/answer/update/${answer.answerId}`;
+  const method = "PATCH";
+  const body = answer;
+  return await fetchFromBackEnd({url, method, body});
 }
 
 async function magicalAnswerUpdate(answersToDelete, answersToUpdate, answersToSave, taskId) {
   const promises = [
     ...answersToDelete.map(async (answer) => await deleteAnswerById(answer.answerId)),
     ...answersToUpdate.map(async (answer) => await updateAnswer(answer)),
-    ...answersToSave.map(async (answer) => await saveAnswer(taskId, answer))   
+    ...answersToSave.map(async (answer) => await saveAnswer(taskId, answer))
   ];
-
+  return await Promise.all(promises);
+  //
   //answersToDelete.map(async (answer) => promises.push(await deleteAnswerById(answer.answerId)));
   //answersToUpdate.map(async (answer) => promises.push(await updateAnswer(answer)));
   //answersToSave.map(async (answer) => promises.push(await saveAnswer(taskId, answer)));
-
-  const resAll = await Promise.all(promises);
-  return resAll.map((res) => res.json());
+  //
+  //const resAll = await Promise.all(promises);
+  //return resAll.map((res) => res.json());
 }
 
 module.exports = {

@@ -11,7 +11,7 @@ import authenticate from "../../context/authenticator";
 export function NavBarDefault() {
   const [openNav, setOpenNav] = useState(false);
   const [hasUser, setHasUser] = useState(false);
-  const {user, logout} = useUser();
+  const {user, login, logout} = useUser();
 
   function isLoggedIn() {
     return authenticate(user, "user");

@@ -12,7 +12,7 @@ export const UserContextProvider = ({children}) => {
     try {
       setLoading(true);
       const userCredentials = await getCredentials();
-      if (userCredentials !== null) {
+      if (userCredentials.status === 200) {
         setUser(userCredentials);
       }
       else {
