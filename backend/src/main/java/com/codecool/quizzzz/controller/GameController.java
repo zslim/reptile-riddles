@@ -23,8 +23,9 @@ public class GameController {
   }
 
   @PatchMapping("/submit/{gameId}")
-  public ResponseEntity<Boolean> handleAnswerSubmit(@PathVariable Long gameId, @RequestParam Long answer) {
-    return ResponseEntity.ok().body(gameService.handleAnswerSubmit(gameId, answer));
+  public ResponseEntity<Boolean> handleAnswerSubmit(@PathVariable Long gameId, @RequestParam Long answer,
+                                                    @RequestParam String username) {
+    return ResponseEntity.ok().body(gameService.handleAnswerSubmit(gameId, answer, username));
   }
 
   @GetMapping("/result/{gameId}")
@@ -48,12 +49,12 @@ public class GameController {
   }
 
   @GetMapping("/list")
-  public ResponseEntity<List<GameListDTO>> getGameList(){
+  public ResponseEntity<List<GameListDTO>> getGameList() {
     return ResponseEntity.ok().body(gameService.getGameList());
   }
 
   @GetMapping("/quiz/{gameId}")
-  public ResponseEntity<GameQuizDTO> getQuiz(@PathVariable Long gameId){
+  public ResponseEntity<GameQuizDTO> getQuiz(@PathVariable Long gameId) {
     return ResponseEntity.ok().body(gameService.getQuizByGameId(gameId));
   }
 }

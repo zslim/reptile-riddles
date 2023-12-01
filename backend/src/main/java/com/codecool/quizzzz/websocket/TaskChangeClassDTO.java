@@ -16,12 +16,12 @@ public class TaskChangeClassDTO {
     return taskIndex;
   }
 
-  public Long getGameId() {
-    return gameId;
-  }
-
   public void setTaskIndex(int taskIndex) {
     this.taskIndex = taskIndex;
+  }
+
+  public Long getGameId() {
+    return gameId;
   }
 
   public void setGameId(Long gameId) {

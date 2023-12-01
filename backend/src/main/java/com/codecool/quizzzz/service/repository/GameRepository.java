@@ -4,7 +4,7 @@ import com.codecool.quizzzz.dto.game.GameListDTO;
 import com.codecool.quizzzz.dto.quiz.GameQuizDTO;
 import com.codecool.quizzzz.model.Game;
 
-import java.util.*;
+import java.util.List;
 import java.util.Optional;
 
 public interface GameRepository {

@@ -30,6 +30,7 @@ public class Game {
   public Long getGameId() {
     return gameId;
   }
+
   public void addPlayer(Player player) {
     playerSet.add(player);
   }
@@ -76,7 +77,7 @@ public class Game {
     this.deadline = deadline;
   }
 
-  public int getPlayerCount(){
+  public int getPlayerCount() {
     return playerSet.size();
   }
 

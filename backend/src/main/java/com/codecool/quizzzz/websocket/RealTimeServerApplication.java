@@ -9,12 +9,14 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class RealTimeServerApplication {
-
   @Value("${rt-server.host}")
   private String host;
-
   @Value("${rt-server.port}")
   private Integer port;
+
+  public static void main(String[] args) {
+    SpringApplication.run(RealTimeServerApplication.class, args);
+  }
 
   @Bean
   public SocketIOServer socketIOServer() {
@@ -22,9 +24,5 @@ public class RealTimeServerApplication {
     config.setHostname(host);
     config.setPort(port);
     return new SocketIOServer(config);
-  }
-
-  public static void main(String[] args) {
-    SpringApplication.run(RealTimeServerApplication.class, args);
   }
 }

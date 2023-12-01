@@ -18,11 +18,7 @@ import MyQuizListPage from "./pages/MyQuizListPage";
 import GameListPage from "./pages/GameListPage";
 import LobbyPage from "./pages/LobbyPage";
 
-import { socket } from './socket';
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
-
-
 
 const router = createBrowserRouter([{
   path: "/",

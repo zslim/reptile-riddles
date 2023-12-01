@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 const GameLobby = ({quiz, navigateHome, handleGameStart, role, playerCount, sendJoinEvent, joined}) => {
 

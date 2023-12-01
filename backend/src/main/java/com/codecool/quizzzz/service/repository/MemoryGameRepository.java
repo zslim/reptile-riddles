@@ -1,13 +1,10 @@
 package com.codecool.quizzzz.service.repository;
+
 import com.codecool.quizzzz.dto.game.GameListDTO;
 import com.codecool.quizzzz.dto.quiz.GameQuizDTO;
 import com.codecool.quizzzz.model.Game;
 
-import java.util.List;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MemoryGameRepository implements GameRepository {
@@ -17,10 +14,12 @@ public class MemoryGameRepository implements GameRepository {
   public void addGame(Game game) {
     gameSet.add(game);
   }
+
   @Override
-  public void removeGame(Long gameId){
+  public void removeGame(Long gameId) {
     gameSet = gameSet.stream().filter(game -> !Objects.equals(game.getGameId(), gameId)).collect(Collectors.toSet());
   }
+
   @Override
   public Optional<Game> findGameById(Long gameId) {
     return gameSet.stream().filter(game -> Objects.equals(game.getGameId(), gameId)).findFirst();

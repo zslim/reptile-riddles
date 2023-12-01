@@ -29,7 +29,7 @@ const LobbyPage = () => {
     }
 
     function onJoin(value) {
-      setPlayerCount(value)
+      setPlayerCount(value);
     }
 
     function onScoreboardDisplay(value) {
@@ -77,7 +77,7 @@ const LobbyPage = () => {
       navigate("/result");
     }
     else {
-      socket.emit("task_change", {taskIndex: task.taskIndex, gameId: quiz.gameId})
+      socket.emit("task_change", {taskIndex: task.taskIndex, gameId: quiz.gameId});
     }
   }
 

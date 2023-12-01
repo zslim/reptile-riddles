@@ -4,7 +4,7 @@ import com.codecool.quizzzz.dto.answer.GameAnswerDTO;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
 
 @Getter
 public final class GameTaskClassDTO {

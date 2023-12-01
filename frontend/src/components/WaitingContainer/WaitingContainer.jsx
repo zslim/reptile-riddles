@@ -1,8 +1,8 @@
 const WaitingContainer = ({
-                           selectedAnswer,
-                           color,
-                           loading,
-                         }) => {
+                            selectedAnswer,
+                            color,
+                            loading,
+                          }) => {
   return (
     <>
       {(selectedAnswer !== null || true) ?

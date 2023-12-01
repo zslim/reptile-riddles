@@ -9,7 +9,6 @@ import org.hibernate.type.format.FormatMapper;
 import org.hibernate.type.format.jackson.JacksonJsonFormatMapper;
 
 public class JacksonJsonFormatMapperCustom implements FormatMapper {
-
   private final FormatMapper delegate;
 
   public JacksonJsonFormatMapperCustom() {
@@ -18,9 +17,8 @@ public class JacksonJsonFormatMapperCustom implements FormatMapper {
   }
 
   private static ObjectMapper createObjectMapper() {
-    ObjectMapper objectMapper = new ObjectMapper()
-            .registerModule(new JavaTimeModule())
-            .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule())
+                                                  .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     return objectMapper;
   }
 

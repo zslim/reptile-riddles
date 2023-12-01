@@ -28,20 +28,20 @@ public class GameAnswerClassDTO {
     return answerId;
   }
 
-  public String getText() {
-    return text;
-  }
-
-  public Long getGameId() {
-    return gameId;
-  }
-
   public void setAnswerId(Long answerId) {
     this.answerId = answerId;
   }
 
+  public String getText() {
+    return text;
+  }
+
   public void setText(String text) {
     this.text = text;
+  }
+
+  public Long getGameId() {
+    return gameId;
   }
 
   public void setGameId(Long gameId) {

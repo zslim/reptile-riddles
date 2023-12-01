@@ -1,12 +1,11 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import TaskPage from "../TaskPage";
 import Loading from "../../components/Loading";
-import { getQuizByGameId, handleAnswerSubmit } from "../../providers/gameProvider";
+import { getQuizByGameId } from "../../providers/gameProvider";
 import GameLobby from "../../components/GameLobby";
 import { useUser } from "../../context/UserContextProvider";
 import { socket } from "../../socket";
-import moment from "moment";
 
 const QuizPage = () => {
   const EMPTY_QUIZ = {gameId: -1, title: "", taskCount: -1, playerCount: 0};
@@ -50,7 +49,7 @@ const QuizPage = () => {
       setIsCorrect(value);
     }
 
-    function onExit(){
+    function onExit() {
       navigate("/result");
     }
 
@@ -86,7 +85,7 @@ const QuizPage = () => {
         setPlayerCount(currentQuiz.playerCount);
       }
       catch (e) {
-        console.error(e)
+        console.error(e);
       }
       finally {
         setLoading(false);
