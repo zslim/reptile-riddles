@@ -1,6 +1,7 @@
 package com.codecool.quizzzz.service;
 
 import com.codecool.quizzzz.dto.answer.GameAnswerDTO;
+import com.codecool.quizzzz.dto.game.GameListDTO;
 import com.codecool.quizzzz.dto.quiz.GameQuizDTO;
 import com.codecool.quizzzz.dto.task.GameTaskDTO;
 import com.codecool.quizzzz.dto.user.NewPlayerDTO;
@@ -17,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 
@@ -44,7 +46,7 @@ public class GameService {
     entityManager.detach(quiz);
     Game newGame = new Game(quiz);
     gameRepository.addGame(newGame);
-    return new GameQuizDTO(newGame.getGameId(), quiz.getTitle(), quiz.getTaskCount());
+    return new GameQuizDTO(newGame.getGameId(), quiz.getTitle(), quiz.getTaskCount(), newGame.getPlayerSet().size());
   }
 
   private List<Task> getTasksByQuizId(Long quizId) {
@@ -58,7 +60,8 @@ public class GameService {
   public boolean joinToGame(Long gameId, NewPlayerDTO newPlayerDTO) {
     Game game = gameRepository.findGameById(gameId)
                               .orElseThrow(() -> new NotFoundException("No game found with this id!"));
-    String username = getUsernameFromSecurityContext();
+//    String username = getUsernameFromSecurityContext();
+    String username = "notSoSafe";
     game.addPlayer(new Player(newPlayerDTO.playerName(), username));
     return true;
   }
@@ -71,14 +74,16 @@ public class GameService {
     Game game = gameRepository.findGameById(gameId)
                               .orElseThrow(() -> new NotFoundException("No game found with this id!"));
     Task nextTask = game.advanceToNextTask();
-    game.setDeadline(LocalDateTime.now().plusSeconds((long) nextTask.getTimeLimit() + Game.DEADLINE_OFFSET));
+    LocalDateTime lastValidTime = LocalDateTime.now().plusSeconds((long) nextTask.getTimeLimit() + Game.DEADLINE_OFFSET);
+    game.setDeadline(lastValidTime);
     LocalDateTime localDeadline = game.getDeadline().plusSeconds(Long.parseLong(System.getenv("TIME_DIFF")));
     return taskToGameTaskDTO(nextTask, localDeadline, game.getCurrentTaskIndex());
   }
 
-  private GameTaskDTO taskToGameTaskDTO(Task nextTask, LocalDateTime deadline, int currentTaskIndex) {
+  private GameTaskDTO taskToGameTaskDTO(Task nextTask, LocalDateTime lastValidTime, int currentTaskIndex) {
     List<GameAnswerDTO> gameAnswerDTOList = getGameAnswerDTOList(nextTask.getAnswers());
-    return new GameTaskDTO(nextTask.getQuestion(), gameAnswerDTOList, deadline, currentTaskIndex);
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    return new GameTaskDTO(nextTask.getQuestion(), gameAnswerDTOList, lastValidTime.format(formatter), currentTaskIndex);
   }
 
   private List<GameAnswerDTO> getGameAnswerDTOList(List<Answer> answers) {
@@ -88,11 +93,12 @@ public class GameService {
                   .toList();
   }
 
-  public Boolean handleAnswerSubmit(Long gameId, Long answerId) {
+  public Boolean handleAnswerSubmit(Long gameId, Long answerId, String username) {
     Game game = gameRepository.findGameById(gameId)
                               .orElseThrow(() -> new NotFoundException("No game found with this id!"));
-    String username = getUsernameFromSecurityContext();
-    Player player = game.getPlayerByUsername(username);
+//    String username = getUsernameFromSecurityContext();
+//    Player player = game.getPlayerByUsername(username);
+    Player player = game.getPlayerByPlayerName(username);
     Answer answer = game.getCurrentTask().getAnswerById(answerId).orElseThrow();
     int scoreGain = answer.isCorrect() ? game.calculateScoreGain(LocalDateTime.now()) : 0;
     // TODO: make sure a player can't get points twice for the same question
@@ -107,5 +113,13 @@ public class GameService {
                .stream()
                .map(player -> new PlayerDTO(player.getPlayerId(), player.getScore(), player.getPlayerName()))
                .toList();
+  }
+
+  public List<GameListDTO> getGameList() {
+    return gameRepository.getGameList();
+  }
+
+  public GameQuizDTO getQuizByGameId(Long gameId) {
+    return gameRepository.getQuizByGameId(gameId);
   }
 }

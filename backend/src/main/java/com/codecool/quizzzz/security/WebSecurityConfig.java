@@ -58,8 +58,11 @@ public class WebSecurityConfig {
                                            .hasRole("USER")
                                            .requestMatchers("api/game/**")
                                            .hasAnyRole("USER", "GUEST")
+                                           .requestMatchers("socket.io/**")
+                                           .hasAnyRole("USER", "GUEST")
                                            .anyRequest()
                                            .authenticated());
+//            .authorizeHttpRequests(auth -> auth.requestMatchers("/**").permitAll());
     http.authenticationProvider(authenticationProvider());
     http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     return http.build();

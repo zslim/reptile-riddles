@@ -19,7 +19,6 @@ export function NavBarDefault() {
 
   useEffect(() => {
     setHasUser(() => isLoggedIn());
-    console.log(isLoggedIn());
     window.addEventListener(
       "resize",
       () => window.innerWidth >= 960 && setOpenNav(false),
@@ -45,7 +44,7 @@ export function NavBarDefault() {
         className="flex items-center gap-x-2 p-1 font-medium"
       >
         <PlayIcon/>
-        <Link to="#" className="flex items-center">
+        <Link to="gamelist" className="flex items-center">
           Games
         </Link>
       </Typography>

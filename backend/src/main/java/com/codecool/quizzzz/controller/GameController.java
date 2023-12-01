@@ -1,5 +1,6 @@
 package com.codecool.quizzzz.controller;
 
+import com.codecool.quizzzz.dto.game.GameListDTO;
 import com.codecool.quizzzz.dto.quiz.GameQuizDTO;
 import com.codecool.quizzzz.dto.task.GameTaskDTO;
 import com.codecool.quizzzz.dto.user.NewPlayerDTO;
@@ -44,5 +45,15 @@ public class GameController {
   @GetMapping("/nextTask/{gameId}")
   ResponseEntity<GameTaskDTO> getNextTask(@PathVariable Long gameId) {
     return ResponseEntity.ok().body(gameService.getNextTaskFromGame(gameId));
+  }
+
+  @GetMapping("/list")
+  public ResponseEntity<List<GameListDTO>> getGameList(){
+    return ResponseEntity.ok().body(gameService.getGameList());
+  }
+
+  @GetMapping("/quiz/{gameId}")
+  public ResponseEntity<GameQuizDTO> getQuiz(@PathVariable Long gameId){
+    return ResponseEntity.ok().body(gameService.getQuizByGameId(gameId));
   }
 }

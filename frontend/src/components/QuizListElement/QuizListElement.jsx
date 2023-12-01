@@ -6,7 +6,7 @@ const QuizListElement = ({quiz, deleteQuiz, copyQuiz, editable}) => {
   const navigate = useNavigate();
 
   function handlePlayClick(id) {
-    navigate(`/game/quiz/${id}`);
+    navigate(`/game/lobby/${id}`);
   }
 
   function handleEditClick(id) {

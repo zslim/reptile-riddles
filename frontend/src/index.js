@@ -15,8 +15,14 @@ import { UserContextProvider } from "./context/UserContextProvider";
 import Protected from "./context";
 import PublicQuizListPage from "./pages/PublicQuizListPage";
 import MyQuizListPage from "./pages/MyQuizListPage";
+import GameListPage from "./pages/GameListPage";
+import LobbyPage from "./pages/LobbyPage";
+
+import { socket } from './socket';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+
 
 const router = createBrowserRouter([{
   path: "/",
@@ -28,6 +34,10 @@ const router = createBrowserRouter([{
         {
           path: "/",
           element: <Homepage/>,
+        },
+        {
+          path: "gamelist",
+          element: <GameListPage/>
         },
         {
           path: "register",
@@ -85,13 +95,21 @@ const router = createBrowserRouter([{
       path: "game",
       children: [
         {
-          path: "quiz/:quizId",
+          path: "lobby/:quizId",
+          element: (
+            <Protected roleRequirement={"user"}>
+              <LobbyPage/>
+            </Protected>
+          )
+        },
+        {
+          path: "quiz/:gameId",
           element: (
             <Protected roleRequirement={"guest"}>
               <QuizPage/>
             </Protected>
           )
-        },
+        }
       ]
     },
   ]

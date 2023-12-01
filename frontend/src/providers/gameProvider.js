@@ -20,10 +20,20 @@ async function getGameResult(gameId) {
   return fetchFromBackEnd({url: `/game/result/${gameId}`});
 }
 
+async function getGameList() {
+  return fetchFromBackEnd({url: "/game/list"});
+}
+
+async function getQuizByGameId(gameId) {
+  return fetchFromBackEnd({url: `/game/quiz/${gameId}`});
+}
+
 module.exports = {
   createGameLobby,
   joinToGameLobby,
   getNextTask,
   handleAnswerSubmit,
-  getGameResult
+  getGameResult,
+  getGameList,
+  getQuizByGameId
 };
