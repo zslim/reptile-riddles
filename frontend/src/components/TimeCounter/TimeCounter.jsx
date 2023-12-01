@@ -4,11 +4,13 @@ const TimeCounter = ({deadline, timeLeft, handleDisplayTimeChange, handleDeadlin
 
   useEffect(() => {
     const interval = 1000;
-    let expected = new Date().getTime() + interval;
+    let expected = (new Date()).getTime() + interval;
     let difference = 0;
     const cycle = setInterval(() => {
-      difference = expected - new Date().getTime();
-      const newTimeLeft = deadline - new Date().getTime();
+      difference = expected - (new Date()).getTime();
+      // console.log(deadline);
+      // console.log(new Date());
+      const newTimeLeft = deadline - (new Date()).getTime();
       const toDisplay = Math.max(Math.floor(newTimeLeft / 1000), 0);
       if (toDisplay !== timeLeft) {
         handleDisplayTimeChange(toDisplay);

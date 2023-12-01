@@ -25,7 +25,15 @@ const TaskPage = ({firstTask, quiz}) => {
         setLoading(true);
         const newTask = await getNextTask(quiz.gameId);
         resetTimer(new Date(newTask.deadline));
+        // console.log("deadline");
+        // console.log(new Date(newTask.deadline));
         setTask({...newTask, deadline: new Date(newTask.deadline)});
+        // console.log("plus");
+        // console.log(`${process.env.TIME_DIFF}`);
+        // console.log(parseInt(`${process.env.TIME_DIFF}`));
+        // console.log("deadlineplus");
+        // console.log((new Date(newTask.deadline)) + `${process.env.TIME_DIFF}`);
+        // console.log((new Date(newTask.deadline)) + parseInt(`${process.env.TIME_DIFF}`));
         setGameState("playingField");
       }
       catch (e) {

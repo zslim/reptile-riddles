@@ -15,6 +15,7 @@ services:
       DB_NAME: ${DB_NAME}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
+      TIME_DIFF: 3600
     #    ports:
     #      - "8080:8080"
     networks:
@@ -42,6 +43,7 @@ services:
     environment:
       BE_HOST: backend
       BE_PORT: 8080
+      TIME_DIFF: 3600000
     depends_on:
       - backend
     ports:

@@ -72,7 +72,8 @@ public class GameService {
                               .orElseThrow(() -> new NotFoundException("No game found with this id!"));
     Task nextTask = game.advanceToNextTask();
     game.setDeadline(LocalDateTime.now().plusSeconds((long) nextTask.getTimeLimit() + Game.DEADLINE_OFFSET));
-    return taskToGameTaskDTO(nextTask, game.getDeadline(), game.getCurrentTaskIndex());
+    LocalDateTime localDeadline = game.getDeadline().plusSeconds(Long.parseLong(System.getenv("TIME_DIFF")));
+    return taskToGameTaskDTO(nextTask, localDeadline, game.getCurrentTaskIndex());
   }
 
   private GameTaskDTO taskToGameTaskDTO(Task nextTask, LocalDateTime deadline, int currentTaskIndex) {
