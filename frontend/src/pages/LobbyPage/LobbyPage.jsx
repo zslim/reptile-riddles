@@ -57,7 +57,7 @@ const LobbyPage = () => {
       setQuiz(newQuiz);
       setPlayerCount(newQuiz.playerCount);
       setLobbyState("ready");
-      socket.emit("create_room", newQuiz.gameId)
+      socket.emit("create_room", newQuiz.gameId);
     }
     catch (error) {
       console.error(error);

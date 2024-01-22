@@ -1,12 +1,11 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import TaskPage from "../TaskPage";
 import Loading from "../../components/Loading";
-import { getQuizByGameId, handleAnswerSubmit } from "../../providers/gameProvider";
+import { getQuizByGameId } from "../../providers/gameProvider";
 import GameLobby from "../../components/GameLobby";
 import { useUser } from "../../context/UserContextProvider";
 import { socket } from "../../socket";
-import moment from "moment";
 
 const QuizPage = () => {
   const EMPTY_QUIZ = {gameId: -1, title: "", taskCount: -1, playerCount: 0};
@@ -32,9 +31,7 @@ const QuizPage = () => {
     }
 
     function onTaskChange(value) {
-      console.log(value);
       const lastValidTime = Date.parse((value.deadline));
-      console.log(lastValidTime);
       setTask({...value, deadline: lastValidTime});
       setGameState("playingField");
       setLobbyState("running");
@@ -42,15 +39,13 @@ const QuizPage = () => {
 
     function onResultDisplay() {
       setGameState("result");
-      // setLobbyState("result");
     }
 
     function onSubmit(value) {
-      console.log("isCorrect? " + value);
       setIsCorrect(value);
     }
 
-    function onExit(){
+    function onExit() {
       navigate("/result");
     }
 
@@ -116,10 +111,8 @@ const QuizPage = () => {
   async function handleSubmit(answer) {
     try {
       setLoading(true);
-      // const isCorrectAnswer = await handleAnswerSubmit(quiz.gameId, answer);
       selectAnswer(answer);
       socket.emit("submit", {...answer, gameId: quiz.gameId, username: user.username});
-      // setIsCorrect(isCorrectAnswer);
       resetTimer(task.deadline);
       changeGameState("waiting");
     }
@@ -132,7 +125,6 @@ const QuizPage = () => {
   }
 
   function resetTimer(deadline) {
-    // setIsTimedOut(false);
     const newTimeLeft = deadline - new Date().getTime();
     const toDisplay = Math.max(Math.floor(newTimeLeft / 1000), 0);
     setTimeLeft(toDisplay);
