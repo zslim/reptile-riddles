@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class RealTimeServerApplication {
+public class QuizApplication {
 
   @Value("${rt-server.host}")
   private String host;
@@ -25,6 +25,6 @@ public class RealTimeServerApplication {
   }
 
   public static void main(String[] args) {
-    SpringApplication.run(RealTimeServerApplication.class, args);
+    SpringApplication.run(QuizApplication.class, args);
   }
 }
