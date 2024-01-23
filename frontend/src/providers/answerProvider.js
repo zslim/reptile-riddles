@@ -54,16 +54,11 @@ async function magicalAnswerUpdate(answersToDelete, answersToUpdate, answersToSa
     ...answersToSave.map(async (answer) => await saveAnswer(taskId, answer))   
   ];
 
-  //answersToDelete.map(async (answer) => promises.push(await deleteAnswerById(answer.answerId)));
-  //answersToUpdate.map(async (answer) => promises.push(await updateAnswer(answer)));
-  //answersToSave.map(async (answer) => promises.push(await saveAnswer(taskId, answer)));
-
   const resAll = await Promise.all(promises);
   return resAll.map((res) => res.json());
 }
 
 module.exports = {
-  // validateAnswer,
   saveAnswerList,
   deleteAnswerList,
   magicalAnswerUpdate
