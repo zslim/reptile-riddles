@@ -45,9 +45,7 @@ async function getQuizByGameId(gameId) {
 module.exports = {
   createGameLobby,
   joinToGameLobby,
-  getNextTask,
   handleAnswerSubmit,
-  getGameResult,
   getGameList,
   getQuizByGameId
 };

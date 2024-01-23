@@ -87,4 +87,10 @@ public class Game {
                     .orElseThrow(() -> new NotFoundException(String.format("Player not found with username: %s",
                                                                            username)));
   }
+
+  public Player isPlayerExist(String username) {
+    return playerSet.stream()
+                    .filter(player -> player.getPlayerName().equals(username))
+                    .findFirst().orElse(null);
+  }
 }

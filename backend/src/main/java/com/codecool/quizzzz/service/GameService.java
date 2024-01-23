@@ -61,8 +61,10 @@ public class GameService {
     Game game = gameRepository.findGameById(gameId)
                               .orElseThrow(() -> new NotFoundException("No game found with this id!"));
 //    String username = getUsernameFromSecurityContext();
-    String username = "notSoSafe";
-    game.addPlayer(new Player(newPlayerDTO.playerName(), username));
+    if (game.isPlayerExist(newPlayerDTO.playerName()) == null) {
+      String username = "notSoSafe";
+      game.addPlayer(new Player(newPlayerDTO.playerName(), username));
+    }
     return true;
   }
 
@@ -74,7 +76,8 @@ public class GameService {
     Game game = gameRepository.findGameById(gameId)
                               .orElseThrow(() -> new NotFoundException("No game found with this id!"));
     Task nextTask = game.advanceToNextTask();
-    LocalDateTime lastValidTime = LocalDateTime.now().plusSeconds((long) nextTask.getTimeLimit() + Game.DEADLINE_OFFSET);
+    LocalDateTime lastValidTime = LocalDateTime.now()
+                                               .plusSeconds((long) nextTask.getTimeLimit() + Game.DEADLINE_OFFSET);
     game.setDeadline(lastValidTime);
     return taskToGameTaskDTO(nextTask, lastValidTime, game.getCurrentTaskIndex());
   }
@@ -82,7 +85,10 @@ public class GameService {
   private GameTaskDTO taskToGameTaskDTO(Task nextTask, LocalDateTime lastValidTime, int currentTaskIndex) {
     List<GameAnswerDTO> gameAnswerDTOList = getGameAnswerDTOList(nextTask.getAnswers());
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    return new GameTaskDTO(nextTask.getQuestion(), gameAnswerDTOList, lastValidTime.format(formatter), currentTaskIndex);
+    return new GameTaskDTO(nextTask.getQuestion(),
+                           gameAnswerDTOList,
+                           lastValidTime.format(formatter),
+                           currentTaskIndex);
   }
 
   private List<GameAnswerDTO> getGameAnswerDTOList(List<Answer> answers) {

@@ -192,5 +192,4 @@ public class TaskService {
                                                                                      taskId)));
     return updateQuestionFromDTO(task, questionDTO);
   }
-
 }

@@ -1,14 +1,13 @@
 package com.codecool.quizzzz.websocket;
 
-import com.codecool.quizzzz.dto.answer.GameAnswerDTO;
+import com.codecool.quizzzz.dto.game.GameAnswerClassDTO;
+import com.codecool.quizzzz.dto.game.PlayerClassDTO;
+import com.codecool.quizzzz.dto.game.TaskChangeClassDTO;
 import com.codecool.quizzzz.dto.task.GameTaskDTO;
 import com.codecool.quizzzz.dto.user.NewPlayerDTO;
 import com.codecool.quizzzz.dto.user.PlayerDTO;
-import com.codecool.quizzzz.model.Game;
-import com.codecool.quizzzz.model.Task;
 import com.codecool.quizzzz.service.GameService;
 import com.codecool.quizzzz.service.repository.GameRepository;
-import com.corundumstudio.socketio.SocketIONamespace;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
@@ -62,7 +61,7 @@ public class SocketModule {
     return (client, data, ackSender) -> {
       System.out.println("sending scoreboard");
       List<PlayerDTO> results = gameService.getResult(data);
-//      client.sendEvent("scoreboard", results);
+      client.sendEvent("scoreboard", results);
       server.getRoomOperations(data.toString()).sendEvent("result");
     };
   }
