@@ -15,7 +15,7 @@ const QuizPage = () => {
   const navigate = useNavigate();
   const [gameState, setGameState] = useState("playingField");
   const [playerCount, setPlayerCount] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [selectedAnswer, setSelectedAnswer] = useState("No answer was selected!");
   const [isCorrect, setIsCorrect] = useState(false);
   const [timeLeft, setTimeLeft] = useState(30);
   const [joined, setJoined] = useState(false);
@@ -33,6 +33,8 @@ const QuizPage = () => {
     function onTaskChange(value) {
       const lastValidTime = Date.parse((value.deadline));
       setTask({...value, deadline: lastValidTime});
+      setSelectedAnswer("No answer Selected");
+      setIsCorrect(false);
       setGameState("playingField");
       setLobbyState("running");
     }
