@@ -133,6 +133,7 @@ QuizBlast is a dynamic, full-stack web application designed to ignite the fun in
 2. User authorization and authentication
 3. Quiz crud operations
 4. Share and play quizzes with others
+5. The backend validates the quizzes
 
 
 
