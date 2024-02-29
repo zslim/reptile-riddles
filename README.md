@@ -30,7 +30,6 @@ QuizBlast is a dynamic, full-stack web application designed to ignite the fun in
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#contributing">Contributing</a></li>
     <li><a href="#authors">Authors</a></li>
   </ol>
 </details>
@@ -138,7 +137,7 @@ QuizBlast is a dynamic, full-stack web application designed to ignite the fun in
 
 <!-- AUTHORS -->
 
-## Authors:
+## Authors
 
 ### Bonifert András:
 
