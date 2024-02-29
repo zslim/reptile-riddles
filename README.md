@@ -141,26 +141,26 @@ QuizBlast is a dynamic, full-stack web application designed to ignite the fun in
 
 ### Bonifert András:
 
-![Github Pages] <br/> https://github.com/Bonifert <br/> <br/>
-![Gmail] <br/> bonifert.andras@gmail.com <br/> <br/>
-![LinkedIn] <br/> https://www.linkedin.com/in/andras-bonifert/
+[![Github Pages]](https://github.com/Bonifert)
+[![Gmail]](mailto:bonifert.andras@gmail.com)
+[![LinkedIn]](https://www.linkedin.com/in/andras-bonifert/)
 
 ### Pintér Olivér:
 
-![Github Pages] <br/> https://github.com/PinterOliver <br/> <br/>
-![Gmail] <br/> pinter.oliver.peter@gmail.com <br/> <br/>
-![LinkedIn] <br/> https://www.linkedin.com/in/pinteroliverpeter/
+[![Github Pages]](https://github.com/PinterOliver)
+[![Gmail]](mailto:pinter.oliver.peter@gmail.com)
+[![LinkedIn]](https://www.linkedin.com/in/pinteroliverpeter/)
 
 ### Kozák Ádám:
 
-![Github Pages] <br/> https://github.com/Kozakadam <br/> <br/>
-![Gmail] <br/> kar.adam.robert@gmail.com <br/> <br/>
-![LinkedIn] <br/> https://www.linkedin.com/in/kozak-adam-robert/
+[![Github Pages]](https://github.com/Kozakadam)
+[![Gmail]](mailto:kar.adam.robert@gmail.com)
+[![LinkedIn]](https://www.linkedin.com/in/kozak-adam-robert/)
 
 ### Molnár Tamás
-![Github Pages] <br/> https://github.com/Tomocza <br/> <br/>
-![Gmail] <br/> tomi@astala.hu <br/> <br/>
-![LinkedIn] <br/> https://www.linkedin.com/in/tomocza/
+[![Github Pages]](https://github.com/Tomocza)
+[![Gmail]](mailto:tomi@astala.hu)
+[![LinkedIn]](https://www.linkedin.com/in/tomocza/)
 
 
 <p align="right">(<a href="#about-the-project">back to top</a>)</p>
