@@ -1,10 +1,10 @@
 package com.codecool.quizzzz.websocket;
 
-import com.codecool.quizzzz.dto.game.GameAnswerClassDTO;
-import com.codecool.quizzzz.dto.game.PlayerClassDTO;
-import com.codecool.quizzzz.dto.game.TaskChangeClassDTO;
+import com.codecool.quizzzz.dto.answer.GameAnswerClassDTO;
+import com.codecool.quizzzz.dto.game.GameDataClassDTO;
+import com.codecool.quizzzz.dto.user.PlayerClassDTO;
+import com.codecool.quizzzz.dto.task.TaskDataClassDTO;
 import com.codecool.quizzzz.dto.task.GameTaskDTO;
-import com.codecool.quizzzz.dto.user.NewPlayerDTO;
 import com.codecool.quizzzz.dto.user.PlayerDTO;
 import com.codecool.quizzzz.service.GameService;
 import com.codecool.quizzzz.service.repository.GameRepository;
@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -35,21 +36,21 @@ public class SocketModule {
     this.server.addDisconnectListener(onDisconnected());
 
     this.server.addEventListener("join", PlayerClassDTO.class, onPlayerJoin());
-    this.server.addEventListener("create_room", Long.class, onCreateRoom());
-    this.server.addEventListener("task_change", TaskChangeClassDTO.class, onTaskChange());
+    this.server.addEventListener("create_room", UUID.class, onCreateRoom());
+    this.server.addEventListener("task_change", TaskDataClassDTO.class, onTaskChange());
     this.server.addEventListener("submit", GameAnswerClassDTO.class, onSubmit());
-    this.server.addEventListener("scoreboard", Long.class, onScoreboardDisplay());
-    this.server.addEventListener("exit", Long.class, onExit());
+    this.server.addEventListener("scoreboard", GameDataClassDTO.class, onScoreboardDisplay());
+    this.server.addEventListener("exit", UUID.class, onExit());
   }
 
-  private DataListener<Long> onCreateRoom() {
+  private DataListener<UUID> onCreateRoom() {
     return (client, data, ackSender) -> {
       System.out.println("creating room");
       client.joinRoom(data.toString());
     };
   }
 
-  private DataListener<Long> onExit() {
+  private DataListener<UUID> onExit() {
     return (client, data, ackSender) -> {
       System.out.println("sending exit order");
       gameRepository.removeGame(data);
@@ -57,24 +58,26 @@ public class SocketModule {
     };
   }
 
-  private DataListener<Long> onScoreboardDisplay() {
+  private DataListener<GameDataClassDTO> onScoreboardDisplay() {
     return (client, data, ackSender) -> {
       System.out.println("sending scoreboard");
-      List<PlayerDTO> results = gameService.getResult(data);
+      List<PlayerDTO> results = gameService.getResult(data.getGameId());
       client.sendEvent("scoreboard", results);
-      server.getRoomOperations(data.toString()).sendEvent("result");
+      server.getRoomOperations(data.getGameUUID().toString()).sendEvent("result");
     };
   }
 
   private DataListener<GameAnswerClassDTO> onSubmit() {
     return (client, data, ackSender) -> {
-      System.out.println("sending submit result to " + client);
-      boolean isCorrect = gameService.handleAnswerSubmit(data.getGameId(), data.getAnswerId(), data.getUsername());
+      System.out.println("sending submit result to " + client.getSessionId());
+      System.out.println("clients: " + server.getRoomOperations(data.getGameId().toString()).getClients());
+      boolean isCorrect = gameService.handleAnswerSubmit(data.getGameId(), data.getAnswerId(), data.getPlayerId());
+      System.out.println(isCorrect);
       client.sendEvent("submit", isCorrect);
     };
   }
 
-  private DataListener<TaskChangeClassDTO> onTaskChange() {
+  private DataListener<TaskDataClassDTO> onTaskChange() {
     return (client, data, ackSender) -> {
       System.out.println("sending task");
       GameTaskDTO gameTaskDTO = gameService.getNextTaskFromGame(data.getGameId());
@@ -86,8 +89,8 @@ public class SocketModule {
     return (client, data, ackSender) -> {
       System.out.println("joining " + client);
       client.joinRoom(data.getGameId().toString());
-      gameService.joinToGame(data.getGameId(), new NewPlayerDTO(data.getName()));
-      int playerCount = gameRepository.findGameById(data.getGameId()).get().getPlayerCount();
+//      gameService.joinToGame(data.getGameId(), new NewPlayerDTO(data.getName()));
+      int playerCount = gameRepository.findGameByUUID(data.getGameId()).get().getPlayerCount();
       server.getRoomOperations(data.getGameId().toString()).sendEvent("join", playerCount);
     };
   }

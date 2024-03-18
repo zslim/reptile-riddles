@@ -57,7 +57,7 @@ const LobbyPage = () => {
       setQuiz(newQuiz);
       setPlayerCount(newQuiz.playerCount);
       setLobbyState("ready");
-      socket.emit("create_room", newQuiz.gameId);
+      socket.emit("create_room", newQuiz.generatedId);
     }
     catch (error) {
       console.error(error);
@@ -74,11 +74,11 @@ const LobbyPage = () => {
 
   function getTaskForGame() {
     if (task.taskIndex + 1 >= quiz.taskCount) {
-      socket.emit("exit", quiz.gameId);
+      socket.emit("exit", quiz.generatedId);
       navigate("/result");
     }
     else {
-      socket.emit("task_change", {taskIndex: task.taskIndex, gameId: quiz.gameId})
+      socket.emit("task_change", {taskIndex: task.taskIndex, gameId: quiz.generatedId})
     }
   }
 
@@ -87,7 +87,7 @@ const LobbyPage = () => {
   }
 
   function sendResults() {
-    socket.emit("scoreboard", quiz.gameId);
+    socket.emit("scoreboard", {gameId: quiz.gameId, gameUUID: quiz.generatedId});
   }
 
   return (
@@ -110,7 +110,7 @@ const LobbyPage = () => {
           {lobbyState === "running"
             ? <>
               <div className="text-3xl text-center text-white bg-black h-fit w-screen p-5 border-b-2 border-zinc-700">
-                <div className="mx-auto w-5/6 text-7xl">
+                <div className="mx-auto w-5/6 text-5xl">
                   {task.question}
                 </div>
               </div>

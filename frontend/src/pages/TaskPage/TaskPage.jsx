@@ -3,16 +3,21 @@ import ResultContainer from '../../components/ResultContainer';
 import { useNavigate } from "react-router-dom";
 import React, { useCallback, useState } from 'react';
 import TimeCounter from "../../components/TimeCounter";
-import { handleAnswerSubmit } from "../../providers/gameProvider";
-import TaskDisplayContainer from "../../components/TaskDisplayContainer";
 import WaitingContainer from "../../components/WaitingContainer";
 
-const TaskPage = ({task, quiz, changeGameState, gameState, selectAnswer, selectedAnswer, isCorrect, handleSubmit, timeLeft, handleTimeChange}) => {
+const TaskPage = ({
+                    task,
+                    changeGameState,
+                    gameState,
+                    selectedAnswer,
+                    isCorrect,
+                    handleSubmit,
+                    timeLeft,
+                    handleTimeChange
+                  }) => {
   const [color, setColor] = useState("zinc-500");
   const [loading, setLoading] = useState(false);
   const [isTimedOut, setIsTimedOut] = useState(false);
-
-  const navigate = useNavigate();
 
   function handleDisplayTimeChange(secondsLeft) {
     handleTimeChange(secondsLeft);
@@ -31,7 +36,6 @@ const TaskPage = ({task, quiz, changeGameState, gameState, selectAnswer, selecte
     switch (gameState) {
       case "playingField":
         return <>
-          {/*<TaskDisplayContainer/>*/}
           <AnswerListContainer
             handleSubmit={handleSubmit}
             task={task}
@@ -40,7 +44,6 @@ const TaskPage = ({task, quiz, changeGameState, gameState, selectAnswer, selecte
         </>;
       case "result":
         return <>
-          {/*<TaskDisplayContainer/>*/}
           <ResultContainer
             selectedAnswer={selectedAnswer}
             isCorrect={isCorrect}
@@ -52,7 +55,6 @@ const TaskPage = ({task, quiz, changeGameState, gameState, selectAnswer, selecte
         </>;
       case "waiting":
         return <>
-          {/*<TaskDisplayContainer/>*/}
           <WaitingContainer
             handleColorChange={handleColorChange}
             selectedAnswer={selectedAnswer}
@@ -61,12 +63,6 @@ const TaskPage = ({task, quiz, changeGameState, gameState, selectAnswer, selecte
             task={task}
           />
         </>;
-      // case "scoreBoard":
-      //   return <>
-      //     <ScoreBoard scores={scores}
-      //                 loading={loading}
-      //                 taskCount={task.taskIndex + 1}/>
-      //   </>;
     }
   }, [gameState]);
 

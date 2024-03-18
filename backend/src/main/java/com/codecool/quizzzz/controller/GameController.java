@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/api/game")
@@ -28,23 +30,8 @@ public class GameController {
   }
 
   @PostMapping("/join/{gameId}")
-  ResponseEntity<Boolean> joinToGame(@PathVariable Long gameId, @RequestBody NewPlayerDTO newPlayerDTO) {
+  ResponseEntity<UUID> joinToGame(@PathVariable Long gameId, @RequestBody NewPlayerDTO newPlayerDTO) {
     return ResponseEntity.ok().body(gameService.joinToGame(gameId, newPlayerDTO));
-  }
-
-  @GetMapping("/nextTask/{gameId}")
-  ResponseEntity<GameTaskDTO> getNextTask(@PathVariable Long gameId) {
-    return ResponseEntity.ok().body(gameService.getNextTaskFromGame(gameId));
-  }
-
-  @PatchMapping("/submit/{gameId}")
-  public ResponseEntity<Boolean> handleAnswerSubmit(@PathVariable Long gameId, @RequestParam Long answer, @RequestParam String username) {
-    return ResponseEntity.ok().body(gameService.handleAnswerSubmit(gameId, answer, username));
-  }
-
-  @GetMapping("/result/{gameId}")
-  public ResponseEntity<List<PlayerDTO>> getResult(@PathVariable Long gameId) {
-    return ResponseEntity.ok().body(gameService.getResult(gameId));
   }
 
   @GetMapping("/list")

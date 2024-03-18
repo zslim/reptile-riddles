@@ -1,7 +1,8 @@
-package com.codecool.quizzzz.dto.game;
+package com.codecool.quizzzz.dto.answer;
 
 import lombok.Getter;
 import lombok.Setter;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -9,15 +10,15 @@ public class GameAnswerClassDTO {
   private Long answerId;
   private String text;
   private Long gameId;
-  private String username;
+  private UUID playerId;
 
   public GameAnswerClassDTO() {
   }
 
-  public GameAnswerClassDTO(Long answerId, String text, Long gameId, String username) {
+  public GameAnswerClassDTO(Long answerId, String text, Long gameId, UUID playerId) {
     this.answerId = answerId;
     this.text = text;
     this.gameId = gameId;
-    this.username = username;
+    this.playerId = playerId;
   }
 }

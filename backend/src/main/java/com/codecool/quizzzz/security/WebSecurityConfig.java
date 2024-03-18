@@ -37,6 +37,7 @@ public class WebSecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//    System.out.println(http);
     http.csrf(AbstractHttpConfigurer::disable)
         .cors(AbstractHttpConfigurer::disable)
         .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
@@ -56,9 +57,10 @@ public class WebSecurityConfig {
                                            .requestMatchers("api/answer/**")
                                            .hasRole("USER")
                                            .requestMatchers("api/game/**")
-                                           .hasAnyRole("USER", "GUEST")
-                                           .requestMatchers("socket.io/**")
-                                           .hasAnyRole("USER", "GUEST")
+                                           .permitAll()
+//                                           .hasAnyRole("USER", "GUEST")
+//                                           .requestMatchers("socket.io/**")
+//                                           .hasAnyRole("USER", "GUEST")
                                            .anyRequest()
                                            .authenticated());
 //            .authorizeHttpRequests(auth -> auth.requestMatchers("/**").permitAll());

@@ -1,5 +1,6 @@
 package com.codecool.quizzzz.model;
 
+import java.util.UUID;
 import com.codecool.quizzzz.exception.NotFoundException;
 import lombok.Getter;
 
@@ -17,6 +18,9 @@ public class Game {
   public static final int MAX_SCORE_PER_TASK = 1000;
   private static Long nextId = 1L;
   private final Long gameId;
+  private static Long nextPin = 100000L;
+  private final Long gamePin;
+  private final UUID generatedId;
   private final Set<Player> playerSet = new HashSet<>();
   private final Quiz quiz;
   private int currentTaskIndex = -1;
@@ -24,7 +28,9 @@ public class Game {
 
   public Game(Quiz quiz) {
     this.gameId = nextId++;
+    this.gamePin = nextPin++;
     this.quiz = quiz;
+    this.generatedId = UUID.randomUUID();
   }
 
   public Long getGameId() {
@@ -36,14 +42,6 @@ public class Game {
 
   public void removePlayer(Player player) {
     playerSet.remove(player);
-  }
-
-  public Player getPlayerByUsername(String username) {
-    return playerSet.stream()
-                    .filter(player -> player.getUsername().equals(username))
-                    .findFirst()
-                    .orElseThrow(() -> new NotFoundException(String.format("Player not found with username: %s",
-                                                                           username)));
   }
 
   public Task advanceToNextTask() {
@@ -86,6 +84,14 @@ public class Game {
                     .findFirst()
                     .orElseThrow(() -> new NotFoundException(String.format("Player not found with username: %s",
                                                                            username)));
+  }
+
+  public Player getPlayerByPlayerId(UUID playerId) {
+    return playerSet.stream()
+                    .filter(player -> player.getGeneratedId().equals(playerId))
+                    .findFirst()
+                    .orElseThrow(() -> new NotFoundException(String.format("Player not found with playerId: %s",
+                                                                           playerId)));
   }
 
   public Player isPlayerExist(String username) {

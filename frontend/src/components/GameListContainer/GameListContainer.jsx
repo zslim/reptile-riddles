@@ -10,6 +10,7 @@ function GameListContainer({gameList, loading}) {
   async function joinGame(gameId) {
     try {
      // await joinToGameLobby(gameId);
+      console.log(gameId);
      navigate(`/game/quiz/${gameId}`);
     }
     catch (e) {

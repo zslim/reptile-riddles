@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { getCredentials, userLogin, userLogout } from "../providers/userProvider";
 
 const UserContext = createContext({});
-const NO_USER = {username: "", roles: []};
+const NO_USER = {username: "", roles: [], playerName: "Guest"};
 
 export const UserContextProvider = ({children}) => {
   const [user, setUser] = useState({...NO_USER});
@@ -13,7 +13,7 @@ export const UserContextProvider = ({children}) => {
       setLoading(true);
       const userCredentials = await getCredentials();
       if (userCredentials !== null) {
-        setUser(userCredentials);
+        setUser({...userCredentials, playerName: userCredentials.username});
       }
       else {
         setUser({...NO_USER});
@@ -42,6 +42,10 @@ export const UserContextProvider = ({children}) => {
     }
   }
 
+  function changePlayerName(playerName) {
+    setUser({...user, playerName: playerName});
+  }
+
   async function logout() {
     try {
       setLoading(true);
@@ -58,7 +62,7 @@ export const UserContextProvider = ({children}) => {
   }
 
   return (
-    <UserContext.Provider value={{user, login, logout}}>
+    <UserContext.Provider value={{user, login, logout, changePlayerName}}>
       {!loading && children}
     </UserContext.Provider>
   );

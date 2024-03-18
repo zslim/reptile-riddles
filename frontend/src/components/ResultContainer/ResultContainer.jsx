@@ -5,13 +5,10 @@ const ResultContainer = ({
                            selectedAnswer,
                            isCorrect,
                            color,
-                           isAnswered,
-                           isTimedOut,
-                           loading,
                          }) => {
   return (
     <>
-    {isCorrect ? <div className="text-3xl text-black flex justify-center mt-5">
+        {isCorrect ? <div className="text-3xl text-black flex justify-center mt-5">
             <img src={checkMark} alt="check-mark" className="relative bottom-3 w-16 h-16 p-3"></img>
             <div className="h-min text-white">Correct!</div>
           </div>

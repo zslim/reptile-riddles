@@ -76,7 +76,7 @@ export function NavBarDefault() {
         color="blue-gray"
         className="flex items-center gap-x-2 p-1 font-medium"
       >
-        <Link to="#" className="flex items-center">
+        <Link to="/login" className="flex items-center">
           <UserIcon/>
           <span className="hidden lg:block">Account</span>
         </Link>
