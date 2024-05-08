@@ -3,6 +3,7 @@ services:
     runtime: docker
     name: backend
     plan: free
+    branch: production
     region: frankfurt
     dockerfilePath: backend/src/main/docker/Dockerfile
     rootDir: backend
@@ -20,6 +21,7 @@ services:
     runtime: docker
     name: frontend
     plan: free
+    branch: production
     region: frankfurt
     dockerfilePath: frontend/Dockerfile
     rootDir: frontend
@@ -41,14 +43,7 @@ services:
 
 databases:
   - name: db
-    databaseName: ${DB_NAME}
-    user: ${DB_USER}
+    databaseName: riddle
+    user: postgres
     plan: free
     region: frankfurt
-    envVars:
-      - key: POSTGRES_USER
-        value: postgres
-      - key: POSTGRES_PASSWORD
-        generateValue: true
-      - key: POSTGRES_DB
-        value: riddle
