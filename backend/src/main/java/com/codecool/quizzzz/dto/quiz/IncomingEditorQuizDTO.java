@@ -1,4 +1,6 @@
 package com.codecool.quizzzz.dto.quiz;
 
-public record IncomingEditorQuizDTO(String title, boolean isPublic) {
+import java.util.Set;
+
+public record IncomingEditorQuizDTO(String title, boolean isPublic, Set<String> categories) {
 }

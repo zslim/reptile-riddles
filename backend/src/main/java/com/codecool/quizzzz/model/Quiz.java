@@ -2,9 +2,7 @@ package com.codecool.quizzzz.model;
 
 import com.codecool.quizzzz.model.user.UserEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -12,11 +10,10 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-@Getter
-@Setter
+@Data
 @Entity
-@NoArgsConstructor
 public class Quiz {
   @Id
   @GeneratedValue
@@ -25,6 +22,8 @@ public class Quiz {
   private String title;
   @ManyToOne
   private UserEntity creator;
+  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  private Set<Category> categories;
   @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
   private List<Task> tasks = new ArrayList<>();
   @Column(insertable = false)

@@ -4,11 +4,10 @@ import com.codecool.quizzzz.dto.quiz.IncomingEditorQuizDTO;
 import com.codecool.quizzzz.dto.quiz.OutgoingEditorQuizDTO;
 import com.codecool.quizzzz.dto.task.BriefTaskDTO;
 import com.codecool.quizzzz.exception.NotFoundException;
-import com.codecool.quizzzz.model.Answer;
-import com.codecool.quizzzz.model.Quiz;
-import com.codecool.quizzzz.model.Task;
+import com.codecool.quizzzz.model.*;
 import com.codecool.quizzzz.model.user.Credentials;
 import com.codecool.quizzzz.service.repository.AnswerRepository;
+import com.codecool.quizzzz.service.repository.CategoryRepository;
 import com.codecool.quizzzz.service.repository.QuizRepository;
 import com.codecool.quizzzz.service.repository.TaskRepository;
 import jakarta.persistence.EntityManager;
@@ -18,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class QuizService {
@@ -28,15 +29,18 @@ public class QuizService {
   private final TaskRepository taskRepository;
   private final AnswerRepository answerRepository;
   private final AuthenticationService authenticationService;
+  private final CategoryRepository categoryRepository;
 
   @Autowired
   public QuizService(QuizRepository quizRepository, EntityManager entityManager, TaskRepository taskRepository,
-                     AnswerRepository answerRepository, AuthenticationService authenticationService) {
+                     AnswerRepository answerRepository, AuthenticationService authenticationService,
+                     CategoryRepository categoryRepository) {
     this.quizRepository = quizRepository;
     this.entityManager = entityManager;
     this.taskRepository = taskRepository;
     this.answerRepository = answerRepository;
     this.authenticationService = authenticationService;
+    this.categoryRepository = categoryRepository;
   }
 
   public List<OutgoingEditorQuizDTO> getPublic() {
@@ -49,7 +53,12 @@ public class QuizService {
                                      quiz.getTitle(),
                                      taskList,
                                      quiz.getCreatedAt(),
-                                     quiz.getLastModifiedTimestamp());
+                                     quiz.getLastModifiedTimestamp(),
+                                     getStringFormatFromEnum(quiz.getCategories()
+                                                                 .stream()
+                                                                 .map(Category::getCategoryEnum)
+                                                                 .toList()),
+                                     quiz.isPublic());
   }
 
   private BriefTaskDTO convertTaskModelToBriefTaskDTO(Task task) {
@@ -86,6 +95,8 @@ public class QuizService {
     foundQuiz.setPublic(incomingEditorQuizDTO.isPublic());
     foundQuiz.setValid(isQuizValid(foundQuiz));
     foundQuiz.setPublic(incomingEditorQuizDTO.isPublic());
+    Set<CategoryEnum> categoryEnums = getCategoryEnums(incomingEditorQuizDTO.categories());
+    foundQuiz.setCategories(categoryRepository.findAllByCategoryEnumIn(categoryEnums));
     return quizRepository.save(foundQuiz).getId();
   }
 
@@ -136,6 +147,14 @@ public class QuizService {
     return quizRepository.save(quiz).getId();
   }
 
+  public List<String> getAllQuizCategory() {
+    return getStringFormatFromEnum(categoryRepository.findAll()
+                                                     .stream()
+                                                     .map(Category::getCategoryEnum)
+                                                     .sorted()
+                                                     .toList());
+  }
+
   private Quiz getQuiz(Long quizId) {
     Quiz quiz = quizRepository.findById(quizId)
                               .orElseThrow(() -> new NotFoundException(String.format(
@@ -161,5 +180,19 @@ public class QuizService {
       task.setAnswers(answerRepository.findAllByTaskId(task.getId()));
     }
     return tasks;
+  }
+
+  private Set<CategoryEnum> getCategoryEnums(Set<String> categories) {
+    return categories.stream()
+                     .map(category -> category.toUpperCase().replace(" ", "_"))
+                     .map(CategoryEnum::valueOf)
+                     .collect(Collectors.toSet());
+  }
+
+  private List<String> getStringFormatFromEnum(List<CategoryEnum> categoryEnums) {
+    return categoryEnums.stream()
+                        .map(category -> category.toString().toLowerCase().replace("_", " "))
+                        .map(category -> category.substring(0, 1).toUpperCase() + category.substring(1))
+                        .toList();
   }
 }
