@@ -44,6 +44,6 @@ services:
 databases:
   - name: db
     databaseName: riddle
-    user: postgres
+    user: postgres_db_user
     plan: free
     region: frankfurt
