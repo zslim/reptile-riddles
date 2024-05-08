@@ -1,0 +1,54 @@
+services:
+  - type: web
+    runtime: docker
+    name: backend
+    plan: free
+    region: frankfurt
+    dockerfilePath: backend/src/main/docker/Dockerfile
+    rootDir: backend
+    envVars:
+      - key: EXPOSED_PORT_BACKEND
+        value: 8080
+      - key: DB_URL
+        fromDatabase:
+          name: db
+          property: connectionString
+      - key: TIME_DIFF
+        value: 3600
+
+  - type: web
+    runtime: docker
+    name: frontend
+    plan: free
+    region: frankfurt
+    dockerfilePath: frontend/Dockerfile
+    rootDir: frontend
+    envVars:
+      - key: EXPOSED_PORT_FRONTEND
+        value: 3000
+      - key: BE_HOST
+        fromService:
+          name: backend
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: BE_PORT
+        fromService:
+          name: backend
+          type: web
+          envVarKey: EXPOSED_PORT_BACKEND
+      - key: TIME_DIFF
+        value: 3600000
+
+databases:
+  - name: db
+    databaseName: ${DB_NAME}
+    user: ${DB_USER}
+    plan: free
+    region: frankfurt
+    envVars:
+      - key: POSTGRES_USER
+        value: postgres
+      - key: POSTGRES_PASSWORD
+        generateValue: true
+      - key: POSTGRES_DB
+        value: riddle

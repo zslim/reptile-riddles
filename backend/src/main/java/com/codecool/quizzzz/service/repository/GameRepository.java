@@ -6,6 +6,7 @@ import com.codecool.quizzzz.model.Game;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface GameRepository {
   void addGame(Game game);
