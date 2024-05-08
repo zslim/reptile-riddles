@@ -31,5 +31,4 @@ public class JacksonJsonFormatMapperCustom implements FormatMapper {
   public <T> String toString(T t, JavaType<T> javaType, WrapperOptions wrapperOptions) {
     return delegate.toString(t, javaType, wrapperOptions);
   }
-
 }

@@ -8,6 +8,7 @@ import com.codecool.quizzzz.dto.user.NewPlayerDTO;
 import com.codecool.quizzzz.dto.user.PlayerDTO;
 import com.codecool.quizzzz.exception.NotFoundException;
 import com.codecool.quizzzz.model.*;
+import com.codecool.quizzzz.model.user.Credentials;
 import com.codecool.quizzzz.service.repository.AnswerRepository;
 import com.codecool.quizzzz.service.repository.GameRepository;
 import com.codecool.quizzzz.service.repository.QuizRepository;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class GameService {
@@ -46,7 +48,11 @@ public class GameService {
     entityManager.detach(quiz);
     Game newGame = new Game(quiz);
     gameRepository.addGame(newGame);
-    return new GameQuizDTO(newGame.getGameId(), quiz.getTitle(), quiz.getTaskCount(), newGame.getPlayerSet().size());
+    return new GameQuizDTO(newGame.getGameId(),
+                           newGame.getGeneratedId(),
+                           quiz.getTitle(),
+                           quiz.getTaskCount(),
+                           newGame.getPlayerSet().size());
   }
 
   private List<Task> getTasksByQuizId(Long quizId) {
@@ -57,21 +63,21 @@ public class GameService {
     return tasks;
   }
 
-  public boolean joinToGame(Long gameId, NewPlayerDTO newPlayerDTO) {
+  public UUID joinToGame(Long gameId, NewPlayerDTO newPlayerDTO) {
     Game game = gameRepository.findGameById(gameId)
                               .orElseThrow(() -> new NotFoundException("No game found with this id!"));
-//    String username = getUsernameFromSecurityContext();
-    String username = "notSoSafe";
-    game.addPlayer(new Player(newPlayerDTO.playerName(), username));
-    return true;
+
+    Credentials credentials = (Credentials) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+    System.out.println(credentials);
+
+    Player newPlayer = new Player(newPlayerDTO.playerName(), credentials);
+    UUID playerUUID = newPlayer.getGeneratedId();
+    game.addPlayer(newPlayer);
+    return playerUUID;
   }
 
-  private String getUsernameFromSecurityContext() {
-    return SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-  }
-
-  public GameTaskDTO getNextTaskFromGame(Long gameId) {
-    Game game = gameRepository.findGameById(gameId)
+  public GameTaskDTO getNextTaskFromGame(UUID gameId) {
+    Game game = gameRepository.findGameByUUID(gameId)
                               .orElseThrow(() -> new NotFoundException("No game found with this id!"));
     Task nextTask = game.advanceToNextTask();
     LocalDateTime lastValidTime = LocalDateTime.now()
@@ -97,12 +103,11 @@ public class GameService {
                   .toList();
   }
 
-  public Boolean handleAnswerSubmit(Long gameId, Long answerId, String username) {
+  public Boolean handleAnswerSubmit(Long gameId, Long answerId, UUID playerId) {
     Game game = gameRepository.findGameById(gameId)
                               .orElseThrow(() -> new NotFoundException("No game found with this id!"));
-//    String username = getUsernameFromSecurityContext();
-//    Player player = game.getPlayerByUsername(username);
-    Player player = game.getPlayerByPlayerName(username);
+
+    Player player = game.getPlayerByPlayerId(playerId);
     Answer answer = game.getCurrentTask().getAnswerById(answerId).orElseThrow();
     int scoreGain = answer.isCorrect() ? game.calculateScoreGain(LocalDateTime.now()) : 0;
     // TODO: make sure a player can't get points twice for the same question

@@ -9,8 +9,9 @@ import java.util.Optional;
 
 public interface GameRepository {
   void addGame(Game game);
-  void removeGame(Long gameId);
+  void removeGame(UUID gameId);
   Optional<Game> findGameById(Long gameId);
   List<GameListDTO> getGameList();
   GameQuizDTO getQuizByGameId(Long gameId);
+  Optional<Game> findGameByUUID(UUID gameUUID);
 }

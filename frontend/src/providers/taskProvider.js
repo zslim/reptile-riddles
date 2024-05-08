@@ -1,5 +1,3 @@
-const {fetchFromBackEnd} = require("./providerBase");
-
 // async function fetchTaskByIndex(quizId, taskIndex) {
 //   const res = await fetch(`/task/quiz/${quizId}/${taskIndex}`);
 //   return await res.json();
@@ -21,7 +19,8 @@ const {fetchFromBackEnd} = require("./providerBase");
 // }
 
 async function fetchDetailedTaskById(taskId) {
-  return await fetchFromBackEnd({url: `/task/${taskId}`});
+  const res = await fetch(`/api/task/${taskId}`);
+  return await res.json();
 }
 
 // async function saveTask(quizId, task) {
@@ -36,7 +35,12 @@ async function fetchDetailedTaskById(taskId) {
 // }
 
 async function deleteTaskById(taskId) {
-  return await fetchFromBackEnd({url: `/task/${taskId}`, method: "DELETE"});
+  const res = await fetch(`/api/task/${taskId}`, {
+    method: "DELETE", headers: {
+      "Content-Type": "application/json"
+    }
+  });
+  return await res.json();
 }
 
 // async function updateTask(taskId, task) {
@@ -51,11 +55,25 @@ async function deleteTaskById(taskId) {
 // }
 
 async function saveQuestion(quizId, task) {
-  return await fetchFromBackEnd({url: `/task/question/${quizId}`, method: "POST", body: task});
+  const res = await fetch(`/api/task/question/${quizId}`, {
+    method: "POST",
+    body: JSON.stringify(task),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
+  return await res.json();
 }
 
 async function updateQuestion(taskId, task) {
-  return await fetchFromBackEnd({url: `/task/question/${taskId}`, method: "PATCH", body: task});
+  const res = await fetch(`/api/task/question/${taskId}`, {
+    method: "PATCH",
+    body: JSON.stringify(task),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
+  return await res.json();
 }
 
 module.exports = {

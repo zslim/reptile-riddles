@@ -7,10 +7,8 @@ import WaitingContainer from "../../components/WaitingContainer";
 
 const TaskPage = ({
                     task,
-                    quiz,
                     changeGameState,
                     gameState,
-                    selectAnswer,
                     selectedAnswer,
                     isCorrect,
                     handleSubmit,
@@ -20,68 +18,6 @@ const TaskPage = ({
   const [color, setColor] = useState("zinc-500");
   const [loading, setLoading] = useState(false);
   const [isTimedOut, setIsTimedOut] = useState(false);
-
-  const navigate = useNavigate();
-
-  // async function handleTaskChange() {
-  //   if (quiz.taskCount - 1 > task.taskIndex) {
-  //     try {
-  //       setLoading(true);
-  //       const newTask = await getNextTask(quiz.gameId);
-  //       resetTimer(new Date(newTask.deadline));
-  //       setTask({...newTask, deadline: new Date(newTask.deadline)});
-  //       setGameState("playingField");
-  //     }
-  //     catch (e) {
-  //       console.error(e);
-  //     }
-  //     finally {
-  //       setLoading(false);
-  //     }
-  //   }
-  //   else {
-  //     navigate("/result");
-  //   }
-  // }
-  //
-  // async function handleSubmit(answer) {
-  //   try {
-  //     setLoading(true);
-  //     const isCorrectAnswer = await handleAnswerSubmit(quiz.gameId, answer);
-  //     setSelectedAnswer(answer);
-  //     setIsCorrect(isCorrectAnswer);
-  //     resetTimer();
-  //     setGameState("result");
-  //   }
-  //   catch (e) {
-  //     console.error(e);
-  //   }
-  //   finally {
-  //     setLoading(false);
-  //   }
-  // }
-  //
-  // async function navigateToScoreBoard() {
-  //   try {
-  //     setLoading(true);
-  //     const updatedResult = await getGameResult(quiz.gameId);
-  //     setScores(updatedResult);
-  //     setGameState("scoreBoard");
-  //   }
-  //   catch (e) {
-  //     console.error(e);
-  //   }
-  //   finally {
-  //     setLoading(false);
-  //   }
-  // }
-  //
-  // function resetTimer(deadline) {
-  //   setIsTimedOut(false);
-  //   const newTimeLeft = deadline - new Date().getTime();
-  //   const toDisplay = Math.max(Math.floor(newTimeLeft / 1000), 0);
-  //   setTimeLeft(toDisplay);
-  // }
 
   function handleDisplayTimeChange(secondsLeft) {
     handleTimeChange(secondsLeft);
@@ -100,7 +36,6 @@ const TaskPage = ({
     switch (gameState) {
       case "playingField":
         return <>
-          {/*<TaskDisplayContainer/>*/}
           <AnswerListContainer
             handleSubmit={handleSubmit}
             task={task}
@@ -109,7 +44,6 @@ const TaskPage = ({
         </>;
       case "result":
         return <>
-          {/*<TaskDisplayContainer/>*/}
           <ResultContainer
             selectedAnswer={selectedAnswer}
             isCorrect={isCorrect}
@@ -121,7 +55,6 @@ const TaskPage = ({
         </>;
       case "waiting":
         return <>
-          {/*<TaskDisplayContainer/>*/}
           <WaitingContainer
             handleColorChange={handleColorChange}
             selectedAnswer={selectedAnswer}
@@ -130,12 +63,6 @@ const TaskPage = ({
             task={task}
           />
         </>;
-      // case "scoreBoard":
-      //   return <>
-      //     <ScoreBoard scores={scores}
-      //                 loading={loading}
-      //                 taskCount={task.taskIndex + 1}/>
-      //   </>;
     }
   }, [gameState]);
 
@@ -147,10 +74,8 @@ const TaskPage = ({
             {gameState === "scoreBoard" ? "SCOREBOARD" : task?.question}
           </div>
           {gameState === "playingField" ?
-            <TimeCounter deadline={task.deadline} timeLeft={timeLeft}
-                         handleDisplayTimeChange={handleDisplayTimeChange}
-                         handleDeadline={handleDeadline} isAnswered={gameState === "answered"}
-                         loading={loading}/>
+            <TimeCounter deadline={task.deadline} timeLeft={timeLeft} handleDisplayTimeChange={handleDisplayTimeChange}
+                         handleDeadline={handleDeadline} isAnswered={gameState === "answered"} loading={loading}/>
             : null}
         </div>
         {renderGameState()}

@@ -2,25 +2,27 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import TaskPage from "../TaskPage";
 import Loading from "../../components/Loading";
-import { getQuizByGameId } from "../../providers/gameProvider";
+import { getQuizByGameId, joinToGameLobby } from "../../providers/gameProvider";
 import GameLobby from "../../components/GameLobby";
 import { useUser } from "../../context/UserContextProvider";
 import { socket } from "../../socket";
 
 const QuizPage = () => {
-  const EMPTY_QUIZ = {gameId: -1, title: "", taskCount: -1, playerCount: 0};
+  const {user} = useUser();
+
+  const EMPTY_QUIZ = {gameId: -1, generatedId : -1, title: "", taskCount: -1, playerCount: 0};
   const {gameId} = useParams();
   const [loading, setLoading] = useState(false);
   const [lobbyState, setLobbyState] = useState("ready");
   const navigate = useNavigate();
   const [gameState, setGameState] = useState("playingField");
   const [playerCount, setPlayerCount] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [selectedAnswer, setSelectedAnswer] = useState("No answer was selected!");
   const [isCorrect, setIsCorrect] = useState(false);
   const [timeLeft, setTimeLeft] = useState(30);
   const [joined, setJoined] = useState(false);
-
-  const {user} = useUser();
+  const [playerName, setPlayerName] = useState(user.username);
+  const [playerId, setPlayerId] = useState("");
 
   const [quiz, setQuiz] = useState({...EMPTY_QUIZ});
   const [task, setTask] = useState({});
@@ -31,21 +33,20 @@ const QuizPage = () => {
     }
 
     function onTaskChange(value) {
-      console.log(value);
       const lastValidTime = Date.parse((value.deadline));
-      console.log(lastValidTime);
       setTask({...value, deadline: lastValidTime});
+      setSelectedAnswer("No answer Selected");
+      setIsCorrect(false);
       setGameState("playingField");
       setLobbyState("running");
     }
 
     function onResultDisplay() {
       setGameState("result");
-      // setLobbyState("result");
     }
 
     function onSubmit(value) {
-      console.log("isCorrect? " + value);
+      console.log(value + " answer on event catch");
       setIsCorrect(value);
     }
 
@@ -81,11 +82,12 @@ const QuizPage = () => {
       try {
         setLoading(true);
         const currentQuiz = await getQuizByGameId(gameId);
+        // console.log(currentQuiz);
         setQuiz(currentQuiz);
         setPlayerCount(currentQuiz.playerCount);
       }
       catch (e) {
-        console.error(e);
+        console.error(e)
       }
       finally {
         setLoading(false);
@@ -93,15 +95,31 @@ const QuizPage = () => {
     }
 
     getQuizData();
-  }, []);
+  }, [gameId]);
 
   function navigateHome() {
     navigate("/");
   }
 
-  function sendJoinEvent() {
-    socket.emit("join", {gameId: gameId, name: user.username});
-    setJoined(true);
+  async function sendJoinEvent(playerName) {
+    console.log(playerName);
+    try {
+      setLoading(true);
+      const newPlayerId = await joinToGameLobby(gameId, playerName);
+      console.log(newPlayerId);
+      if (newPlayerId) {
+        console.log("successful join");
+        socket.emit("join", {gameId: quiz.generatedId, name: playerName});
+        setPlayerId(newPlayerId);
+        setJoined(true);
+      }
+    }
+    catch (e) {
+      console.error(e);
+    }
+    finally {
+      setLoading(false);
+    }
   }
 
   function changeGameState(gameStatus) {
@@ -115,10 +133,8 @@ const QuizPage = () => {
   async function handleSubmit(answer) {
     try {
       setLoading(true);
-      // const isCorrectAnswer = await handleAnswerSubmit(quiz.gameId, answer);
       selectAnswer(answer);
-      socket.emit("submit", {...answer, gameId: quiz.gameId, username: user.username});
-      // setIsCorrect(isCorrectAnswer);
+      socket.emit("submit", {...answer, gameId: quiz.gameId, playerId});
       resetTimer(task.deadline);
       changeGameState("waiting");
     }
@@ -131,7 +147,6 @@ const QuizPage = () => {
   }
 
   function resetTimer(deadline) {
-    // setIsTimedOut(false);
     const newTimeLeft = deadline - new Date().getTime();
     const toDisplay = Math.max(Math.floor(newTimeLeft / 1000), 0);
     setTimeLeft(toDisplay);
@@ -140,6 +155,9 @@ const QuizPage = () => {
   function handleTimeChange(time) {
     setTimeLeft(time);
   }
+  function handleNameChange(newName){
+    setPlayerName(newName);
+  }
 
   return (
     <>
@@ -147,7 +165,7 @@ const QuizPage = () => {
         : <>
           {lobbyState === "ready"
             ? <>
-              <GameLobby quiz={quiz} navigateHome={navigateHome} role={"player"}
+              <GameLobby quiz={quiz} navigateHome={navigateHome} role={"player"} handleNameChange={handleNameChange} playerName={playerName}
                          playerCount={playerCount} sendJoinEvent={sendJoinEvent} joined={joined}/>
             </> : null
           }

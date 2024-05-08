@@ -1,7 +1,10 @@
 package com.codecool.quizzzz.websocket;
 
+import com.codecool.quizzzz.dto.answer.GameAnswerClassDTO;
+import com.codecool.quizzzz.dto.game.GameDataClassDTO;
+import com.codecool.quizzzz.dto.user.PlayerClassDTO;
+import com.codecool.quizzzz.dto.task.TaskDataClassDTO;
 import com.codecool.quizzzz.dto.task.GameTaskDTO;
-import com.codecool.quizzzz.dto.user.NewPlayerDTO;
 import com.codecool.quizzzz.dto.user.PlayerDTO;
 import com.codecool.quizzzz.service.GameService;
 import com.codecool.quizzzz.service.repository.GameRepository;
@@ -14,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -22,77 +26,80 @@ public class SocketModule {
   private final GameRepository gameRepository;
   private final GameService gameService;
 
+
   @Autowired
   public SocketModule(SocketIOServer server, GameRepository gameRepository, GameService gameService) {
-    System.out.println("here");
-//    this.namespace = server.addNamespace("");
     this.gameService = gameService;
     this.gameRepository = gameRepository;
     this.server = server;
     this.server.addConnectListener(onConnected());
     this.server.addDisconnectListener(onDisconnected());
+
     this.server.addEventListener("join", PlayerClassDTO.class, onPlayerJoin());
-    this.server.addEventListener("task_change", TaskChangeClassDTO.class, onTaskChange());
+    this.server.addEventListener("create_room", UUID.class, onCreateRoom());
+    this.server.addEventListener("task_change", TaskDataClassDTO.class, onTaskChange());
     this.server.addEventListener("submit", GameAnswerClassDTO.class, onSubmit());
-    this.server.addEventListener("scoreboard", Long.class, onScoreboardDisplay());
-    this.server.addEventListener("exit", Long.class, onExit());
+    this.server.addEventListener("scoreboard", GameDataClassDTO.class, onScoreboardDisplay());
+    this.server.addEventListener("exit", UUID.class, onExit());
   }
 
-  private ConnectListener onConnected() {
-    System.out.println("connected");
-    return client -> System.out.println(client + "connected");
-  }
-
-  private DisconnectListener onDisconnected() {
-    System.out.println("disconnected");
-    return client -> System.out.println(client + "disconnected");
-  }
-
-  private DataListener<PlayerClassDTO> onPlayerJoin() {
-    System.out.println("on player join");
+  private DataListener<UUID> onCreateRoom() {
     return (client, data, ackSender) -> {
-      System.out.println("joined");
-      gameService.joinToGame(data.getGameId(), new NewPlayerDTO(data.getName()));
-      int playerCount = gameRepository.findGameById(data.getGameId()).get().getPlayerCount();
-      server.getBroadcastOperations().sendEvent("join", playerCount);
+      System.out.println("creating room");
+      client.joinRoom(data.toString());
     };
   }
 
-  private DataListener<TaskChangeClassDTO> onTaskChange() {
-    System.out.println("on task change");
+  private DataListener<UUID> onExit() {
     return (client, data, ackSender) -> {
-      System.out.println("sending task");
-      GameTaskDTO gameTaskDTO = gameService.getNextTaskFromGame(data.getGameId());
-      server.getBroadcastOperations().sendEvent("task_change", gameTaskDTO);
+      System.out.println("sending exit order");
+      gameRepository.removeGame(data);
+      server.getRoomOperations(data.toString()).sendEvent("exit");
+    };
+  }
+
+  private DataListener<GameDataClassDTO> onScoreboardDisplay() {
+    return (client, data, ackSender) -> {
+      System.out.println("sending scoreboard");
+      List<PlayerDTO> results = gameService.getResult(data.getGameId());
+      client.sendEvent("scoreboard", results);
+      server.getRoomOperations(data.getGameUUID().toString()).sendEvent("result");
     };
   }
 
   private DataListener<GameAnswerClassDTO> onSubmit() {
-    System.out.println("on submit");
     return (client, data, ackSender) -> {
-      System.out.println("sending submit result");
-      boolean isCorrect = gameService.handleAnswerSubmit(data.getGameId(), data.getAnswerId(), data.getUsername());
+      System.out.println("sending submit result to " + client.getSessionId());
+      System.out.println("clients: " + server.getRoomOperations(data.getGameId().toString()).getClients());
+      boolean isCorrect = gameService.handleAnswerSubmit(data.getGameId(), data.getAnswerId(), data.getPlayerId());
       System.out.println(isCorrect);
       client.sendEvent("submit", isCorrect);
     };
   }
 
-  private DataListener<Long> onScoreboardDisplay() {
-    System.out.println("on scoreboard display");
+  private DataListener<TaskDataClassDTO> onTaskChange() {
     return (client, data, ackSender) -> {
-      System.out.println("sending scoreboard");
-      List<PlayerDTO> results = gameService.getResult(data);
-      client.sendEvent("scoreboard", results);
-      server.getBroadcastOperations().sendEvent("result");
+      System.out.println("sending task");
+      GameTaskDTO gameTaskDTO = gameService.getNextTaskFromGame(data.getGameId());
+      server.getRoomOperations(data.getGameId().toString()).sendEvent("task_change", gameTaskDTO);
     };
   }
 
-  private DataListener<Long> onExit() {
-    System.out.println("on exit");
+  private DataListener<PlayerClassDTO> onPlayerJoin() {
     return (client, data, ackSender) -> {
-      System.out.println("sending exit order");
-      gameRepository.removeGame(data);
-      server.getBroadcastOperations().sendEvent("exit");
+      System.out.println("joining " + client);
+      client.joinRoom(data.getGameId().toString());
+//      gameService.joinToGame(data.getGameId(), new NewPlayerDTO(data.getName()));
+      int playerCount = gameRepository.findGameByUUID(data.getGameId()).get().getPlayerCount();
+      server.getRoomOperations(data.getGameId().toString()).sendEvent("join", playerCount);
     };
+  }
+
+  private ConnectListener onConnected() {
+    return client -> System.out.println(client + "connected");
+  }
+
+  private DisconnectListener onDisconnected() {
+    return client -> System.out.println(client + "disconnected");
   }
 }

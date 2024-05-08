@@ -1,51 +1,65 @@
-const {fetchFromBackEnd} = require("./providerBase");
-
-async function updateQuiz(quiz, quizId) {
-  return await fetchFromBackEnd({
-    url: `/quiz/${quizId}`, method: "PATCH", body: quiz
+async function updateQuizName(quizName, quizId) {
+  const httpRes = await fetch(`/api/quiz/${quizId}`, {
+    method: "PATCH",
+    body: JSON.stringify({
+      "title": quizName,
+      "isPublic": true // TODO: create public checkbox in quiz editor
+    }),
+    headers: {
+      "Content-Type": "application/json"
+    }
   });
+  return await httpRes.json();
 }
 
 async function fetchQuizById(quizId) {
-  return await fetchFromBackEnd({url: `/quiz/${quizId}`});
-}
-
-async function fetchCategories() {
-  return await fetchFromBackEnd({url: '/quiz/categories'});
+  const httpRes = await fetch(`/api/quiz/${quizId}`);
+  return await httpRes.json();
 }
 
 async function fetchAllQuizzes() {
-  return await fetchFromBackEnd({url: "/quiz/public"});
+  const httpRawRes = await fetch("/api/quiz/public");
+  return await httpRawRes.json();
 }
 
 async function fetchMyQuizzes() {
-  return await fetchFromBackEnd({url: "/quiz/own"});
+  const httpRawRes = await fetch("/api/quiz/own");
+  return await httpRawRes.json();
 }
 
 async function saveEmptyQuiz() {
-  return await fetchFromBackEnd({url: "/quiz/create", method: "POST"});
+  const httpRes = await fetch(`/api/quiz/create`, {
+    method: "POST"
+  });
+  return await httpRes.json();
 }
 
 async function copyQuiz(quizId) {
-  return await fetchFromBackEnd({url: `/quiz/copy/${quizId}`, method: "POST"});
+  const httpRes = await fetch(`/api/quiz/copy/${quizId}`, {
+    method: "POST"
+  });
+  return await httpRes.json();
 }
 
 async function deleteQuizById(quizId) {
-  return await fetchFromBackEnd({url: `/quiz/${quizId}`, method: "DELETE"});
+  const httpRes = await fetch(`/api/quiz/${quizId}`, {
+    method: "DELETE"
+  });
+  return await httpRes.json();
 }
 
 async function fetchModifiedAtById(quizId) {
-  return await fetchFromBackEnd({url: `/quiz/modified/${quizId}`});
+  const httpRes = await fetch(`/api/quiz/modified/${quizId}`);
+  return await httpRes.json();
 }
 
 module.exports = {
-  updateQuiz,
+  updateQuizName,
   fetchQuizById,
   fetchAllQuizzes,
   fetchMyQuizzes,
   saveEmptyQuiz,
   copyQuiz,
   deleteQuizById,
-  fetchModifiedAtById,
-  fetchCategories
+  fetchModifiedAtById
 };
